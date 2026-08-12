@@ -437,38 +437,32 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         </View>
       </Modal>
 
-      {/* MODAL 2: WhatsApp Share Enlace Created */}
+      {/* MODAL 2: Automatic WhatsApp Sent Confirmation */}
       <Modal visible={!!shareData} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
-            <View style={{ alignItems: 'center', marginBottom: 12 }}>
-              <Text style={{ fontSize: 40 }}>📲</Text>
-              <Text style={styles.modalTitle}>¡Invitación Creada!</Text>
+            <View style={{ alignItems: 'center', marginBottom: 16 }}>
+              <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#DCFCE7', justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
+                <Text style={{ fontSize: 32 }}>📲</Text>
+              </View>
+              <Text style={styles.modalTitle}>¡Invitación Enviada!</Text>
             </View>
 
-            <Text style={{ fontSize: 13, color: '#4B5563', marginBottom: 12, textAlign: 'center' }}>
-              Se ha generado un enlace único para <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text>.
+            <Text style={{ fontSize: 14, color: '#1E293B', marginBottom: 12, textAlign: 'center', lineHeight: 20 }}>
+              Se ha enviado automáticamente el enlace de registro por WhatsApp al número de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text>.
             </Text>
 
-            <View style={styles.linkBox}>
-              <Text style={styles.linkText} numberOfLines={1}>
-                {shareData?.publicUrl}
+            <View style={{ backgroundColor: '#F1F5F9', padding: 12, borderRadius: 12, marginBottom: 20 }}>
+              <Text style={{ fontSize: 12, color: '#64748B', textAlign: 'center', lineHeight: 16 }}>
+                🔒 <Text style={{ fontWeight: 'bold' }}>Seguridad de Acceso:</Text> El enlace único se entrega directamente al número registrado para evitar que la invitación sea enviada a otra persona.
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.waBtn} onPress={handleShareWhatsApp}>
-              <Text style={styles.waBtnText}>💬 Enviar mensaje por WhatsApp</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.copyBtn} onPress={handleCopyLink}>
-              <Text style={styles.copyBtnText}>📋 Copiar Enlace al portapapeles</Text>
-            </TouchableOpacity>
-
             <TouchableOpacity
-              style={[styles.cancelBtn, { marginTop: 12, width: '100%', alignItems: 'center' }]}
+              style={styles.saveBtn}
               onPress={() => setShareData(null)}
             >
-              <Text style={styles.cancelBtnText}>Cerrar</Text>
+              <Text style={styles.saveBtnText}>Entendido</Text>
             </TouchableOpacity>
           </View>
         </View>
