@@ -100,6 +100,16 @@ class ApiService {
     return data;
   }
 
+  // App Remote Logger
+  async sendLog(level: 'info' | 'warn' | 'error', action: string, message: string, details?: any) {
+    try {
+      await this.request('/logs/app', {
+        method: 'POST',
+        body: JSON.stringify({ level, action, message, details }),
+      });
+    } catch (e) {}
+  }
+
   // Auth API
   async checkEmail(email: string) {
     return this.request<{
