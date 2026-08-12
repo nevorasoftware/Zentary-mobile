@@ -8,17 +8,22 @@ import PaymentsScreen from './src/screens/PaymentsScreen';
 import BottomNavBar, { TabType } from './src/components/BottomNavBar';
 import ProfileMenuModal from './src/components/ProfileMenuModal';
 import FrequentAccessModal from './src/components/FrequentAccessModal';
+import ChangePasswordModal from './src/components/ChangePasswordModal';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('Visitas');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
 
-  const currentUser = {
+  // User state including mustChangePassword and Community Name
+  const [mustChangePassword, setMustChangePassword] = useState(true);
+  const [currentUser, setCurrentUser] = useState({
     fullName: 'María Camila Rodríguez',
     email: 'residente.zentary@gmail.com',
+    communityName: 'Residencial Zentary',
+    unitNumber: 'Apt 502',
     avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-  };
+  });
 
   const handleTabChange = (tab: TabType) => {
     setCurrentTab(tab);
@@ -66,7 +71,7 @@ export default function App() {
         onOpenMenu={() => setIsProfileMenuOpen(true)}
       />
 
-      {/* Profile Menu Sheet (Image 4) */}
+      {/* Profile Menu Sheet */}
       <ProfileMenuModal
         visible={isProfileMenuOpen}
         user={currentUser}
@@ -77,12 +82,21 @@ export default function App() {
         }}
       />
 
-      {/* Frequent Access Dialog Modal (Image 5) */}
+      {/* Frequent Access Dialog Modal */}
       <FrequentAccessModal
         visible={isFrequentModalOpen}
         onClose={() => setIsFrequentModalOpen(false)}
         onDonotShowAgainChange={(checked) => {
           console.log('Hide frequent access banner:', checked);
+        }}
+      />
+
+      {/* Mandatory Change Password Modal for First Login */}
+      <ChangePasswordModal
+        visible={mustChangePassword}
+        onPasswordChanged={(newPass) => {
+          console.log('Password updated successfully:', newPass);
+          setMustChangePassword(false);
         }}
       />
     </SafeAreaView>

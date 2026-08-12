@@ -1,27 +1,55 @@
 // API service client for Zentary Mobile connecting to Express + Prisma Backend
 
-// Change this to your Railway production URL once deployed:
-// e.g. 'https://zentary-backend-production.up.railway.app/api'
-export const API_BASE_URL = 'http://localhost:3000/api';
+export const API_BASE_URL = 'https://zentary-backend-production.up.railway.app/api';
 
 export interface UserProfile {
   id: string;
   email: string;
   fullName: string;
   phone?: string;
-  role: string;
+  role: 'RESIDENT' | 'GUARD' | 'ADMIN';
   avatarUrl?: string;
 }
+
+export type VisitStatusType =
+  | 'PENDIENTE_REGISTRO'
+  | 'DATOS_COMPLETADOS'
+  | 'INGRESADA'
+  | 'CANCELADA'
+  | 'VENCIDA'
+  | 'IN_PROGRESS'
+  | 'COMPLETED';
 
 export interface VisitItem {
   id: string;
   visitorName: string;
+  visitorPhone?: string;
   visitorDni?: string;
+  documentType?: string;
+  documentNumber?: string;
+  documentPhotoUrl?: string;
+  hasVehicle?: boolean;
   vehiclePlate?: string;
-  category: 'EN_CURSO' | 'HISTORIAL' | 'FRECUENTE';
-  status: 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  qrCode?: string;
+  vehicleModel?: string;
+  vehicleColor?: string;
+  category?: 'EN_CURSO' | 'HISTORIAL' | 'FRECUENTE';
+  status: VisitStatusType;
+  validFrom?: string;
+  validUntil?: string;
+  entryDate?: string;
+  exitDate?: string;
+  publicToken?: string;
+  notes?: string;
   createdAt: string;
+  resident?: {
+    fullName: string;
+    phone?: string;
+    community?: { name: string };
+    property?: { unitNumber: string; block?: string };
+  };
+  guard?: {
+    fullName: string;
+  };
 }
 
 export interface ParcelItem {
@@ -94,16 +122,93 @@ class ApiService {
   }
 
   // Visits API
-  async getVisits(category?: string) {
-    const query = category ? `?category=${category}` : '';
-    return this.request<{ success: boolean; visits: VisitItem[] }>(`/visits${query}`);
+  async getVisits(category?: string, status?: string) {
+    const params = new URLSearchParams();
+    if (category) params.append('category', category);
+    if (status) params.append('status', status);
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    return this.request<{ success: boolean; visits: VisitItem[] }>(`/visits${queryString}`);
   }
 
-  async createVisit(visitData: { visitorName: string; visitorDni?: string; vehiclePlate?: string; category: string }) {
-    return this.request<{ success: boolean; visit: VisitItem }>('/visits', {
+  async createVisit(visitData: {
+    visitorName: string;
+    visitorPhone?: string;
+    visitDate?: string;
+    validFrom?: string;
+    notes?: string;
+  }) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      visit: VisitItem;
+      publicToken: string;
+      publicUrl: string;
+      whatsappMessage: string;
+    }>('/visits', {
       method: 'POST',
       body: JSON.stringify(visitData),
     });
+  }
+
+  async cancelVisit(visitId: string) {
+    return this.request<{ success: boolean; message: string }>(`/visits/${visitId}/cancel`, {
+      method: 'PATCH',
+    });
+  }
+
+  // Guard API Endpoints
+  async scanQRToken(token: string) {
+    return this.request<{
+      success: boolean;
+      valid: boolean;
+      message: string;
+      visit: {
+        id: string;
+        visitorName: string;
+        visitorPhone?: string;
+        documentType: string;
+        documentNumber: string;
+        documentPhotoUrl?: string;
+        hasVehicle: boolean;
+        vehiclePlate: string;
+        vehicleModel: string;
+        vehicleColor: string;
+        residentName: string;
+        communityName: string;
+        propertyUnit: string;
+        validFrom?: string;
+      };
+    }>('/visits/scan-qr', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    });
+  }
+
+  async confirmEntry(visitId: string, gateName?: string) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      visit: VisitItem;
+      notification: {
+        title: string;
+        body: string;
+        visitorName: string;
+        entryTime: string;
+      };
+    }>(`/visits/${visitId}/confirm-entry`, {
+      method: 'POST',
+      body: JSON.stringify({ gateName }),
+    });
+  }
+
+  async getVisitorDocument(visitId: string) {
+    return this.request<{
+      success: boolean;
+      visitorName: string;
+      documentType?: string;
+      documentNumber?: string;
+      documentPhotoUrl?: string;
+    }>(`/visits/${visitId}/visitor-document`);
   }
 
   // Parcels API
@@ -131,7 +236,7 @@ class ApiService {
     });
   }
 
-  // Payments API (Future integration ready)
+  // Payments API
   async getPayments() {
     return this.request<{ success: boolean; payments: any[] }>('/payments');
   }
