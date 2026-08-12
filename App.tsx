@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, SafeAreaView, StatusBar, ActivityIndicator, Text } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import VisitasScreen from './src/screens/VisitasScreen';
 import PQRSScreen from './src/screens/PQRSScreen';
@@ -11,8 +11,10 @@ import ProfileMenuModal from './src/components/ProfileMenuModal';
 import FrequentAccessModal from './src/components/FrequentAccessModal';
 import ChangePasswordModal from './src/components/ChangePasswordModal';
 import { apiService, UserProfile } from './src/services/api';
+import { deviceService } from './src/services/device';
 
 export default function App() {
+  const [isRestoringSession, setIsRestoringSession] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentTab, setCurrentTab] = useState<TabType>('Visitas');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -29,6 +31,27 @@ export default function App() {
     role: 'RESIDENT',
   });
 
+  // Restore and silently renew session on app launch
+  useEffect(() => {
+    const checkSavedSession = async () => {
+      try {
+        const session = await deviceService.restoreAndRenewSession();
+        if (session.loggedIn && session.user) {
+          setCurrentUser(session.user);
+          if (session.mustChangePassword) {
+            setMustChangePassword(true);
+          }
+          setIsLoggedIn(true);
+        }
+      } catch (err) {
+        console.log('Error restoring session:', err);
+      } finally {
+        setIsRestoringSession(false);
+      }
+    };
+    checkSavedSession();
+  }, []);
+
   const handleLoginSuccess = (user: UserProfile, mustChangePass?: boolean) => {
     setCurrentUser(user);
     if (mustChangePass) {
@@ -41,7 +64,18 @@ export default function App() {
     setCurrentTab(tab);
   };
 
-  // If user is not logged in, render the Onboarding & Authentication Flow (Images 1, 2, 3)
+  // Splash Loading Indicator while restoring session
+  if (isRestoringSession) {
+    return (
+      <View style={styles.splashContainer}>
+        <StatusBar barStyle="light-content" backgroundColor="#2B82FB" />
+        <Text style={styles.splashLogoText}>Zentary</Text>
+        <ActivityIndicator size="large" color="#FFFFFF" style={{ marginTop: 24 }} />
+      </View>
+    );
+  }
+
+  // If user is not logged in, render the Onboarding & Authentication Flow
   if (!isLoggedIn) {
     return (
       <SafeAreaView style={styles.authSafeArea}>
@@ -104,7 +138,8 @@ export default function App() {
           avatarUrl: currentUser.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
         }}
         onClose={() => setIsProfileMenuOpen(false)}
-        onLogout={() => {
+        onLogout={async () => {
+          await deviceService.clearSession();
           setIsProfileMenuOpen(false);
           setIsLoggedIn(false);
         }}
@@ -124,7 +159,11 @@ export default function App() {
         visible={mustChangePassword}
         onPasswordChanged={async (newPass) => {
           try {
-            await apiService.changePassword(newPass);
+            const deviceId = await deviceService.getDeviceId();
+            const res = await apiService.changePassword(newPass, deviceId);
+            if (res.token && res.user) {
+              await deviceService.saveSession(res.token, res.user);
+            }
             setMustChangePassword(false);
           } catch (e) {
             console.error('Error changing password:', e);
@@ -137,6 +176,18 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  splashContainer: {
+    flex: 1,
+    backgroundColor: '#2B82FB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  splashLogoText: {
+    color: '#FFFFFF',
+    fontSize: 42,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
   authSafeArea: {
     flex: 1,
     backgroundColor: '#3B82F6',

@@ -72,9 +72,14 @@ export interface PqrsItem {
 
 class ApiService {
   private token: string | null = null;
+  private deviceId: string | null = null;
 
   setAuthToken(token: string) {
     this.token = token;
+  }
+
+  setDeviceId(deviceId: string) {
+    this.deviceId = deviceId;
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -85,6 +90,10 @@ class ApiService {
 
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
+    }
+
+    if (this.deviceId) {
+      headers['x-device-id'] = this.deviceId;
     }
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -125,20 +134,33 @@ class ApiService {
     });
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string, deviceId?: string) {
     const data = await this.request<{ success: boolean; token: string; user: UserProfile; mustChangePassword?: boolean }>('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, deviceId: deviceId || this.deviceId }),
     });
     this.token = data.token;
     return data;
   }
 
-  async changePassword(newPassword: string) {
-    return this.request<{ success: boolean; message: string; user: UserProfile }>('/auth/change-password', {
+  async changePassword(newPassword: string, deviceId?: string) {
+    const data = await this.request<{ success: boolean; message: string; user: UserProfile; token?: string }>('/auth/change-password', {
       method: 'POST',
-      body: JSON.stringify({ newPassword }),
+      body: JSON.stringify({ newPassword, deviceId: deviceId || this.deviceId }),
     });
+    if (data.token) {
+      this.token = data.token;
+    }
+    return data;
+  }
+
+  async renewSession(deviceId?: string) {
+    const data = await this.request<{ success: boolean; token: string; user: UserProfile; mustChangePassword?: boolean }>('/auth/renew-session', {
+      method: 'POST',
+      body: JSON.stringify({ deviceId: deviceId || this.deviceId }),
+    });
+    this.token = data.token;
+    return data;
   }
 
   async getProfile() {

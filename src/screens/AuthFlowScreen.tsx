@@ -13,6 +13,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { apiService, UserProfile } from '../services/api';
+import { deviceService } from '../services/device';
 
 interface AuthFlowScreenProps {
   onLoginSuccess: (user: UserProfile, mustChangePass?: boolean) => void;
@@ -66,9 +67,11 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
 
     try {
       setLoading(true);
-      const res = await apiService.login(email.trim(), password);
+      const deviceId = await deviceService.getDeviceId();
+      const res = await apiService.login(email.trim(), password, deviceId);
 
-      if (res.success && res.user) {
+      if (res.success && res.user && res.token) {
+        await deviceService.saveSession(res.token, res.user);
         onLoginSuccess(res.user, res.mustChangePassword);
       }
     } catch (err: any) {
