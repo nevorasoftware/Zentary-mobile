@@ -5,29 +5,51 @@ import VisitasScreen from './src/screens/VisitasScreen';
 import PQRSScreen from './src/screens/PQRSScreen';
 import PaquetesScreen from './src/screens/PaquetesScreen';
 import PaymentsScreen from './src/screens/PaymentsScreen';
+import AuthFlowScreen from './src/screens/AuthFlowScreen';
 import BottomNavBar, { TabType } from './src/components/BottomNavBar';
 import ProfileMenuModal from './src/components/ProfileMenuModal';
 import FrequentAccessModal from './src/components/FrequentAccessModal';
 import ChangePasswordModal from './src/components/ChangePasswordModal';
+import { apiService, UserProfile } from './src/services/api';
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentTab, setCurrentTab] = useState<TabType>('Visitas');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
 
-  // User state including mustChangePassword and Community Name
-  const [mustChangePassword, setMustChangePassword] = useState(true);
-  const [currentUser, setCurrentUser] = useState({
-    fullName: 'María Camila Rodríguez',
-    email: 'residente.zentary@gmail.com',
-    communityName: 'Residencial Zentary',
-    unitNumber: 'Apt 502',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+  // First Login Password Change Modal
+  const [mustChangePassword, setMustChangePassword] = useState(false);
+
+  // User state
+  const [currentUser, setCurrentUser] = useState<UserProfile>({
+    id: '',
+    email: '',
+    fullName: '',
+    role: 'RESIDENT',
   });
+
+  const handleLoginSuccess = (user: UserProfile, mustChangePass?: boolean) => {
+    setCurrentUser(user);
+    if (mustChangePass) {
+      setMustChangePassword(true);
+    }
+    setIsLoggedIn(true);
+  };
 
   const handleTabChange = (tab: TabType) => {
     setCurrentTab(tab);
   };
+
+  // If user is not logged in, render the Onboarding & Authentication Flow (Images 1, 2, 3)
+  if (!isLoggedIn) {
+    return (
+      <SafeAreaView style={styles.authSafeArea}>
+        <StatusBar barStyle="light-content" backgroundColor="#3B82F6" />
+        <AuthFlowScreen onLoginSuccess={handleLoginSuccess} />
+      </SafeAreaView>
+    );
+  }
 
   const renderCurrentScreen = () => {
     switch (currentTab) {
@@ -74,11 +96,17 @@ export default function App() {
       {/* Profile Menu Sheet */}
       <ProfileMenuModal
         visible={isProfileMenuOpen}
-        user={currentUser}
+        user={{
+          fullName: currentUser.fullName || 'Residente',
+          email: currentUser.email || '',
+          communityName: 'Residencial Zentary',
+          unitNumber: 'Casa / Apt',
+          avatarUrl: currentUser.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+        }}
         onClose={() => setIsProfileMenuOpen(false)}
         onLogout={() => {
           setIsProfileMenuOpen(false);
-          alert('Sesión cerrada');
+          setIsLoggedIn(false);
         }}
       />
 
@@ -94,9 +122,14 @@ export default function App() {
       {/* Mandatory Change Password Modal for First Login */}
       <ChangePasswordModal
         visible={mustChangePassword}
-        onPasswordChanged={(newPass) => {
-          console.log('Password updated successfully:', newPass);
-          setMustChangePassword(false);
+        onPasswordChanged={async (newPass) => {
+          try {
+            await apiService.changePassword(newPass);
+            setMustChangePassword(false);
+          } catch (e) {
+            console.error('Error changing password:', e);
+            setMustChangePassword(false);
+          }
         }}
       />
     </SafeAreaView>
@@ -104,6 +137,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  authSafeArea: {
+    flex: 1,
+    backgroundColor: '#3B82F6',
+  },
   container: {
     flex: 1,
     backgroundColor: '#2B82FB',

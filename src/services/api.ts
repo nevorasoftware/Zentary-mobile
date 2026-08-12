@@ -101,13 +101,34 @@ class ApiService {
   }
 
   // Auth API
+  async checkEmail(email: string) {
+    return this.request<{
+      success: boolean;
+      code: string;
+      message?: string;
+      email?: string;
+      fullName?: string;
+      mustChangePassword?: boolean;
+    }>('/auth/check-email', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
   async login(email: string, password: string) {
-    const data = await this.request<{ success: boolean; token: string; user: UserProfile }>('/auth/login', {
+    const data = await this.request<{ success: boolean; token: string; user: UserProfile; mustChangePassword?: boolean }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
     this.token = data.token;
     return data;
+  }
+
+  async changePassword(newPassword: string) {
+    return this.request<{ success: boolean; message: string; user: UserProfile }>('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ newPassword }),
+    });
   }
 
   async getProfile() {
