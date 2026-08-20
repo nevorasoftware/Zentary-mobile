@@ -1,7 +1,9 @@
 // Notification Service for Zentary Mobile
-// Handles parametrizable payment reminder notifications and alerts
+// Supports Native System Notifications (Android System Tray / Lock Screen / Status Bar)
+// matching PedidosYa, Gmail, CapCut notifications style.
 
 import * as FileSystem from 'expo-file-system';
+import { Platform } from 'react-native';
 
 export interface NotificationConfig {
   enabled: boolean;
@@ -35,6 +37,84 @@ const DEFAULT_CONFIG: NotificationConfig = {
 
 class NotificationService {
   private currentConfig: NotificationConfig = DEFAULT_CONFIG;
+  private notificationsModule: any = null;
+
+  constructor() {
+    this.initNativeNotifications();
+  }
+
+  /**
+   * Initializes native system notification handlers and Android Channels
+   */
+  private async initNativeNotifications() {
+    try {
+      const Notifications = require('expo-notifications');
+      this.notificationsModule = Notifications;
+
+      // Configure default handler to show notification banner, sound & badge
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+        }),
+      });
+
+      // Set up Android High Priority Channel for System Notification Drawer
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('zentary-payments', {
+          name: 'Recordatorios de Pago Zentary',
+          importance: Notifications.AndroidImportance.HIGH,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#2B82FB',
+          sound: 'default',
+        });
+      }
+    } catch (e) {
+      console.warn('Native Notifications module notice:', e);
+    }
+  }
+
+  /**
+   * Requests user permission for Android / iOS System Tray Notifications
+   */
+  async requestPermissions(): Promise<boolean> {
+    try {
+      if (this.notificationsModule) {
+        const { status: existingStatus } = await this.notificationsModule.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await this.notificationsModule.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        return finalStatus === 'granted';
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  /**
+   * Triggers a Native System Notification on Android / iOS status bar (like PedidosYa / Gmail)
+   */
+  async triggerNativeSystemNotification(title: string, body: string, data: any = {}) {
+    try {
+      if (this.notificationsModule) {
+        await this.notificationsModule.scheduleNotificationAsync({
+          content: {
+            title: title,
+            body: body,
+            sound: 'default',
+            data: data,
+            badge: 1,
+            color: '#2B82FB',
+          },
+          trigger: null, // Triggers immediately in status bar
+        });
+      }
+    } catch (e) {
+      console.warn('Could not fire native notification:', e);
+    }
+  }
 
   /**
    * Loads saved notification preferences
@@ -89,7 +169,7 @@ class NotificationService {
   }
 
   /**
-   * Checks if a daily/parametrizable payment reminder should be triggered for pending current month payments
+   * Checks if a daily payment reminder should be triggered natively for pending payments
    */
   async checkPendingPaymentReminder(payments: Array<{ id: string; concept: string; amount: number; dueDate: string; status: 'PENDING' | 'PAID' | 'OVERDUE' }>): Promise<AppNotification | null> {
     const config = await this.getConfig();
@@ -99,11 +179,6 @@ class NotificationService {
 
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Check frequency restriction
-    if (config.frequency === 'DAILY' && config.lastNotifiedDate === todayStr) {
-      // Already notified today, return persistent banner reminder for UI
-    }
-
     // Find pending payment for current month
     const pendingPayment = payments.find((p) => p.status === 'PENDING' || p.status === 'OVERDUE');
 
@@ -111,13 +186,20 @@ class NotificationService {
       return null;
     }
 
-    // Update lastNotifiedDate
-    await this.saveConfig({ lastNotifiedDate: todayStr });
+    const title = '💳 Recordatorio de Pago Zentary';
+    const body = `Tienes un pago pendiente por $${pendingPayment.amount.toFixed(2)} (${pendingPayment.concept}). Vence el ${pendingPayment.dueDate}.`;
+
+    // Fire native Android status bar notification if not already fired today
+    if (config.lastNotifiedDate !== todayStr) {
+      await this.requestPermissions();
+      await this.triggerNativeSystemNotification(title, body, { paymentId: pendingPayment.id });
+      await this.saveConfig({ lastNotifiedDate: todayStr });
+    }
 
     return {
       id: `notif-pay-${pendingPayment.id}`,
-      title: '💳 Recordatorio de Pago Pendiente',
-      body: `Tienes un pago pendiente de $${pendingPayment.amount.toFixed(2)} por "${pendingPayment.concept}". Vence el ${pendingPayment.dueDate}.`,
+      title: title,
+      body: body,
       type: 'PAYMENT_REMINDER',
       date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       read: false,
