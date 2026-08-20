@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { apiService, UserProfile } from '../services/api';
 import { deviceService } from '../services/device';
+import { Eye, EyeOff } from 'lucide-react-native';
 
 interface AuthFlowScreenProps {
   onLoginSuccess: (user: UserProfile, mustChangePass?: boolean) => void;
@@ -25,6 +26,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Disabled User Popup Modal State (Image 3)
@@ -211,10 +213,22 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                   style={styles.textInput}
                   placeholder="Contraseña"
                   placeholderTextColor="#94A3B8"
-                  secureTextEntry
+                  secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={setPassword}
                 />
+                <TouchableOpacity
+                  style={styles.eyeBtn}
+                  onPress={() => setShowPassword(!showPassword)}
+                  activeOpacity={0.7}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  {showPassword ? (
+                    <EyeOff size={22} color="#64748B" />
+                  ) : (
+                    <Eye size={22} color="#64748B" />
+                  )}
+                </TouchableOpacity>
               </View>
 
               <TouchableOpacity
@@ -475,6 +489,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#1E293B',
+  },
+  eyeBtn: {
+    padding: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   actionBtn: {
     width: '100%',

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { Eye, EyeOff } from 'lucide-react-native';
 
 interface ChangePasswordModalProps {
   visible: boolean;
@@ -20,6 +21,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = () => {
     if (!newPassword || newPassword.length < 6) {
@@ -47,26 +49,42 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>NUEVA CONTRASEÑA</Text>
-            <TextInput
-              style={styles.input}
-              secureTextEntry
-              placeholder="Ingresa tu nueva clave"
-              placeholderTextColor="#94A3B8"
-              value={newPassword}
-              onChangeText={setNewPassword}
-            />
+            <View style={styles.inputWrap}>
+              <TextInput
+                style={styles.input}
+                secureTextEntry={!showPassword}
+                placeholder="Ingresa tu nueva clave"
+                placeholderTextColor="#94A3B8"
+                value={newPassword}
+                onChangeText={setNewPassword}
+              />
+              <TouchableOpacity
+                style={styles.eyeBtn}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} color="#64748B" /> : <Eye size={20} color="#64748B" />}
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>CONFIRMAR CONTRASEÑA</Text>
-            <TextInput
-              style={styles.input}
-              secureTextEntry
-              placeholder="Repite tu nueva clave"
-              placeholderTextColor="#94A3B8"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
+            <View style={styles.inputWrap}>
+              <TextInput
+                style={styles.input}
+                secureTextEntry={!showPassword}
+                placeholder="Repite tu nueva clave"
+                placeholderTextColor="#94A3B8"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <TouchableOpacity
+                style={styles.eyeBtn}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} color="#64748B" /> : <Eye size={20} color="#64748B" />}
+              </TouchableOpacity>
+            </View>
           </View>
 
           <TouchableOpacity style={styles.saveBtn} onPress={handleSubmit}>
@@ -131,15 +149,24 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     letterSpacing: 0.5,
   },
-  input: {
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#F8FAFC',
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 12,
+    paddingRight: 10,
+  },
+  input: {
+    flex: 1,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 14,
     color: '#0F172A',
+  },
+  eyeBtn: {
+    padding: 6,
   },
   saveBtn: {
     backgroundColor: '#2B82FB',
