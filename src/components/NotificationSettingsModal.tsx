@@ -52,7 +52,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
 
             {/* Active Payment Reminder Card */}
             <View style={styles.cardSection}>
-              <Text style={styles.sectionLabel fontBold}>RECORDATORIO AUTOMÁTICO VIGENTE</Text>
+              <Text style={styles.sectionLabel}>RECORDATORIO AUTOMÁTICO VIGENTE</Text>
               
               <View style={styles.reminderCard}>
                 <View style={styles.rowBetween}>
