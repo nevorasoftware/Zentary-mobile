@@ -210,10 +210,13 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               <View style={styles.inputWrap}>
                 <Text style={styles.inputIcon}>🔒</Text>
                 <TextInput
+                  key={showPassword ? 'pass-text-field' : 'pass-secure-field'}
                   style={styles.textInput}
                   placeholder="Contraseña"
                   placeholderTextColor="#94A3B8"
                   secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                   value={password}
                   onChangeText={setPassword}
                 />

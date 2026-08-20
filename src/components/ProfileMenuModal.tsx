@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, Image } from 'react-native';
+import NotificationSettingsModal from './NotificationSettingsModal';
 
 interface ProfileMenuModalProps {
   visible: boolean;
@@ -18,73 +19,88 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
   onClose,
   onLogout,
 }) => {
+  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
+
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
-        <View style={styles.sheetContainer}>
-          {/* Top Avatar badge matching Image 4 */}
-          <View style={styles.avatarWrapper}>
-            <Image
-              source={{
-                uri: user.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-              }}
-              style={styles.avatarImage}
-            />
-          </View>
+    <>
+      <Modal visible={visible} transparent animationType="slide">
+        <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
+          <View style={styles.sheetContainer}>
+            {/* Top Avatar badge matching Image 4 */}
+            <View style={styles.avatarWrapper}>
+              <Image
+                source={{
+                  uri: user.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+                }}
+                style={styles.avatarImage}
+              />
+            </View>
 
-          {/* Close button top right */}
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeIcon}>✕</Text>
-          </TouchableOpacity>
-
-          {/* Profile Name info */}
-          <View style={styles.profileHeader}>
-            <Text style={styles.userName}>{user.fullName}</Text>
-            <Text style={styles.userEmail}>{user.email}</Text>
-          </View>
-
-          {/* Menu Options */}
-          <View style={styles.menuOptions}>
-            <TouchableOpacity style={styles.menuItem}>
-              <View style={styles.menuLeft}>
-                <Text style={styles.menuIcon}>❓</Text>
-                <Text style={styles.menuText}>Centro de ayuda</Text>
-              </View>
-              <Text style={styles.chevron}>›</Text>
+            {/* Close button top right */}
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+              <Text style={styles.closeIcon}>✕</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItem}>
-              <View style={styles.menuLeft}>
-                <Text style={styles.menuIcon}>⚙️</Text>
-                <Text style={styles.menuText}>Configuraciones</Text>
-              </View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
+            {/* Profile Name info */}
+            <View style={styles.profileHeader}>
+              <Text style={styles.userName}>{user.fullName}</Text>
+              <Text style={styles.userEmail}>{user.email}</Text>
+            </View>
 
-            <TouchableOpacity style={styles.menuItem}>
-              <View style={styles.menuLeft}>
-                <Text style={styles.menuIcon}>🎧</Text>
-                <Text style={styles.menuText}>Soporte técnico</Text>
-              </View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
+            {/* Menu Options */}
+            <View style={styles.menuOptions}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => setIsNotifModalOpen(true)}
+              >
+                <View style={styles.menuLeft}>
+                  <Text style={styles.menuIcon}>🔔</Text>
+                  <Text style={styles.menuText}>Notificaciones y Recordatorios</Text>
+                </View>
+                <Text style={styles.chevron}>›</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItem} onPress={onLogout}>
-              <View style={styles.menuLeft}>
-                <Text style={styles.menuIcon}>🚪</Text>
-                <Text style={styles.menuText}>Cerrar sesión</Text>
-              </View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => setIsNotifModalOpen(true)}
+              >
+                <View style={styles.menuLeft}>
+                  <Text style={styles.menuIcon}>⚙️</Text>
+                  <Text style={styles.menuText}>Configuraciones</Text>
+                </View>
+                <Text style={styles.chevron}>›</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.menuItem}>
+                <View style={styles.menuLeft}>
+                  <Text style={styles.menuIcon}>🎧</Text>
+                  <Text style={styles.menuText}>Soporte técnico</Text>
+                </View>
+                <Text style={styles.chevron}>›</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.menuItem} onPress={onLogout}>
+                <View style={styles.menuLeft}>
+                  <Text style={styles.menuIcon}>🚪</Text>
+                  <Text style={styles.menuText}>Cerrar sesión</Text>
+                </View>
+                <Text style={styles.chevron}>›</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Version Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.versionText}>V 2.49.15</Text>
+            </View>
           </View>
+        </TouchableOpacity>
+      </Modal>
 
-          {/* Version Footer */}
-          <View style={styles.footer}>
-            <Text style={styles.versionText}>V 2.49.15</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    </Modal>
+      <NotificationSettingsModal
+        visible={isNotifModalOpen}
+        onClose={() => setIsNotifModalOpen(false)}
+      />
+    </>
   );
 };
 

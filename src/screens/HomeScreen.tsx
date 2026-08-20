@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { notificationService, AppNotification, NotificationConfig } from '../services/notificationService';
+import NotificationSettingsModal from '../components/NotificationSettingsModal';
 
 interface HomeScreenProps {
   onNavigateToVisitas: () => void;
@@ -8,12 +10,39 @@ interface HomeScreenProps {
   onNavigateToPagos: () => void;
 }
 
+const MOCK_PAYMENTS = [
+  {
+    id: 'pay-001',
+    concept: 'Cuota de Mantenimiento Agosto 2026',
+    amount: 85.0,
+    dueDate: '30 Ago 2026',
+    status: 'PENDING' as const,
+  },
+];
+
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToVisitas,
   onNavigateToPaquetes,
   onNavigateToPQRS,
   onNavigateToPagos,
 }) => {
+  const [pendingReminder, setPendingReminder] = useState<AppNotification | null>(null);
+  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
+  const [notifConfig, setNotifConfig] = useState<NotificationConfig | null>(null);
+
+  useEffect(() => {
+    const loadReminders = async () => {
+      const cfg = await notificationService.getConfig();
+      setNotifConfig(cfg);
+
+      const reminder = await notificationService.checkPendingPaymentReminder(MOCK_PAYMENTS);
+      if (reminder) {
+        setPendingReminder(reminder);
+      }
+    };
+    loadReminders();
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* Blue Top Welcome Card */}
@@ -23,13 +52,33 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <Text style={styles.greetingText}>¡Hola, María!</Text>
             <Text style={styles.subGreetingText}>Residencia Zentary • Apt 502</Text>
           </View>
-          <TouchableOpacity style={styles.bellBtn}>
+          <TouchableOpacity style={styles.bellBtn} onPress={() => setIsNotifModalOpen(true)}>
             <Text style={styles.bellIcon}>🔔</Text>
+            {pendingReminder && <View style={styles.redBadgeDot} />}
           </TouchableOpacity>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
+        {/* Parametrizable Payment Reminder Banner (Daily / Configured Frequency) */}
+        {pendingReminder && notifConfig?.enabled && (
+          <TouchableOpacity style={styles.reminderCard} onPress={onNavigateToPagos}>
+            <View style={styles.reminderHeader}>
+              <View style={styles.reminderBadge}>
+                <Text style={styles.reminderBadgeText}>
+                  🔔 RECORDATORIO ({notifConfig.frequency === 'DAILY' ? 'DIARIO' : 'PARAMETRIZADO'})
+                </Text>
+              </View>
+              <Text style={styles.reminderTime}>{notifConfig.reminderTime}</Text>
+            </View>
+            <Text style={styles.reminderTitle}>{pendingReminder.title}</Text>
+            <Text style={styles.reminderBody}>{pendingReminder.body}</Text>
+            <View style={styles.reminderActionRow}>
+              <Text style={styles.reminderActionText}>Pagar Cuota del Mes ($85.00) ›</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+
         {/* Quick Access Actions Grid */}
         <Text style={styles.sectionTitle}>Accesos Rápidos</Text>
         <View style={styles.actionGrid}>
@@ -71,6 +120,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <Text style={styles.announcementDate}>Publicado hoy a las 09:30 AM</Text>
         </View>
       </ScrollView>
+
+      {/* Parametrizable Notification Settings Dialog */}
+      <NotificationSettingsModal
+        visible={isNotifModalOpen}
+        onClose={async () => {
+          setIsNotifModalOpen(false);
+          const updatedCfg = await notificationService.getConfig();
+          setNotifConfig(updatedCfg);
+        }}
+      />
     </View>
   );
 };
@@ -114,15 +173,85 @@ const styles = StyleSheet.create({
   bellIcon: {
     fontSize: 20,
   },
+  redBadgeDot: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#EF4444',
+    borderWidth: 2,
+    borderColor: '#2B82FB',
+  },
   content: {
     padding: 20,
+  },
+  reminderCard: {
+    backgroundColor: '#FEF3C7',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#D97706',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+  reminderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  reminderBadge: {
+    backgroundColor: '#F59E0B',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  reminderBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  reminderTime: {
+    fontSize: 11,
+    color: '#B45309',
+    fontWeight: '600',
+  },
+  reminderTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#78350F',
+    marginBottom: 4,
+  },
+  reminderBody: {
+    fontSize: 13,
+    color: '#92400E',
+    lineHeight: 18,
+    marginBottom: 10,
+  },
+  reminderActionRow: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignSelf: 'flex-start',
+  },
+  reminderActionText: {
+    color: '#D97706',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 14,
-    marginTop: 10,
+    marginTop: 6,
   },
   actionGrid: {
     flexDirection: 'row',

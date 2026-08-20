@@ -51,8 +51,11 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <Text style={styles.label}>NUEVA CONTRASEÑA</Text>
             <View style={styles.inputWrap}>
               <TextInput
+                key={showPassword ? 'new-text-field' : 'new-secure-field'}
                 style={styles.input}
                 secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                autoCorrect={false}
                 placeholder="Ingresa tu nueva clave"
                 placeholderTextColor="#94A3B8"
                 value={newPassword}
@@ -71,8 +74,11 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <Text style={styles.label}>CONFIRMAR CONTRASEÑA</Text>
             <View style={styles.inputWrap}>
               <TextInput
+                key={showPassword ? 'conf-text-field' : 'conf-secure-field'}
                 style={styles.input}
                 secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                autoCorrect={false}
                 placeholder="Repite tu nueva clave"
                 placeholderTextColor="#94A3B8"
                 value={confirmPassword}
