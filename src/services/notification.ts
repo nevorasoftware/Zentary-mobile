@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { apiService } from './api';
 
@@ -30,12 +31,16 @@ export const registerForPushNotificationsAsync = async (): Promise<string | null
     }
 
     try {
-      const tokenData = await Notifications.getExpoPushTokenAsync();
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId || 'aef38c4b-42a6-4eb0-b8ed-7ea60eac6976';
+      const tokenData = await Notifications.getExpoPushTokenAsync({
+        projectId,
+      });
       token = tokenData.data;
       console.log('[NotificationService] Expo Push Token obtained:', token);
 
       if (token) {
-        await apiService.registerPushToken(token);
+        const res = await apiService.registerPushToken(token);
+        console.log('[NotificationService] Push token registered on backend:', res);
       }
     } catch (error) {
       console.error('[NotificationService] Error fetching Expo Push Token:', error);
@@ -50,6 +55,7 @@ export const registerForPushNotificationsAsync = async (): Promise<string | null
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#2B82FB',
+      sound: 'default',
     });
   }
 
