@@ -192,21 +192,16 @@ class DeviceService {
       }
     } catch (err: any) {
       console.log('⚠️ [SESSION RENEWAL WARN]:', err.message);
-      // If error is account disabled or invalid token/expired, clear session
-      if (
-        err.message &&
-        (err.message.includes('deshabilitado') ||
-          err.message.includes('no válida') ||
-          err.message.includes('expirado') ||
-          err.message.includes('INVALID_TOKEN'))
-      ) {
+      // Only clear session if account is explicitly disabled by administration
+      if (err.message && err.message.includes('deshabilitado')) {
         await this.clearSession();
         return { loggedIn: false };
       }
     }
 
-    // Fallback: If network is offline, keep logged in with cached user if token exists
-    if (savedUser) {
+    // Fallback: Keep logged in with cached session
+    if (savedUser && savedToken) {
+      apiService.setAuthToken(savedToken);
       return { loggedIn: true, user: savedUser };
     }
 

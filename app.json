@@ -31,8 +31,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "aef38c4b-42a6-4eb0-b8ed-7ea60eac6976"
+        "projectId": "5bcf0457-d9fb-4830-917d-908a49dcd01a"
       }
-    }
+    },
+    "owner": "jgiron"
   }
 }

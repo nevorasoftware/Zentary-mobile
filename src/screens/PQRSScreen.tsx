@@ -12,6 +12,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import { apiService, PqrsItem, PqrsDetailItem } from '../services/api';
 
@@ -20,6 +21,7 @@ export const PQRSScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [pqrsList, setPqrsList] = useState<PqrsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Create Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -35,8 +37,10 @@ export const PQRSScreen: React.FC = () => {
   const [replyText, setReplyText] = useState('');
   const [isSendingReply, setIsSendingReply] = useState(false);
 
-  const fetchPqrsList = async (query = '') => {
-    setIsLoading(true);
+  const fetchPqrsList = async (query = '', isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    else setIsLoading(true);
+
     try {
       const res = await apiService.getPqrsList(query);
       if (res.success && res.pqrsList) {
@@ -46,6 +50,7 @@ export const PQRSScreen: React.FC = () => {
       console.log('Error fetching PQRS list:', error);
     } finally {
       setIsLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -188,7 +193,16 @@ export const PQRSScreen: React.FC = () => {
       </View>
 
       {/* Main Content Area */}
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchPqrsList(searchQuery, true)}
+            colors={['#2B82FB']}
+          />
+        }
+      >
         {/* Search input */}
         <View style={styles.searchBox}>
           <Text style={styles.searchIcon}>🔍</Text>
