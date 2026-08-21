@@ -43,7 +43,7 @@ export default function App() {
             setMustChangePassword(true);
           }
           setIsLoggedIn(true);
-          registerForPushNotificationsAsync();
+          registerForPushNotificationsAsync(session.user.email);
         }
       } catch (err) {
         console.log('Error restoring session:', err);
@@ -68,7 +68,7 @@ export default function App() {
       setMustChangePassword(true);
     }
     setIsLoggedIn(true);
-    registerForPushNotificationsAsync();
+    registerForPushNotificationsAsync(user.email);
   };
 
   const handleTabChange = (tab: TabType) => {

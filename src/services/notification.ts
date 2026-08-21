@@ -14,7 +14,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export const registerForPushNotificationsAsync = async (): Promise<string | null> => {
+export const registerForPushNotificationsAsync = async (userEmail?: string): Promise<string | null> => {
   let token: string | null = null;
 
   if (Device.isDevice) {
@@ -32,7 +32,7 @@ export const registerForPushNotificationsAsync = async (): Promise<string | null
     }
 
     try {
-      const projectId = Constants.expoConfig?.extra?.eas?.projectId || Constants.easConfig?.projectId;
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId || Constants.easConfig?.projectId || '5bcf0457-d9fb-4830-917d-908a49dcd01a';
       const tokenData = await Notifications.getExpoPushTokenAsync({
         ...(projectId ? { projectId } : {}),
       });
@@ -45,6 +45,7 @@ export const registerForPushNotificationsAsync = async (): Promise<string | null
           platform: Platform.OS.toUpperCase(),
           deviceId,
           appVersion: '2.50.0',
+          email: userEmail,
         });
         console.log('[NotificationService] Push token registered on backend:', res);
       }
