@@ -3,6 +3,7 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { apiService } from './api';
+import { deviceService } from './device';
 
 // Configure foreground notification behavior
 Notifications.setNotificationHandler({
@@ -31,15 +32,20 @@ export const registerForPushNotificationsAsync = async (): Promise<string | null
     }
 
     try {
-      const projectId = Constants.expoConfig?.extra?.eas?.projectId || 'aef38c4b-42a6-4eb0-b8ed-7ea60eac6976';
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId || Constants.easConfig?.projectId;
       const tokenData = await Notifications.getExpoPushTokenAsync({
-        projectId,
+        ...(projectId ? { projectId } : {}),
       });
       token = tokenData.data;
       console.log('[NotificationService] Expo Push Token obtained:', token);
 
       if (token) {
-        const res = await apiService.registerPushToken(token);
+        const deviceId = await deviceService.getDeviceId();
+        const res = await apiService.registerPushToken(token, {
+          platform: Platform.OS.toUpperCase(),
+          deviceId,
+          appVersion: '2.50.0',
+        });
         console.log('[NotificationService] Push token registered on backend:', res);
       }
     } catch (error) {
@@ -60,4 +66,26 @@ export const registerForPushNotificationsAsync = async (): Promise<string | null
   }
 
   return token;
+};
+
+/**
+ * Listens for user interactions with push notifications (Deep Linking)
+ */
+export const setupNotificationListeners = (
+  onSelectPqrs?: (pqrsId: string) => void
+) => {
+  const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+    try {
+      const data = response.notification.request.content.data;
+      if (data && data.type === 'PQRS' && data.pqrsId && onSelectPqrs) {
+        onSelectPqrs(String(data.pqrsId));
+      }
+    } catch (e) {
+      console.error('[NotificationService] Error handling notification tap:', e);
+    }
+  });
+
+  return () => {
+    subscription.remove();
+  };
 };

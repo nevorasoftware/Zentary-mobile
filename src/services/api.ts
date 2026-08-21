@@ -183,10 +183,10 @@ class ApiService {
     return data;
   }
 
-  async registerPushToken(pushToken: string) {
+  async registerPushToken(pushToken: string, metadata?: { platform?: string; deviceId?: string; appVersion?: string }) {
     return this.request<{ success: boolean; message: string }>('/auth/push-token', {
       method: 'POST',
-      body: JSON.stringify({ pushToken }),
+      body: JSON.stringify({ pushToken, ...metadata }),
     });
   }
 

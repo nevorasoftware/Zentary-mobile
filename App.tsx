@@ -12,7 +12,7 @@ import FrequentAccessModal from './src/components/FrequentAccessModal';
 import ChangePasswordModal from './src/components/ChangePasswordModal';
 import { apiService, UserProfile } from './src/services/api';
 import { deviceService } from './src/services/device';
-import { registerForPushNotificationsAsync } from './src/services/notification';
+import { registerForPushNotificationsAsync, setupNotificationListeners } from './src/services/notification';
 
 export default function App() {
   const [isRestoringSession, setIsRestoringSession] = useState(true);
@@ -32,7 +32,7 @@ export default function App() {
     role: 'RESIDENT',
   });
 
-  // Restore and silently renew session on app launch
+  // Restore and silently renew session on app launch + Push Deep Linking
   useEffect(() => {
     const checkSavedSession = async () => {
       try {
@@ -52,6 +52,14 @@ export default function App() {
       }
     };
     checkSavedSession();
+
+    const cleanupNotificationListener = setupNotificationListeners((_pqrsId) => {
+      setCurrentTab('PQRS');
+    });
+
+    return () => {
+      cleanupNotificationListener();
+    };
   }, []);
 
   const handleLoginSuccess = (user: UserProfile, mustChangePass?: boolean) => {
