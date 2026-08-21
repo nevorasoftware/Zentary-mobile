@@ -1,33 +1,172 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  Modal,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { apiService, PqrsItem, PqrsDetailItem } from '../services/api';
 
 export const PQRSScreen: React.FC = () => {
   const [activeSegment, setActiveSegment] = useState<'Chat' | 'PQRS'>('PQRS');
   const [searchQuery, setSearchQuery] = useState('');
+  const [pqrsList, setPqrsList] = useState<PqrsItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Create Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [category, setCategory] = useState<'PETICION' | 'QUEJA' | 'RECLAMO' | 'SUGERENCIA'>('PETICION');
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleCreateSubmit = () => {
-    if (!subject || !description) return;
-    alert(`PQRS creada exitosamente: ${subject}`);
-    setSubject('');
-    setDescription('');
-    setShowCreateModal(false);
+  // Detail & Chat Modal State
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedPqrs, setSelectedPqrs] = useState<PqrsDetailItem | null>(null);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [replyText, setReplyText] = useState('');
+  const [isSendingReply, setIsSendingReply] = useState(false);
+
+  const fetchPqrsList = async (query = '') => {
+    setIsLoading(true);
+    try {
+      const res = await apiService.getPqrsList(query);
+      if (res.success && res.pqrsList) {
+        setPqrsList(res.pqrsList);
+      }
+    } catch (error: any) {
+      console.log('Error fetching PQRS list:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPqrsList(searchQuery);
+  }, [searchQuery]);
+
+  const handleCreateSubmit = async () => {
+    if (!subject.trim() || !description.trim()) {
+      Alert.alert('Campos requeridos', 'Por favor ingresa un asunto y descripción.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await apiService.createPqrs({
+        category,
+        subject: subject.trim(),
+        description: description.trim(),
+      });
+
+      if (res.success) {
+        Alert.alert('PQRS Creada', 'Tu solicitud ha sido enviada a la administración con éxito.');
+        setSubject('');
+        setDescription('');
+        setShowCreateModal(false);
+        fetchPqrsList();
+      } else {
+        Alert.alert('Error', 'No se pudo crear la solicitud.');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Ocurrió un error al guardar la PQRS.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOpenDetail = async (pqrsId: string) => {
+    setShowDetailModal(true);
+    setIsLoadingDetail(true);
+    try {
+      const res = await apiService.getPqrsDetail(pqrsId);
+      if (res.success && res.pqrs) {
+        setSelectedPqrs(res.pqrs);
+      }
+    } catch (error) {
+      console.log('Error loading PQRS detail:', error);
+    } finally {
+      setIsLoadingDetail(false);
+    }
+  };
+
+  const handleSendReply = async () => {
+    if (!selectedPqrs || !replyText.trim() || isSendingReply) return;
+
+    setIsSendingReply(true);
+    const messageContent = replyText.trim();
+    setReplyText('');
+
+    try {
+      const res = await apiService.sendPqrsMessage(selectedPqrs.id, messageContent);
+      if (res.success && res.message) {
+        setSelectedPqrs((prev) =>
+          prev
+            ? {
+                ...prev,
+                messages: [...(prev.messages || []), res.message],
+              }
+            : null
+        );
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'No se pudo enviar el mensaje.');
+    } finally {
+      setIsSendingReply(false);
+    }
+  };
+
+  const renderStatusBadge = (status: string) => {
+    switch (status) {
+      case 'OPEN':
+        return (
+          <View style={[styles.statusBadge, { backgroundColor: '#FEF3C7', borderColor: '#F59E0B' }]}>
+            <Text style={[styles.statusBadgeText, { color: '#B45309' }]}>ABIERTA</Text>
+          </View>
+        );
+      case 'IN_PROGRESS':
+        return (
+          <View style={[styles.statusBadge, { backgroundColor: '#DBEAFE', borderColor: '#3B82F6' }]}>
+            <Text style={[styles.statusBadgeText, { color: '#1E40AF' }]}>EN PROCESO</Text>
+          </View>
+        );
+      case 'RESOLVED':
+        return (
+          <View style={[styles.statusBadge, { backgroundColor: '#D1FAE5', borderColor: '#10B981' }]}>
+            <Text style={[styles.statusBadgeText, { color: '#047857' }]}>RESUELTA</Text>
+          </View>
+        );
+      case 'CLOSED':
+        return (
+          <View style={[styles.statusBadge, { backgroundColor: '#F3F4F6', borderColor: '#9CA3AF' }]}>
+            <Text style={[styles.statusBadgeText, { color: '#4B5563' }]}>CERRADA</Text>
+          </View>
+        );
+      default:
+        return (
+          <View style={[styles.statusBadge, { backgroundColor: '#EFF6FF', borderColor: '#2B82FB' }]}>
+            <Text style={[styles.statusBadgeText, { color: '#2B82FB' }]}>{status}</Text>
+          </View>
+        );
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Top Header matching Image 2 */}
+      {/* Top Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Text style={styles.backArrow}>‹</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>Comunicaciones</Text>
       </View>
 
-      {/* Segmented Control: Chat vs PQRS matching Image 2 */}
+      {/* Segmented Control */}
       <View style={styles.segmentContainer}>
         <TouchableOpacity
           style={[styles.segmentBtn, activeSegment === 'Chat' ? styles.segmentActive : styles.segmentInactive]}
@@ -48,37 +187,78 @@ export const PQRSScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Main Content Area matching Image 2 */}
+      {/* Main Content Area */}
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Search input matching Image 2 */}
+        {/* Search input */}
         <View style={styles.searchBox}>
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={styles.searchInput}
-            placeholder="Busca tus solicitudes"
+            placeholder="Busca tus solicitudes..."
             placeholderTextColor="#9CA3AF"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
         </View>
 
-        {/* Blue "+ Crear nueva PQRS" button matching Image 2 */}
+        {/* Blue "+ Crear nueva PQRS" button */}
         <TouchableOpacity style={styles.createBtn} onPress={() => setShowCreateModal(true)}>
           <Text style={styles.createBtnPlus}>+</Text>
           <Text style={styles.createBtnText}>Crear nueva PQRS</Text>
         </TouchableOpacity>
 
-        {/* Empty state matching Image 2 */}
-        <View style={styles.emptyState}>
-          <View style={styles.inboxIllustration}>
-            <Text style={styles.sadEmoji}>😟</Text>
-          </View>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#2B82FB" style={{ marginTop: 40 }} />
+        ) : pqrsList.length === 0 ? (
+          /* Empty state */
+          <View style={styles.emptyState}>
+            <View style={styles.inboxIllustration}>
+              <Text style={styles.sadEmoji}>😟</Text>
+            </View>
 
-          <Text style={styles.emptyTitle}>Nada por aqui...</Text>
-          <Text style={styles.emptySubtitle}>
-            Hmm, parece que aún no has creado ningún PQRS.
-          </Text>
-        </View>
+            <Text style={styles.emptyTitle}>Nada por aquí...</Text>
+            <Text style={styles.emptySubtitle}>
+              Hmm, parece que aún no has creado ningún PQRS o no se encontraron resultados.
+            </Text>
+          </View>
+        ) : (
+          /* PQRS Cards List */
+          <View style={styles.pqrsListContainer}>
+            {pqrsList.map((item) => {
+              const formattedDate = new Date(item.createdAt).toLocaleDateString([], {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              });
+
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.pqrsCard}
+                  onPress={() => handleOpenDetail(item.id)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.pqrsCardHeader}>
+                    <View style={styles.categoryTag}>
+                      <Text style={styles.categoryTagText}>{item.category}</Text>
+                    </View>
+                    {renderStatusBadge(item.status)}
+                  </View>
+
+                  <Text style={styles.pqrsSubject}>{item.subject}</Text>
+                  <Text style={styles.pqrsDescription} numberOfLines={2}>
+                    {item.description}
+                  </Text>
+
+                  <View style={styles.pqrsFooter}>
+                    <Text style={styles.pqrsDate}>{formattedDate}</Text>
+                    <Text style={styles.pqrsTapText}>Ver conversación ›</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
       </ScrollView>
 
       {/* Modal for Creating PQRS */}
@@ -121,19 +301,166 @@ export const PQRSScreen: React.FC = () => {
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowCreateModal(false)}>
+              <TouchableOpacity
+                style={styles.cancelBtn}
+                onPress={() => setShowCreateModal(false)}
+                disabled={isSubmitting}
+              >
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.saveBtn} onPress={handleCreateSubmit}>
-                <Text style={styles.saveBtnText}>Enviar PQRS</Text>
+              <TouchableOpacity
+                style={[styles.saveBtn, isSubmitting && { opacity: 0.6 }]}
+                onPress={handleCreateSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={styles.saveBtnText}>Enviar PQRS</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
+
+      {/* Modal for Viewing PQRS Detail & Chat */}
+      <Modal visible={showDetailModal} animationType="slide">
+        <SafeAreaViewStyleWrapper>
+          <KeyboardAvoidingView
+            style={{ flex: 1, backgroundColor: '#F8FAFC' }}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          >
+            {/* Modal Top Header */}
+            <View style={styles.detailHeader}>
+              <TouchableOpacity style={styles.closeDetailBtn} onPress={() => setShowDetailModal(false)}>
+                <Text style={styles.closeDetailText}>‹ Volver</Text>
+              </TouchableOpacity>
+              <Text style={styles.detailHeaderTitle} numberOfLines={1}>
+                {selectedPqrs?.subject || 'Detalle PQRS'}
+              </Text>
+              <View style={{ width: 60 }} />
+            </View>
+
+            {isLoadingDetail || !selectedPqrs ? (
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#2B82FB" />
+                <Text style={{ marginTop: 12, color: '#64748B' }}>Cargando conversación...</Text>
+              </View>
+            ) : (
+              <View style={{ flex: 1 }}>
+                {/* Header Summary Info */}
+                <View style={styles.detailBanner}>
+                  <View style={styles.detailBannerRow}>
+                    <View style={styles.categoryTag}>
+                      <Text style={styles.categoryTagText}>{selectedPqrs.category}</Text>
+                    </View>
+                    {renderStatusBadge(selectedPqrs.status)}
+                  </View>
+                  <Text style={styles.detailDescriptionLabel}>Detalle inicial:</Text>
+                  <Text style={styles.detailDescriptionText}>{selectedPqrs.description}</Text>
+                </View>
+
+                {/* Messages Chat List */}
+                <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 20 }}>
+                  {selectedPqrs.messages && selectedPqrs.messages.length > 0 ? (
+                    selectedPqrs.messages.map((m) => {
+                      const isStaff = m.isStaff;
+                      const senderName = m.sender?.fullName || (isStaff ? 'Administración' : 'Tú');
+                      const timeStr = new Date(m.createdAt).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      });
+
+                      return (
+                        <View
+                          key={m.id}
+                          style={[
+                            styles.chatBubbleContainer,
+                            isStaff ? styles.chatStaffAlign : styles.chatUserAlign,
+                          ]}
+                        >
+                          <View
+                            style={[
+                              styles.chatBubble,
+                              isStaff ? styles.chatStaffBubble : styles.chatUserBubble,
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                styles.chatSenderName,
+                                isStaff ? styles.chatStaffSender : styles.chatUserSender,
+                              ]}
+                            >
+                              {senderName}
+                            </Text>
+                            <Text
+                              style={[
+                                styles.chatMessageText,
+                                isStaff ? styles.chatStaffText : styles.chatUserText,
+                              ]}
+                            >
+                              {m.message}
+                            </Text>
+                            <Text
+                              style={[
+                                styles.chatTime,
+                                isStaff ? styles.chatStaffTime : styles.chatUserTime,
+                              ]}
+                            >
+                              {timeStr}
+                            </Text>
+                          </View>
+                        </View>
+                      );
+                    })
+                  ) : (
+                    <Text style={{ textAlign: 'center', color: '#94A3B8', marginVertical: 20 }}>
+                      Sin mensajes aún.
+                    </Text>
+                  )}
+                </ScrollView>
+
+                {/* Reply Input Bar */}
+                {selectedPqrs.status !== 'RESOLVED' && selectedPqrs.status !== 'CLOSED' && (
+                  <View style={styles.replyBar}>
+                    <TextInput
+                      style={styles.replyInput}
+                      placeholder="Escribe tu mensaje a la administración..."
+                      placeholderTextColor="#94A3B8"
+                      value={replyText}
+                      onChangeText={setReplyText}
+                    />
+                    <TouchableOpacity
+                      style={[
+                        styles.sendReplyBtn,
+                        (!replyText.trim() || isSendingReply) && { opacity: 0.5 },
+                      ]}
+                      onPress={handleSendReply}
+                      disabled={!replyText.trim() || isSendingReply}
+                    >
+                      {isSendingReply ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <Text style={styles.sendReplyBtnText}>Enviar</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            )}
+          </KeyboardAvoidingView>
+        </SafeAreaViewStyleWrapper>
+      </Modal>
     </View>
   );
 };
+
+const SafeAreaViewStyleWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 44 : 0, backgroundColor: '#2B82FB' }}>
+    {children}
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -148,17 +475,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     paddingTop: 10,
-  },
-  backButton: {
-    position: 'absolute',
-    left: 15,
-    top: 15,
-    padding: 5,
-  },
-  backArrow: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: '300',
   },
   headerTitle: {
     color: '#FFFFFF',
@@ -193,6 +509,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 40,
   },
   searchBox: {
     flexDirection: 'row',
@@ -220,7 +537,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingVertical: 14,
     gap: 8,
-    marginBottom: 40,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
   },
   createBtnPlus: {
     color: '#2B82FB',
@@ -231,6 +550,78 @@ const styles = StyleSheet.create({
     color: '#2B82FB',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  pqrsListContainer: {
+    gap: 12,
+  },
+  pqrsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    marginBottom: 12,
+  },
+  pqrsCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  categoryTag: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  categoryTagText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#475569',
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  statusBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  pqrsSubject: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
+  pqrsDescription: {
+    fontSize: 13,
+    color: '#64748B',
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  pqrsFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    paddingTop: 10,
+  },
+  pqrsDate: {
+    fontSize: 12,
+    color: '#94A3B8',
+  },
+  pqrsTapText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#2B82FB',
   },
   emptyState: {
     alignItems: 'center',
@@ -347,6 +738,143 @@ const styles = StyleSheet.create({
   saveBtnText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+  },
+
+  // Detail Modal Styles
+  detailHeader: {
+    height: 60,
+    backgroundColor: '#2B82FB',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  closeDetailBtn: {
+    padding: 8,
+  },
+  closeDetailText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  detailHeaderTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    maxWidth: 200,
+  },
+  detailBanner: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+  },
+  detailBannerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  detailDescriptionLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#64748B',
+    marginTop: 4,
+  },
+  detailDescriptionText: {
+    fontSize: 14,
+    color: '#1E293B',
+    lineHeight: 20,
+    marginTop: 2,
+  },
+
+  // Chat Bubbles
+  chatBubbleContainer: {
+    marginBottom: 12,
+  },
+  chatStaffAlign: {
+    alignItems: 'flex-start',
+  },
+  chatUserAlign: {
+    alignItems: 'flex-end',
+  },
+  chatBubble: {
+    maxWidth: '85%',
+    padding: 12,
+    borderRadius: 16,
+  },
+  chatStaffBubble: {
+    backgroundColor: '#E0F2FE',
+    borderBottomLeftRadius: 4,
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
+  },
+  chatUserBubble: {
+    backgroundColor: '#2B82FB',
+    borderBottomRightRadius: 4,
+  },
+  chatSenderName: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  chatStaffSender: {
+    color: '#0369A1',
+  },
+  chatUserSender: {
+    color: '#DBEAFE',
+  },
+  chatMessageText: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  chatStaffText: {
+    color: '#0C4A6E',
+  },
+  chatUserText: {
+    color: '#FFFFFF',
+  },
+  chatTime: {
+    fontSize: 10,
+    textAlign: 'right',
+    marginTop: 4,
+  },
+  chatStaffTime: {
+    color: '#38BDF8',
+  },
+  chatUserTime: {
+    color: '#BFDBFE',
+  },
+
+  // Reply Bar
+  replyBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    gap: 8,
+  },
+  replyInput: {
+    flex: 1,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: '#0F172A',
+  },
+  sendReplyBtn: {
+    backgroundColor: '#2B82FB',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+  },
+  sendReplyBtnText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });
 

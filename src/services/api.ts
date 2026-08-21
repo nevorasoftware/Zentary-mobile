@@ -61,6 +61,21 @@ export interface ParcelItem {
   receivedAt: string;
 }
 
+export interface PqrsMessageItem {
+  id: string;
+  pqrsId: string;
+  senderId: string;
+  message: string;
+  isStaff: boolean;
+  createdAt: string;
+  sender?: {
+    id: string;
+    fullName: string;
+    avatarUrl?: string;
+    role: string;
+  };
+}
+
 export interface PqrsItem {
   id: string;
   category: 'PETICION' | 'QUEJA' | 'RECLAMO' | 'SUGERENCIA';
@@ -68,6 +83,11 @@ export interface PqrsItem {
   description: string;
   status: 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
   createdAt: string;
+  messages?: PqrsMessageItem[];
+}
+
+export interface PqrsDetailItem extends PqrsItem {
+  messages: PqrsMessageItem[];
 }
 
 class ApiService {
@@ -161,6 +181,13 @@ class ApiService {
     });
     this.token = data.token;
     return data;
+  }
+
+  async registerPushToken(pushToken: string) {
+    return this.request<{ success: boolean; message: string }>('/auth/push-token', {
+      method: 'POST',
+      body: JSON.stringify({ pushToken }),
+    });
   }
 
   async getProfile() {
@@ -282,10 +309,21 @@ class ApiService {
     return this.request<{ success: boolean; pqrsList: PqrsItem[] }>(`/pqrs${query}`);
   }
 
+  async getPqrsDetail(id: string) {
+    return this.request<{ success: boolean; pqrs: PqrsDetailItem }>(`/pqrs/${id}`);
+  }
+
   async createPqrs(pqrsData: { category: string; subject: string; description: string }) {
     return this.request<{ success: boolean; pqrs: PqrsItem }>('/pqrs', {
       method: 'POST',
       body: JSON.stringify(pqrsData),
+    });
+  }
+
+  async sendPqrsMessage(id: string, message: string) {
+    return this.request<{ success: boolean; message: PqrsMessageItem }>(`/pqrs/${id}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
     });
   }
 

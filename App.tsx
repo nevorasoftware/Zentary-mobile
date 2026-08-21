@@ -12,6 +12,7 @@ import FrequentAccessModal from './src/components/FrequentAccessModal';
 import ChangePasswordModal from './src/components/ChangePasswordModal';
 import { apiService, UserProfile } from './src/services/api';
 import { deviceService } from './src/services/device';
+import { registerForPushNotificationsAsync } from './src/services/notification';
 
 export default function App() {
   const [isRestoringSession, setIsRestoringSession] = useState(true);
@@ -42,6 +43,7 @@ export default function App() {
             setMustChangePassword(true);
           }
           setIsLoggedIn(true);
+          registerForPushNotificationsAsync();
         }
       } catch (err) {
         console.log('Error restoring session:', err);
@@ -58,6 +60,7 @@ export default function App() {
       setMustChangePassword(true);
     }
     setIsLoggedIn(true);
+    registerForPushNotificationsAsync();
   };
 
   const handleTabChange = (tab: TabType) => {
