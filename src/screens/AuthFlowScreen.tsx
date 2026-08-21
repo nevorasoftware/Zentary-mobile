@@ -43,7 +43,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
       setLoading(true);
       const res = await apiService.checkEmail(email.trim());
 
-      if (res.success && res.code === 'OK') {
+      if (res.success) {
         setStep(3); // Proceed to Password Screen
       }
     } catch (err: any) {
