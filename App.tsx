@@ -20,6 +20,7 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('Visitas');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
+  const [autoOpenFastPass, setAutoOpenFastPass] = useState(false);
 
   // First Login Password Change Modal
   const [mustChangePassword, setMustChangePassword] = useState(false);
@@ -101,7 +102,14 @@ export default function App() {
       case 'Inicio':
         return (
           <HomeScreen
-            onNavigateToVisitas={() => setCurrentTab('Visitas')}
+            onNavigateToVisitas={() => {
+              setAutoOpenFastPass(false);
+              setCurrentTab('Visitas');
+            }}
+            onNavigateToFastPass={() => {
+              setAutoOpenFastPass(true);
+              setCurrentTab('Visitas');
+            }}
             onNavigateToPaquetes={() => setCurrentTab('Paquetes')}
             onNavigateToPQRS={() => setCurrentTab('PQRS')}
             onNavigateToPagos={() => setCurrentTab('Pagos')}
@@ -110,6 +118,7 @@ export default function App() {
       case 'Visitas':
         return (
           <VisitasScreen
+            autoOpenFastPass={autoOpenFastPass}
             onOpenFrequentModal={() => setIsFrequentModalOpen(true)}
           />
         );

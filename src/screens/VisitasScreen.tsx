@@ -17,21 +17,31 @@ import { apiService, VisitItem, VisitStatusType } from '../services/api';
 
 interface VisitasScreenProps {
   onOpenFrequentModal?: () => void;
+  autoOpenFastPass?: boolean;
 }
 
-export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModal }) => {
+export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModal, autoOpenFastPass }) => {
   const [activeTab, setActiveTab] = useState<'EN_CURSO' | 'HISTORIAL' | 'OTRAS'>('EN_CURSO');
   const [visits, setVisits] = useState<VisitItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  // FastPass Special Modal State ("¿Cuándo te visitan? 🏃‍♀️")
+  const [showFastPassModal, setShowFastPassModal] = useState(autoOpenFastPass || false);
+  const [fastPassDateType, setFastPassDateType] = useState<'HOY' | 'MANANA' | 'OTRO'>('HOY');
+  const [fastPassTimeSlot, setFastPassTimeSlot] = useState<'AHORA' | 'MEDIODIA' | 'TARDE' | 'NOCHE'>('AHORA');
+  const [fastPassContactName, setFastPassContactName] = useState('');
+  const [fastPassPhone, setFastPassPhone] = useState('');
+  const [fastPassNotes, setFastPassNotes] = useState('');
+  const [generatingFastPass, setGeneratingFastPass] = useState(false);
 
   // Resident Create Invitation Modal State
   const [showAddModal, setShowAddModal] = useState(false);
   const [creating, setCreating] = useState(false);
   const [visitorName, setVisitorName] = useState('');
   const [visitorPhone, setVisitorPhone] = useState('');
-  const [visitDate, setVisitDate] = useState('2026-08-15');
-  const [validFrom, setValidFrom] = useState('18:00');
+  const [visitDate, setVisitDate] = useState('2026-08-26');
+  const [validFrom, setValidFrom] = useState('09:00');
   const [notes, setNotes] = useState('');
 
   // WhatsApp Share Dialog State
@@ -80,6 +90,62 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     setActiveTab(tab);
     if (tab === 'OTRAS' && onOpenFrequentModal) {
       onOpenFrequentModal();
+    }
+  };
+
+  // FastPass Generation Handler ("¿Cuándo te visitan? 🏃‍♀️")
+  const handleCreateFastPass = async () => {
+    if (!fastPassContactName.trim()) {
+      Alert.alert('Campo requerido', 'Por favor ingresa o selecciona un contacto para la visita.');
+      return;
+    }
+
+    try {
+      setGeneratingFastPass(true);
+
+      const now = new Date();
+      if (fastPassDateType === 'MANANA') {
+        now.setDate(now.getDate() + 1);
+      }
+      const dateStr = now.toISOString().split('T')[0];
+
+      let timeStr = '09:00';
+      if (fastPassTimeSlot === 'MEDIODIA') timeStr = '12:00';
+      if (fastPassTimeSlot === 'TARDE') timeStr = '18:00';
+      if (fastPassTimeSlot === 'NOCHE') timeStr = '21:00';
+
+      const res = await apiService.createVisit({
+        visitorName: fastPassContactName.trim(),
+        visitorPhone: fastPassPhone.trim() || undefined,
+        visitDate: dateStr,
+        validFrom: timeStr,
+        notes: fastPassNotes.trim() || 'FastPass Generado Rápido',
+      });
+
+      if (res.success) {
+        setShowFastPassModal(false);
+        setFastPassContactName('');
+        setFastPassPhone('');
+
+        const waUrl = `whatsapp://send?text=${encodeURIComponent(res.whatsappMessage)}`;
+        const canOpen = await Linking.canOpenURL(waUrl);
+
+        if (canOpen) {
+          await Linking.openURL(waUrl);
+        } else {
+          setShareData({
+            publicUrl: res.publicUrl,
+            whatsappMessage: res.whatsappMessage,
+            visitorName: res.visit.visitorName,
+          });
+        }
+
+        fetchVisits();
+      }
+    } catch (err: any) {
+      Alert.alert('Error FastPass', err.message || 'No se pudo generar el FastPass.');
+    } finally {
+      setGeneratingFastPass(false);
     }
   };
 
@@ -255,9 +321,14 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       {/* Top Bar Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Visitas & Accesos</Text>
-        <TouchableOpacity style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)}>
-          <Text style={styles.guardHeaderBtnText}>📷 Validar Acceso</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)}>
+            <Text style={styles.guardHeaderBtnText}>🏃‍♀️ FastPass</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)}>
+            <Text style={styles.guardHeaderBtnText}>📷 Validar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Navigation Sub-Tabs */}
@@ -367,6 +438,109 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       <TouchableOpacity style={styles.fab} onPress={() => setShowAddModal(true)}>
         <Text style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
+
+      {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
+      <Modal visible={showFastPassModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <Text style={[styles.modalTitle, { fontSize: 20, color: '#1D4ED8' }]}>¿Cuándo te visitan? 🏃‍♀️</Text>
+              <TouchableOpacity onPress={() => setShowFastPassModal(false)}>
+                <Text style={{ fontSize: 18, color: '#64748B', fontWeight: 'bold' }}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalDesc}>Crea una invitación FastPass instantánea para enviar por WhatsApp.</Text>
+
+            {/* Date Selection */}
+            <Text style={styles.label}>1. Selecciona el Día de la Visita</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+              <TouchableOpacity
+                style={[
+                  styles.optionChip,
+                  fastPassDateType === 'HOY' && styles.optionChipActive,
+                ]}
+                onPress={() => setFastPassDateType('HOY')}
+              >
+                <Text style={[styles.optionChipText, fastPassDateType === 'HOY' && styles.optionChipTextActive]}>
+                  📅 Hoy
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.optionChip,
+                  fastPassDateType === 'MANANA' && styles.optionChipActive,
+                ]}
+                onPress={() => setFastPassDateType('MANANA')}
+              >
+                <Text style={[styles.optionChipText, fastPassDateType === 'MANANA' && styles.optionChipTextActive]}>
+                  ☀️ Mañana
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Time Slot Selection */}
+            <Text style={styles.label}>2. Selecciona la Hora Estimada</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+              {[
+                { id: 'AHORA', label: '⚡ Ahora (09:00 AM)' },
+                { id: 'MEDIODIA', label: '☀️ Mediodía (12:00 PM)' },
+                { id: 'TARDE', label: '🌆 Tarde (06:00 PM)' },
+                { id: 'NOCHE', label: '🌙 Noche (09:00 PM)' },
+              ].map((slot) => (
+                <TouchableOpacity
+                  key={slot.id}
+                  style={[
+                    styles.timeSlotChip,
+                    fastPassTimeSlot === slot.id && styles.timeSlotChipActive,
+                  ]}
+                  onPress={() => setFastPassTimeSlot(slot.id as any)}
+                >
+                  <Text style={[styles.timeSlotChipText, fastPassTimeSlot === slot.id && styles.timeSlotChipTextActive]}>
+                    {slot.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Contact / Phone Selection */}
+            <Text style={styles.label}>3. Contacto / Visitante *</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Nombre del visitante (Ej. Miguel Rodríguez)"
+              value={fastPassContactName}
+              onChangeText={setFastPassContactName}
+            />
+
+            <Text style={styles.label}>Número de WhatsApp (Opcional)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ej. 7000-0000"
+              keyboardType="phone-pad"
+              value={fastPassPhone}
+              onChangeText={setFastPassPhone}
+            />
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowFastPassModal(false)}>
+                <Text style={styles.cancelBtnText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.saveBtn, { backgroundColor: '#25D366' }]}
+                onPress={handleCreateFastPass}
+                disabled={generatingFastPass}
+              >
+                {generatingFastPass ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <Text style={styles.saveBtnText}>📲 Enviar FastPass por WhatsApp</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* MODAL 1: Create Invitation (Resident) */}
       <Modal visible={showAddModal} transparent animationType="slide">
@@ -674,6 +848,14 @@ const styles = StyleSheet.create({
   waBtnText: { color: '#FFFFFF', fontWeight: 'bold' },
   copyBtn: { backgroundColor: '#E2E8F0', paddingVertical: 12, borderRadius: 12, alignItems: 'center' },
   copyBtnText: { color: '#334155', fontWeight: 'bold' },
+  optionChip: { flex: 1, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: '#CBD5E1', backgroundColor: '#F8FAFC', alignItems: 'center' },
+  optionChipActive: { borderColor: '#2563EB', backgroundColor: '#EFF6FF' },
+  optionChipText: { fontSize: 13, fontWeight: '600', color: '#64748B' },
+  optionChipTextActive: { color: '#1D4ED8', fontWeight: 'bold' },
+  timeSlotChip: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: '#E2E8F0', backgroundColor: '#F8FAFC' },
+  timeSlotChipActive: { borderColor: '#2563EB', backgroundColor: '#EFF6FF' },
+  timeSlotChipText: { fontSize: 12, fontWeight: '600', color: '#475569' },
+  timeSlotChipTextActive: { color: '#1D4ED8', fontWeight: 'bold' },
   errorBanner: { backgroundColor: '#FEE2E2', padding: 14, borderRadius: 12 },
   errorBannerTitle: { color: '#DC2626', fontWeight: 'bold', fontSize: 14 },
   errorBannerDesc: { color: '#991B1B', fontSize: 12, marginTop: 2 },

@@ -5,6 +5,7 @@ import NotificationSettingsModal from '../components/NotificationSettingsModal';
 
 interface HomeScreenProps {
   onNavigateToVisitas: () => void;
+  onNavigateToFastPass?: () => void;
   onNavigateToPaquetes: () => void;
   onNavigateToPQRS: () => void;
   onNavigateToPagos: () => void;
@@ -22,6 +23,7 @@ const MOCK_PAYMENTS = [
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToVisitas,
+  onNavigateToFastPass,
   onNavigateToPaquetes,
   onNavigateToPQRS,
   onNavigateToPagos,
@@ -82,6 +84,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Quick Access Actions Grid */}
         <Text style={styles.sectionTitle}>Accesos Rápidos</Text>
         <View style={styles.actionGrid}>
+          <TouchableOpacity
+            style={[styles.actionCard, { backgroundColor: '#EFF6FF', borderColor: '#2563EB', borderWidth: 1.5 }]}
+            onPress={onNavigateToFastPass || onNavigateToVisitas}
+          >
+            <Text style={styles.actionEmoji}>🏃‍♀️</Text>
+            <Text style={[styles.actionTitle, { color: '#1D4ED8' }]}>Fast Pass</Text>
+            <Text style={styles.actionSubtitle}>Invitación rápida QR</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.actionCard} onPress={onNavigateToVisitas}>
             <Text style={styles.actionEmoji}>👥</Text>
             <Text style={styles.actionTitle}>Visitas</Text>
