@@ -332,6 +332,35 @@ class ApiService {
     return this.request<{ success: boolean; payments: any[] }>('/payments');
   }
 
+  async createWompi3DsPayment(data: {
+    paymentId: string;
+    numeroTarjeta: string;
+    cvv: string;
+    mesVencimiento: number;
+    anioVencimiento: number;
+    nombre: string;
+    apellido: string;
+    email: string;
+    ciudad?: string;
+    direccion?: string;
+    idPais?: string;
+    idRegion?: string;
+    codigoPostal?: string;
+    telefono?: string;
+  }) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      idTransaccion: string;
+      urlCompletarPago3Ds: string;
+      monto: number;
+      esReal?: boolean;
+    }>('/payments/wompi/create-3ds', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   async processPayment(paymentId: string, paymentMethod: string, paymentToken?: string) {
     return this.request<{ success: boolean; payment: any }>('/payments/process', {
       method: 'POST',
@@ -341,3 +370,4 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
+
