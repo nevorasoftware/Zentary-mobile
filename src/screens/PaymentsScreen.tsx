@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  AppState,
 } from 'react-native';
 import { apiService } from '../services/api';
 
@@ -89,7 +90,24 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
 
   useEffect(() => {
     fetchPayments();
+
+    // Re-consultar estado de pagos al regresar la app a primer plano
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        fetchPayments();
+      }
+    });
+
+    const urlListener = Linking.addEventListener('url', () => {
+      fetchPayments();
+    });
+
+    return () => {
+      subscription.remove();
+      urlListener.remove();
+    };
   }, []);
+
 
   const handlePayNow = (item: PaymentItem) => {
     setSelectedPayment(item);
