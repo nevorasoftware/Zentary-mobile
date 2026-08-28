@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { notificationService, AppNotification, NotificationConfig } from '../services/notificationService';
 import NotificationSettingsModal from '../components/NotificationSettingsModal';
 
@@ -47,13 +47,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Blue Top Welcome Card */}
+      {/* Brand Header */}
       <View style={styles.header}>
         <View style={styles.welcomeRow}>
-          <View>
-            <Text style={styles.greetingText}>¡Hola, María!</Text>
-            <Text style={styles.subGreetingText}>Residencia Zentary • Apt 502</Text>
+          <View style={styles.userSection}>
+            <Image
+              source={require('../../assets/logo.png')}
+              style={styles.logoImage}
+            />
+            <View>
+              <Text style={styles.greetingText}>¡Hola, María! 👋</Text>
+              <Text style={styles.subGreetingText}>Residencial Zentary • Apt 502</Text>
+            </View>
           </View>
+
           <TouchableOpacity style={styles.bellBtn} onPress={() => setIsNotifModalOpen(true)}>
             <Text style={styles.bellIcon}>🔔</Text>
             {pendingReminder && <View style={styles.redBadgeDot} />}
@@ -61,14 +68,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Parametrizable Payment Reminder Banner (Daily / Configured Frequency) */}
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Recordatorio de Pago con Estilo Duolingo Badges */}
         {pendingReminder && notifConfig?.enabled && (
-          <TouchableOpacity style={styles.reminderCard} onPress={onNavigateToPagos}>
+          <TouchableOpacity style={styles.reminderCard} onPress={onNavigateToPagos} activeOpacity={0.85}>
             <View style={styles.reminderHeader}>
               <View style={styles.reminderBadge}>
                 <Text style={styles.reminderBadgeText}>
-                  🔔 RECORDATORIO ({notifConfig.frequency === 'DAILY' ? 'DIARIO' : 'PARAMETRIZADO'})
+                  ⚡ RECORDATORIO ({notifConfig.frequency === 'DAILY' ? 'DIARIO' : 'PARAMETRIZADO'})
                 </Text>
               </View>
               <Text style={styles.reminderTime}>{notifConfig.reminderTime}</Text>
@@ -81,48 +88,75 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </TouchableOpacity>
         )}
 
-        {/* Quick Access Actions Grid */}
-        <Text style={styles.sectionTitle}>Accesos Rápidos</Text>
+        {/* Action Grid (Iconografía Duolingo 3D + Colores Oficiales) */}
+        <View style={styles.sectionHeaderRow}>
+          <Text style={styles.sectionTitle}>Accesos Rápidos</Text>
+          <View style={styles.proBadge}>
+            <Text style={styles.proBadgeText}>ZENTARY PASS</Text>
+          </View>
+        </View>
+
         <View style={styles.actionGrid}>
+          {/* Fast Pass Highlight */}
           <TouchableOpacity
-            style={[styles.actionCard, { backgroundColor: '#EFF6FF', borderColor: '#2563EB', borderWidth: 1.5 }]}
+            style={[styles.actionCard, styles.fastPassCard]}
             onPress={onNavigateToFastPass || onNavigateToVisitas}
+            activeOpacity={0.85}
           >
-            <Text style={styles.actionEmoji}>🏃‍♀️</Text>
-            <Text style={[styles.actionTitle, { color: '#1D4ED8' }]}>Fast Pass</Text>
+            <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
+              <Text style={styles.actionEmoji}>🏃‍♀️</Text>
+            </View>
+            <Text style={[styles.actionTitle, { color: '#FFCF36' }]}>Fast Pass</Text>
             <Text style={styles.actionSubtitle}>Invitación rápida QR</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToVisitas}>
-            <Text style={styles.actionEmoji}>👥</Text>
+          {/* Visitas */}
+          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToVisitas} activeOpacity={0.85}>
+            <View style={[styles.emojiBadge, { backgroundColor: '#1877F2', borderColor: '#0B3C91' }]}>
+              <Text style={styles.actionEmoji}>👥</Text>
+            </View>
             <Text style={styles.actionTitle}>Visitas</Text>
             <Text style={styles.actionSubtitle}>Crear pase QR</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToPaquetes}>
-            <Text style={styles.actionEmoji}>📦</Text>
+          {/* Paquetes */}
+          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToPaquetes} activeOpacity={0.85}>
+            <View style={[styles.emojiBadge, { backgroundColor: '#6203FF', borderColor: '#2A0A73' }]}>
+              <Text style={styles.actionEmoji}>📦</Text>
+            </View>
             <Text style={styles.actionTitle}>Paquetes</Text>
             <Text style={styles.actionSubtitle}>Ver entregas</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToPQRS}>
-            <Text style={styles.actionEmoji}>📬</Text>
+          {/* PQRS */}
+          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToPQRS} activeOpacity={0.85}>
+            <View style={[styles.emojiBadge, { backgroundColor: '#1877F2', borderColor: '#0B3C91' }]}>
+              <Text style={styles.actionEmoji}>📬</Text>
+            </View>
             <Text style={styles.actionTitle}>PQRS</Text>
             <Text style={styles.actionSubtitle}>Reportes y Soporte</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToPagos}>
-            <Text style={styles.actionEmoji}>💳</Text>
-            <Text style={styles.actionTitle}>Pagos</Text>
-            <Text style={styles.actionSubtitle}>Mantenimiento</Text>
+          {/* Pagos Wompi */}
+          <TouchableOpacity style={[styles.actionCard, styles.fullWidthCard]} onPress={onNavigateToPagos} activeOpacity={0.85}>
+            <View style={styles.fullWidthContent}>
+              <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
+                <Text style={styles.actionEmoji}>💳</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.actionTitle}>Pagos y Mantenimiento Wompi 3DS</Text>
+                <Text style={styles.actionSubtitle}>Paga tu cuota de forma 100% segura online</Text>
+              </View>
+              <Text style={styles.chevronIcon}>›</Text>
+            </View>
           </TouchableOpacity>
         </View>
 
-        {/* Community Announcements Card */}
+        {/* Anuncios Residenciales */}
         <Text style={styles.sectionTitle}>Anuncios Residenciales</Text>
         <View style={styles.announcementCard}>
           <View style={styles.announcementTag}>
-            <Text style={styles.announcementTagText}>MANTENIMIENTO</Text>
+            <Text style={styles.announcementTagText}>📢 MANTENIMIENTO</Text>
           </View>
           <Text style={styles.announcementTitle}>Mantenimiento de Piscina Principal</Text>
           <Text style={styles.announcementBody}>
@@ -132,7 +166,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </View>
       </ScrollView>
 
-      {/* Parametrizable Notification Settings Dialog */}
+      {/* Dialogo de Notificaciones */}
       <NotificationSettingsModal
         visible={isNotifModalOpen}
         onClose={async () => {
@@ -148,36 +182,53 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#0A0F1F',
   },
   header: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#2A0A73',
     paddingHorizontal: 20,
-    paddingTop: 30,
-    paddingBottom: 25,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
+    paddingTop: 36,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+    borderBottomWidth: 3,
+    borderBottomColor: '#6203FF',
   },
   welcomeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  userSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  logoImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#FFCF36',
+  },
   greetingText: {
     color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '900',
   },
   subGreetingText: {
-    color: '#DBEAFE',
-    fontSize: 14,
-    marginTop: 4,
+    color: '#FFCF36',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 2,
   },
   bellBtn: {
     width: 44,
     height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 16,
+    backgroundColor: 'rgba(24, 119, 242, 0.25)',
+    borderWidth: 1.5,
+    borderColor: '#1877F2',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -186,30 +237,27 @@ const styles = StyleSheet.create({
   },
   redBadgeDot: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: 6,
+    right: 6,
     width: 10,
     height: 10,
     borderRadius: 5,
     backgroundColor: '#EF4444',
     borderWidth: 2,
-    borderColor: '#2B82FB',
+    borderColor: '#0A0F1F',
   },
   content: {
     padding: 20,
   },
   reminderCard: {
-    backgroundColor: '#FEF3C7',
-    borderRadius: 18,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#FDE68A',
-    marginBottom: 20,
-    elevation: 3,
-    shadowColor: '#D97706',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    backgroundColor: '#1E1240',
+    borderRadius: 22,
+    padding: 18,
+    borderWidth: 2,
+    borderColor: '#6203FF',
+    borderBottomWidth: 5,
+    borderBottomColor: '#2A0A73',
+    marginBottom: 22,
   },
   reminderHeader: {
     flexDirection: 'row',
@@ -218,123 +266,174 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reminderBadge: {
-    backgroundColor: '#F59E0B',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
+    backgroundColor: '#FFCF36',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   reminderBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '800',
+    color: '#0A0F1F',
+    fontSize: 11,
+    fontWeight: '900',
   },
   reminderTime: {
     fontSize: 11,
-    color: '#B45309',
-    fontWeight: '600',
+    color: '#FFCF36',
+    fontWeight: '700',
   },
   reminderTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#78350F',
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   reminderBody: {
     fontSize: 13,
-    color: '#92400E',
+    color: '#CBD5E1',
     lineHeight: 18,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   reminderActionRow: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    backgroundColor: '#1877F2',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     alignSelf: 'flex-start',
+    borderBottomWidth: 3,
+    borderBottomColor: '#0B3C91',
   },
   reminderActionText: {
-    color: '#D97706',
-    fontSize: 12,
-    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 14,
+    marginTop: 6,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 14,
-    marginTop: 6,
+    fontWeight: '900',
+    color: '#FFFFFF',
+  },
+  proBadge: {
+    backgroundColor: 'rgba(255, 207, 54, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FFCF36',
+  },
+  proBadgeText: {
+    color: '#FFCF36',
+    fontSize: 10,
+    fontWeight: '900',
   },
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 14,
-    marginBottom: 20,
+    gap: 12,
+    marginBottom: 24,
   },
   actionCard: {
-    width: '47%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    width: '48%',
+    backgroundColor: '#141A2E',
+    borderRadius: 22,
     padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: 'rgba(98, 3, 255, 0.25)',
+    borderBottomWidth: 5,
+    borderBottomColor: '#2A0A73',
+  },
+  fastPassCard: {
+    backgroundColor: '#1E1240',
+    borderColor: '#FFCF36',
+    borderBottomColor: '#6203FF',
+  },
+  fullWidthCard: {
+    width: '100%',
+    backgroundColor: '#141A2E',
+    borderColor: '#1877F2',
+    borderBottomColor: '#0B3C91',
+  },
+  fullWidthContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  emojiBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 2,
   },
   actionEmoji: {
-    fontSize: 28,
-    marginBottom: 10,
+    fontSize: 24,
   },
   actionTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1F2937',
+    fontWeight: '900',
+    color: '#FFFFFF',
   },
   actionSubtitle: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#94A3B8',
     marginTop: 2,
   },
+  chevronIcon: {
+    fontSize: 24,
+    color: '#FFCF36',
+    fontWeight: '900',
+  },
   announcementCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    backgroundColor: '#141A2E',
+    borderRadius: 22,
     padding: 18,
-    borderLeftWidth: 4,
-    borderLeftColor: '#2B82FB',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#6203FF',
+    borderLeftWidth: 6,
+    borderLeftColor: '#1877F2',
+    borderBottomWidth: 4,
+    borderBottomColor: '#2A0A73',
+    marginBottom: 30,
   },
   announcementTag: {
-    backgroundColor: '#EFF6FF',
+    backgroundColor: 'rgba(24, 119, 242, 0.2)',
     alignSelf: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 6,
+    borderRadius: 8,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#1877F2',
   },
   announcementTagText: {
-    color: '#2B82FB',
+    color: '#1877F2',
     fontSize: 11,
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
   announcementTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1F2937',
+    fontWeight: '900',
+    color: '#FFFFFF',
     marginBottom: 6,
   },
   announcementBody: {
     fontSize: 13,
-    color: '#4B5563',
+    color: '#CBD5E1',
     lineHeight: 18,
     marginBottom: 12,
   },
   announcementDate: {
     fontSize: 11,
-    color: '#9CA3AF',
+    color: '#64748B',
+    fontWeight: '600',
   },
 });
 
