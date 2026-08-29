@@ -6,6 +6,7 @@ import PQRSScreen from './src/screens/PQRSScreen';
 import PaquetesScreen from './src/screens/PaquetesScreen';
 import PaymentsScreen from './src/screens/PaymentsScreen';
 import AmenidadesScreen from './src/screens/AmenidadesScreen';
+import DeliveryScreen from './src/screens/DeliveryScreen';
 import AuthFlowScreen from './src/screens/AuthFlowScreen';
 import BottomNavBar, { TabType } from './src/components/BottomNavBar';
 import ProfileMenuModal from './src/components/ProfileMenuModal';
@@ -24,6 +25,7 @@ export default function App() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
   const [autoOpenFastPass, setAutoOpenFastPass] = useState(false);
+  const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
 
   // First Login Password Change Modal
   const [mustChangePassword, setMustChangePassword] = useState(false);
@@ -99,6 +101,7 @@ export default function App() {
   };
 
   const handleTabChange = (tab: TabType) => {
+    setIsDeliveryOpen(false);
     setCurrentTab(tab);
   };
 
@@ -130,6 +133,10 @@ export default function App() {
   }
 
   const renderCurrentScreen = () => {
+    if (isDeliveryOpen) {
+      return <DeliveryScreen onBack={() => setIsDeliveryOpen(false)} />;
+    }
+
     switch (currentTab) {
       case 'Inicio':
         return (
@@ -146,6 +153,7 @@ export default function App() {
             onNavigateToPQRS={() => setCurrentTab('PQRS')}
             onNavigateToPagos={() => setCurrentTab('Pagos')}
             onNavigateToAmenidades={() => setCurrentTab('Amenidades')}
+            onNavigateToDelivery={() => setIsDeliveryOpen(true)}
           />
         );
       case 'Visitas':
@@ -178,6 +186,7 @@ export default function App() {
             onNavigateToPQRS={() => setCurrentTab('PQRS')}
             onNavigateToPagos={() => setCurrentTab('Pagos')}
             onNavigateToAmenidades={() => setCurrentTab('Amenidades')}
+            onNavigateToDelivery={() => setIsDeliveryOpen(true)}
           />
         );
     }

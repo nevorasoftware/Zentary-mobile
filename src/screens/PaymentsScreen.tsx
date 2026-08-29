@@ -274,6 +274,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Ej. Juan Carlos"
+                  placeholderTextColor="#94A3B8"
                   value={cardHolderFirstName}
                   onChangeText={setCardHolderFirstName}
                 />
@@ -284,6 +285,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Ej. Pérez Gómez"
+                  placeholderTextColor="#94A3B8"
                   value={cardHolderLastName}
                   onChangeText={setCardHolderLastName}
                 />
@@ -294,6 +296,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="4000 1234 5678 9010"
+                  placeholderTextColor="#94A3B8"
                   keyboardType="numeric"
                   maxLength={19}
                   value={cardNumber}
@@ -307,6 +310,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                   <TextInput
                     style={styles.input}
                     placeholder="08"
+                    placeholderTextColor="#94A3B8"
                     keyboardType="numeric"
                     maxLength={2}
                     value={expMonth}
@@ -319,6 +323,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                   <TextInput
                     style={styles.input}
                     placeholder="28"
+                    placeholderTextColor="#94A3B8"
                     keyboardType="numeric"
                     maxLength={4}
                     value={expYear}
@@ -331,6 +336,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                   <TextInput
                     style={styles.input}
                     placeholder="123"
+                    placeholderTextColor="#94A3B8"
                     keyboardType="numeric"
                     secureTextEntry
                     maxLength={4}
@@ -345,6 +351,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="correo@ejemplo.com"
+                  placeholderTextColor="#94A3B8"
                   keyboardType="email-address"
                   autoCapitalize="none"
                   value={email}
@@ -357,6 +364,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Ej. 78901234"
+                  placeholderTextColor="#94A3B8"
                   keyboardType="phone-pad"
                   value={phone}
                   onChangeText={setPhone}
@@ -601,15 +609,15 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   input: {
-    backgroundColor: '#0A0F1F',
+    backgroundColor: '#1E293B',
     borderWidth: 1.5,
-    borderColor: '#2A0A73',
+    borderColor: '#3B82F6',
     borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     fontSize: 14,
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontWeight: '700',
   },
   modalActions: {
     flexDirection: 'row',
