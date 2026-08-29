@@ -2,7 +2,7 @@
   "expo": {
     "name": "Zentary",
     "slug": "zentary-app",
-    "version": "2.52.0",
+    "version": "2.53.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -20,7 +20,7 @@
     },
     "android": {
       "package": "com.zentary.app",
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0F1F",

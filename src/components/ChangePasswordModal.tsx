@@ -65,7 +65,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 style={styles.eyeBtn}
                 onPress={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (EyeOff as any)({ size: 20, color: "#64748B" }) : (Eye as any)({ size: 20, color: "#64748B" })}
+                {/* @ts-ignore */}
+                {showPassword ? <EyeOff size={20} color="#64748B" /> : <Eye size={20} color="#64748B" />}
               </TouchableOpacity>
             </View>
           </View>
@@ -88,7 +89,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 style={styles.eyeBtn}
                 onPress={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (EyeOff as any)({ size: 20, color: "#64748B" }) : (Eye as any)({ size: 20, color: "#64748B" })}
+                {/* @ts-ignore */}
+                {showPassword ? <EyeOff size={20} color="#64748B" /> : <Eye size={20} color="#64748B" />}
               </TouchableOpacity>
             </View>
           </View>

@@ -92,7 +92,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 
             {/* Version Footer */}
             <View style={styles.footer}>
-              <Text style={styles.versionText}>V 2.52.0</Text>
+              <Text style={styles.versionText}>V 2.53.0</Text>
             </View>
           </View>
         </TouchableOpacity>
