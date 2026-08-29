@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-export type TabType = 'Inicio' | 'Visitas' | 'PQRS' | 'Paquetes' | 'Pagos' | 'Menú';
+export type TabType = 'Inicio' | 'Visitas' | 'Amenidades' | 'PQRS' | 'Paquetes' | 'Pagos' | 'Menú';
 
 interface BottomNavBarProps {
   currentTab: TabType;
@@ -17,6 +17,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   const tabs: { id: TabType; label: string; icon: string }[] = [
     { id: 'Inicio', label: 'Inicio', icon: '🏠' },
     { id: 'Visitas', label: 'Visitas', icon: '⚡' },
+    { id: 'Amenidades', label: 'Amenidades', icon: '🏰' },
     { id: 'PQRS', label: 'PQRS', icon: '💬' },
     { id: 'Menú', label: 'Menú', icon: '👑' },
   ];

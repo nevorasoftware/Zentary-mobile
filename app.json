@@ -2,9 +2,9 @@
   "expo": {
     "name": "Zentary",
     "slug": "zentary-app",
-    "version": "2.50.0",
+    "version": "2.51.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/logo.png",
@@ -20,10 +20,11 @@
     },
     "android": {
       "package": "com.zentary.app",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
-        "backgroundColor": "#0A0F1F"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0F1F",
+        "monochromeImage": "./assets/adaptive-icon.png"
       }
     },
     "web": {

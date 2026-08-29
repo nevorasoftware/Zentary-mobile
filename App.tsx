@@ -5,6 +5,7 @@ import VisitasScreen from './src/screens/VisitasScreen';
 import PQRSScreen from './src/screens/PQRSScreen';
 import PaquetesScreen from './src/screens/PaquetesScreen';
 import PaymentsScreen from './src/screens/PaymentsScreen';
+import AmenidadesScreen from './src/screens/AmenidadesScreen';
 import AuthFlowScreen from './src/screens/AuthFlowScreen';
 import BottomNavBar, { TabType } from './src/components/BottomNavBar';
 import ProfileMenuModal from './src/components/ProfileMenuModal';
@@ -144,6 +145,7 @@ export default function App() {
             onNavigateToPaquetes={() => setCurrentTab('Paquetes')}
             onNavigateToPQRS={() => setCurrentTab('PQRS')}
             onNavigateToPagos={() => setCurrentTab('Pagos')}
+            onNavigateToAmenidades={() => setCurrentTab('Amenidades')}
           />
         );
       case 'Visitas':
@@ -153,6 +155,8 @@ export default function App() {
             onOpenFrequentModal={() => setIsFrequentModalOpen(true)}
           />
         );
+      case 'Amenidades':
+        return <AmenidadesScreen />;
       case 'PQRS':
         return <PQRSScreen />;
       case 'Paquetes':
@@ -173,6 +177,7 @@ export default function App() {
             onNavigateToPaquetes={() => setCurrentTab('Paquetes')}
             onNavigateToPQRS={() => setCurrentTab('PQRS')}
             onNavigateToPagos={() => setCurrentTab('Pagos')}
+            onNavigateToAmenidades={() => setCurrentTab('Amenidades')}
           />
         );
     }

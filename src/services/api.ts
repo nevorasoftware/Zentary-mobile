@@ -367,6 +367,61 @@ class ApiService {
       body: JSON.stringify({ paymentId, paymentMethod, paymentGatewayToken: paymentToken }),
     });
   }
+
+  // Amenities API
+  async getResidentAmenities() {
+    return this.request<{ success: boolean; amenities: any[] }>('/amenities');
+  }
+
+  async getAmenityAvailability(id: string, date: string) {
+    return this.request<{
+      success: boolean;
+      amenity: any;
+      bookedSlots: { id: string; startTime: string; endTime: string; reservationStatus: string }[];
+    }>(`/amenities/${id}/availability?date=${date}`);
+  }
+
+  async createReservation(data: {
+    amenityId: string;
+    reservationDate: string;
+    startTime: string;
+    endTime: string;
+    notes?: string;
+  }) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      requirePayment: boolean;
+      reservation: any;
+    }>('/amenities/reserve', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async createReservationWompiPayment(
+    reservationId: string,
+    data: {
+      numeroTarjeta: string;
+      cvv: string;
+      mesVencimiento: number;
+      anioVencimiento: number;
+      nombre: string;
+      apellido: string;
+      email: string;
+      telefono?: string;
+    }
+  ) {
+    return this.request<{
+      success: boolean;
+      message: string;
+      idTransaccion: string;
+      urlCompletarPago3Ds: string;
+    }>(`/amenities/reserve/${reservationId}/wompi-3ds`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
 }
 
 export const apiService = new ApiService();

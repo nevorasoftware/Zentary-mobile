@@ -9,6 +9,7 @@ interface HomeScreenProps {
   onNavigateToPaquetes: () => void;
   onNavigateToPQRS: () => void;
   onNavigateToPagos: () => void;
+  onNavigateToAmenidades?: () => void;
 }
 
 const MOCK_PAYMENTS = [
@@ -27,6 +28,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToPaquetes,
   onNavigateToPQRS,
   onNavigateToPagos,
+  onNavigateToAmenidades,
 }) => {
   const [pendingReminder, setPendingReminder] = useState<AppNotification | null>(null);
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
@@ -117,6 +119,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </View>
             <Text style={styles.actionTitle}>Visitas</Text>
             <Text style={styles.actionSubtitle}>Crear pase QR</Text>
+          </TouchableOpacity>
+
+          {/* Amenidades */}
+          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToAmenidades} activeOpacity={0.85}>
+            <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
+              <Text style={styles.actionEmoji}>🏰</Text>
+            </View>
+            <Text style={styles.actionTitle}>Amenidades</Text>
+            <Text style={styles.actionSubtitle}>Reservar áreas</Text>
           </TouchableOpacity>
 
           {/* Paquetes */}
