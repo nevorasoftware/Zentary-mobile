@@ -13,6 +13,7 @@ import {
   Linking,
 } from 'react-native';
 
+// @ts-ignore
 import * as WebBrowser from 'expo-web-browser';
 import { apiService } from '../services/api';
 

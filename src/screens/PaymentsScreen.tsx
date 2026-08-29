@@ -92,7 +92,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
     fetchPayments();
 
     // Re-consultar estado de pagos al regresar la app a primer plano
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
+    const subscription = AppState.addEventListener('change', (nextAppState: any) => {
       if (nextAppState === 'active') {
         fetchPayments();
       }

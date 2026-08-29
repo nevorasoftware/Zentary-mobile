@@ -187,9 +187,9 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
                   {showPassword ? (
-                    <EyeOff size={22} color="#FFCF36" />
+                    (EyeOff as any)({ size: 22, color: "#FFCF36" })
                   ) : (
-                    <Eye size={22} color="#94A3B8" />
+                    (Eye as any)({ size: 22, color: "#94A3B8" })
                   )}
                 </TouchableOpacity>
               </View>

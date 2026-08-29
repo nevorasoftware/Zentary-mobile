@@ -7,6 +7,8 @@ interface ProfileMenuModalProps {
   user: {
     fullName: string;
     email: string;
+    communityName?: string;
+    unitNumber?: string;
     avatarUrl?: string;
   };
   onClose: () => void;
@@ -90,7 +92,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 
             {/* Version Footer */}
             <View style={styles.footer}>
-              <Text style={styles.versionText}>V 2.49.15</Text>
+              <Text style={styles.versionText}>V 2.52.0</Text>
             </View>
           </View>
         </TouchableOpacity>
