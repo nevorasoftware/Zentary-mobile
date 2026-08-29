@@ -4,12 +4,12 @@
     "slug": "zentary-app",
     "version": "2.50.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2B82FB"
+      "backgroundColor": "#0A0F1F"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,10 +20,10 @@
     },
     "android": {
       "package": "com.zentary.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#2B82FB"
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#0A0F1F"
       }
     },
     "web": {

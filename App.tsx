@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, SafeAreaView, StatusBar, ActivityIndicator, Text } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, SafeAreaView, StatusBar, ActivityIndicator, Text, Image, Animated } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import VisitasScreen from './src/screens/VisitasScreen';
 import PQRSScreen from './src/screens/PQRSScreen';
@@ -17,13 +17,19 @@ import { registerForPushNotificationsAsync, setupNotificationListeners } from '.
 export default function App() {
   const [isRestoringSession, setIsRestoringSession] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentTab, setCurrentTab] = useState<TabType>('Visitas');
+
+  // Requirement 3: Start default screen at 'Inicio' instead of 'Visitas'
+  const [currentTab, setCurrentTab] = useState<TabType>('Inicio');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
   const [autoOpenFastPass, setAutoOpenFastPass] = useState(false);
 
   // First Login Password Change Modal
   const [mustChangePassword, setMustChangePassword] = useState(false);
+
+  // Animation values for building splash screen
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(0.7)).current;
 
   // User state
   const [currentUser, setCurrentUser] = useState<UserProfile>({
@@ -32,6 +38,40 @@ export default function App() {
     fullName: '',
     role: 'RESIDENT',
   });
+
+  // Building Pulse Animation effect during splash loading
+  useEffect(() => {
+    const animationLoop = Animated.loop(
+      Animated.sequence([
+        Animated.parallel([
+          Animated.timing(pulseAnim, {
+            toValue: 1.1,
+            duration: 800,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacityAnim, {
+            toValue: 1,
+            duration: 800,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 800,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacityAnim, {
+            toValue: 0.7,
+            duration: 800,
+            useNativeDriver: true,
+          }),
+        ]),
+      ])
+    );
+    animationLoop.start();
+    return () => animationLoop.stop();
+  }, [pulseAnim, opacityAnim]);
 
   // Restore and silently renew session on app launch + Push Deep Linking
   useEffect(() => {
@@ -69,6 +109,7 @@ export default function App() {
       setMustChangePassword(true);
     }
     setIsLoggedIn(true);
+    setCurrentTab('Inicio');
     registerForPushNotificationsAsync(user.email);
   };
 
@@ -76,13 +117,32 @@ export default function App() {
     setCurrentTab(tab);
   };
 
-  // Splash Loading Indicator while restoring session
+  // Requirement 2: Splash Loading Screen with Zentary logo and animated building skyline
   if (isRestoringSession) {
     return (
       <View style={styles.splashContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#2B82FB" />
-        <Text style={styles.splashLogoText}>Zentary</Text>
-        <ActivityIndicator size="large" color="#FFFFFF" style={{ marginTop: 24 }} />
+        <StatusBar barStyle="light-content" backgroundColor="#0A0F1F" />
+        <Animated.View
+          style={[
+            styles.splashLogoWrapper,
+            {
+              transform: [{ scale: pulseAnim }],
+              opacity: opacityAnim,
+            },
+          ]}
+        >
+          <Image source={require('./assets/logo.png')} style={styles.splashLogoImage} />
+        </Animated.View>
+
+        <Text style={styles.splashLogoText}>ZENTARY</Text>
+        <Text style={styles.splashSubtitle}>Plataforma Residencial Inteligente</Text>
+
+        {/* Building Silhouette Animated Icon */}
+        <Animated.View style={[styles.buildingSkyline, { transform: [{ scale: pulseAnim }] }]}>
+          <Text style={styles.buildingIcons}>🏢 🏙️ 🏢</Text>
+        </Animated.View>
+
+        <ActivityIndicator size="large" color="#FFCF36" style={{ marginTop: 28 }} />
       </View>
     );
   }
@@ -91,7 +151,7 @@ export default function App() {
   if (!isLoggedIn) {
     return (
       <SafeAreaView style={styles.authSafeArea}>
-        <StatusBar barStyle="light-content" backgroundColor="#3B82F6" />
+        <StatusBar barStyle="light-content" backgroundColor="#0A0F1F" />
         <AuthFlowScreen onLoginSuccess={handleLoginSuccess} />
       </SafeAreaView>
     );
@@ -129,13 +189,27 @@ export default function App() {
       case 'Pagos':
         return <PaymentsScreen />;
       default:
-        return <VisitasScreen />;
+        return (
+          <HomeScreen
+            onNavigateToVisitas={() => {
+              setAutoOpenFastPass(false);
+              setCurrentTab('Visitas');
+            }}
+            onNavigateToFastPass={() => {
+              setAutoOpenFastPass(true);
+              setCurrentTab('Visitas');
+            }}
+            onNavigateToPaquetes={() => setCurrentTab('Paquetes')}
+            onNavigateToPQRS={() => setCurrentTab('PQRS')}
+            onNavigateToPagos={() => setCurrentTab('Pagos')}
+          />
+        );
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2B82FB" />
+      <StatusBar barStyle="light-content" backgroundColor="#0A0F1F" />
 
       {/* Main Screen Container */}
       <View style={styles.screenContainer}>{renderCurrentScreen()}</View>
@@ -198,26 +272,64 @@ export default function App() {
 const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#0A0F1F',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 24,
+  },
+  splashLogoWrapper: {
+    width: 100,
+    height: 100,
+    borderRadius: 28,
+    borderWidth: 3,
+    borderColor: '#FFCF36',
+    overflow: 'hidden',
+    marginBottom: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1E1240',
+  },
+  splashLogoImage: {
+    width: 88,
+    height: 88,
+    resizeMode: 'contain',
   },
   splashLogoText: {
     color: '#FFFFFF',
-    fontSize: 42,
-    fontWeight: '800',
-    letterSpacing: 1,
+    fontSize: 36,
+    fontWeight: '900',
+    letterSpacing: 2,
+  },
+  splashSubtitle: {
+    color: '#FFCF36',
+    fontSize: 13,
+    fontWeight: '700',
+    marginTop: 4,
+    letterSpacing: 0.5,
+  },
+  buildingSkyline: {
+    marginTop: 32,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(98, 3, 255, 0.15)',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: '#6203FF',
+  },
+  buildingIcons: {
+    fontSize: 36,
+    letterSpacing: 8,
   },
   authSafeArea: {
     flex: 1,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#0A0F1F',
   },
   container: {
     flex: 1,
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#0A0F1F',
   },
   screenContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0A0F1F',
   },
 });
