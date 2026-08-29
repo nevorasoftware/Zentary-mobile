@@ -10,12 +10,17 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
+  Linking,
 } from 'react-native';
 
 import * as WebBrowser from 'expo-web-browser';
 import { apiService } from '../services/api';
 
-WebBrowser.maybeCompleteAuthSession();
+try {
+  WebBrowser.maybeCompleteAuthSession();
+} catch (e) {
+  console.log('WebBrowser auth session init error:', e);
+}
 
 interface Amenity {
   id: string;
@@ -205,14 +210,22 @@ export const AmenidadesScreen: React.FC = () => {
       if (res.success && res.urlCompletarPago3Ds) {
         setIsPaymentModalOpen(false);
 
-        // Open 3DS WebBrowser redirect window
-        const authResult = await WebBrowser.openAuthSessionAsync(
-          res.urlCompletarPago3Ds,
-          'zentary://amenities'
-        );
+        try {
+          // Open 3DS WebBrowser redirect window
+          const authResult = await WebBrowser.openAuthSessionAsync(
+            res.urlCompletarPago3Ds,
+            'zentary://amenities'
+          );
 
-        if (authResult.type === 'success' || authResult.type === 'dismiss') {
-          setSuccessMessage(`¡Pago Wompi procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
+          if (authResult.type === 'success' || authResult.type === 'dismiss') {
+            setSuccessMessage(`¡Pago Wompi procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
+            setIsSuccessModalOpen(true);
+            fetchAmenities();
+          }
+        } catch (webErr) {
+          console.warn('WebBrowser error, falling back to Linking:', webErr);
+          await Linking.openURL(res.urlCompletarPago3Ds);
+          setSuccessMessage(`¡Pago Wompi iniciado! Revisa tu reservación tras completar la verificación 3DS.`);
           setIsSuccessModalOpen(true);
           fetchAmenities();
         }
