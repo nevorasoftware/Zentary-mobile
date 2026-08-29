@@ -18,7 +18,7 @@ export default function App() {
   const [isRestoringSession, setIsRestoringSession] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Requirement 3: Start default screen at 'Inicio' instead of 'Visitas'
+  // Requirement: Default start tab set to 'Inicio'
   const [currentTab, setCurrentTab] = useState<TabType>('Inicio');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
@@ -27,9 +27,8 @@ export default function App() {
   // First Login Password Change Modal
   const [mustChangePassword, setMustChangePassword] = useState(false);
 
-  // Animation values for building splash screen
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-  const opacityAnim = useRef(new Animated.Value(0.7)).current;
+  // Subtle pulse animation for unframed logo on splash screen
+  const opacityAnim = useRef(new Animated.Value(0.8)).current;
 
   // User state
   const [currentUser, setCurrentUser] = useState<UserProfile>({
@@ -39,41 +38,26 @@ export default function App() {
     role: 'RESIDENT',
   });
 
-  // Building Pulse Animation effect during splash loading
   useEffect(() => {
     const animationLoop = Animated.loop(
       Animated.sequence([
-        Animated.parallel([
-          Animated.timing(pulseAnim, {
-            toValue: 1.1,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacityAnim, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.parallel([
-          Animated.timing(pulseAnim, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-          Animated.timing(opacityAnim, {
-            toValue: 0.7,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-        ]),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 0.7,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
       ])
     );
     animationLoop.start();
     return () => animationLoop.stop();
-  }, [pulseAnim, opacityAnim]);
+  }, [opacityAnim]);
 
-  // Restore and silently renew session on app launch + Push Deep Linking
+  // Restore session
   useEffect(() => {
     const checkSavedSession = async () => {
       try {
@@ -117,32 +101,19 @@ export default function App() {
     setCurrentTab(tab);
   };
 
-  // Requirement 2: Splash Loading Screen with Zentary logo and animated building skyline
+  // Clean Splash Loading Screen: Unframed Logo, "ZENTARY", Gold #FFCF36 Spinner (No Buildings, No Box Border)
   if (isRestoringSession) {
     return (
       <View style={styles.splashContainer}>
         <StatusBar barStyle="light-content" backgroundColor="#0A0F1F" />
-        <Animated.View
-          style={[
-            styles.splashLogoWrapper,
-            {
-              transform: [{ scale: pulseAnim }],
-              opacity: opacityAnim,
-            },
-          ]}
-        >
-          <Image source={require('./assets/logo.png')} style={styles.splashLogoImage} />
+        <Animated.View style={{ opacity: opacityAnim, marginBottom: 16 }}>
+          <Image source={require('./assets/logo.png')} style={styles.cleanSplashLogo} />
         </Animated.View>
 
         <Text style={styles.splashLogoText}>ZENTARY</Text>
         <Text style={styles.splashSubtitle}>Plataforma Residencial Inteligente</Text>
 
-        {/* Building Silhouette Animated Icon */}
-        <Animated.View style={[styles.buildingSkyline, { transform: [{ scale: pulseAnim }] }]}>
-          <Text style={styles.buildingIcons}>🏢 🏙️ 🏢</Text>
-        </Animated.View>
-
-        <ActivityIndicator size="large" color="#FFCF36" style={{ marginTop: 28 }} />
+        <ActivityIndicator size="large" color="#FFCF36" style={{ marginTop: 36 }} />
       </View>
     );
   }
@@ -277,48 +248,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
-  splashLogoWrapper: {
-    width: 100,
-    height: 100,
-    borderRadius: 28,
-    borderWidth: 3,
-    borderColor: '#FFCF36',
-    overflow: 'hidden',
-    marginBottom: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1E1240',
-  },
-  splashLogoImage: {
-    width: 88,
-    height: 88,
+  cleanSplashLogo: {
+    width: 110,
+    height: 110,
     resizeMode: 'contain',
   },
   splashLogoText: {
     color: '#FFFFFF',
-    fontSize: 36,
+    fontSize: 38,
     fontWeight: '900',
-    letterSpacing: 2,
+    letterSpacing: 3,
   },
   splashSubtitle: {
     color: '#FFCF36',
     fontSize: 13,
     fontWeight: '700',
-    marginTop: 4,
-    letterSpacing: 0.5,
-  },
-  buildingSkyline: {
-    marginTop: 32,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: 'rgba(98, 3, 255, 0.15)',
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: '#6203FF',
-  },
-  buildingIcons: {
-    fontSize: 36,
-    letterSpacing: 8,
+    marginTop: 6,
+    letterSpacing: 0.8,
   },
   authSafeArea: {
     flex: 1,

@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { apiService, UserProfile } from '../services/api';
 import { deviceService } from '../services/device';
@@ -29,7 +30,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Disabled User Popup Modal State (Image 3)
+  // Disabled User Popup Modal State
   const [showDisabledModal, setShowDisabledModal] = useState(false);
 
   // Email Validation Handler (Step 2 -> Step 3)
@@ -87,69 +88,30 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
     }
   };
 
-  // Render Step 1: Welcome Onboarding Screen (Image 1)
+  // Render Step 1: Welcome Onboarding Screen
   if (step === 1) {
     return (
       <View style={styles.welcomeContainer}>
-        {/* Top Logo & Slogan Area */}
         <View style={styles.welcomeContent}>
-          <View style={styles.logoRow}>
-            <Text style={styles.logoTextMain}>Zen</Text>
-            <Text style={styles.logoTextAccent}>tary</Text>
-          </View>
+          <Image source={require('../../assets/logo.png')} style={styles.logoImage} />
+          <Text style={styles.logoTextMain}>ZENTARY</Text>
           <Text style={styles.sloganText}>Cada día más seguros y conectados</Text>
 
           <TouchableOpacity style={styles.empezarBtn} onPress={() => setStep(2)}>
             <Text style={styles.empezarBtnText}>Empezar</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Bottom Building Vector Graphic Silhouette (Image 1) */}
-        <View style={styles.cityGraphicContainer}>
-          <View style={styles.citySkyBg}>
-            <Text style={styles.birdIcon1}>🕊️</Text>
-            <Text style={styles.birdIcon2}>🕊️</Text>
-          </View>
-          <View style={styles.buildingRow}>
-            <View style={styles.houseLeft}>
-              <View style={styles.roofLeft} />
-              <View style={styles.windowsRow}>
-                <View style={styles.squareWindow} />
-                <View style={styles.squareWindow} />
-                <View style={styles.squareWindow} />
-              </View>
-            </View>
-            <View style={styles.towerCenter}>
-              <View style={styles.towerSpire} />
-              <View style={styles.towerWindowGrid}>
-                <View style={styles.rectWindow} />
-                <View style={styles.rectWindow} />
-                <View style={styles.rectWindow} />
-                <View style={styles.rectWindow} />
-                <View style={styles.rectWindow} />
-                <View style={styles.rectWindow} />
-              </View>
-            </View>
-            <View style={styles.buildingRight}>
-              <View style={styles.towerWindowGrid}>
-                <View style={styles.rectWindow} />
-                <View style={styles.rectWindow} />
-                <View style={styles.rectWindow} />
-              </View>
-            </View>
-          </View>
-        </View>
       </View>
     );
   }
 
-  // Render Step 2 & 3: Email & Password Input Screens (Image 2 & 3)
+  // Render Step 2 & 3: Email & Password Input Screens
   return (
     <KeyboardAvoidingView
       style={styles.authContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      {/* Top Blue Bar Header with Back Button */}
+      {/* Top Header with Back Button */}
       <View style={styles.topBlueHeader}>
         <TouchableOpacity
           style={styles.backBtn}
@@ -160,14 +122,12 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
         >
           <Text style={styles.backArrowText}>‹</Text>
         </TouchableOpacity>
-        <View style={styles.logoHeaderRow}>
-          <Text style={styles.headerLogoWhite}>Zentary</Text>
-        </View>
+        <Text style={styles.headerLogoWhite}>ZENTARY</Text>
       </View>
 
-      {/* Main White Card Content (Image 2) */}
+      {/* Main Dark Card Content */}
       <ScrollView contentContainerStyle={styles.cardScrollView} keyboardShouldPersistTaps="handled">
-        <View style={styles.whiteCard}>
+        <View style={styles.darkCard}>
           {step === 2 ? (
             <>
               <Text style={styles.greetingTitle}>¡Hola vecino!</Text>
@@ -180,7 +140,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                 <TextInput
                   style={styles.textInput}
                   placeholder="Email"
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor="#64748B"
                   keyboardType="email-address"
                   autoCapitalize="none"
                   value={email}
@@ -213,7 +173,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                   key={showPassword ? 'pass-text-field' : 'pass-secure-field'}
                   style={styles.textInput}
                   placeholder="Contraseña"
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor="#64748B"
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -227,9 +187,9 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
                   {showPassword ? (
-                    <EyeOff size={22} color="#64748B" />
+                    <EyeOff size={22} color="#FFCF36" />
                   ) : (
-                    <Eye size={22} color="#64748B" />
+                    <Eye size={22} color="#94A3B8" />
                   )}
                 </TouchableOpacity>
               </View>
@@ -257,7 +217,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
         </View>
       </ScrollView>
 
-      {/* POPUP MODAL: Usuario deshabilitado (Image 3) */}
+      {/* POPUP MODAL: Usuario deshabilitado */}
       <Modal visible={showDisabledModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.disabledModalCard}>
@@ -282,146 +242,61 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
 };
 
 const styles = StyleSheet.create({
-  // Step 1: Onboarding Styles (Image 1)
   welcomeContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'space-between',
+    backgroundColor: '#0A0F1F',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   welcomeContent: {
-    paddingTop: 120,
     alignItems: 'center',
     paddingHorizontal: 24,
   },
-  logoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+  logoImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    marginBottom: 16,
   },
   logoTextMain: {
-    fontSize: 48,
-    fontWeight: '800',
-    color: '#2B82FB',
-  },
-  logoTextAccent: {
-    fontSize: 48,
-    fontWeight: '800',
-    color: '#38BDF8',
+    fontSize: 42,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    letterSpacing: 2,
   },
   sloganText: {
-    fontSize: 16,
-    color: '#94A3B8',
+    fontSize: 15,
+    color: '#FFCF36',
+    marginTop: 8,
     marginBottom: 50,
     textAlign: 'center',
+    fontWeight: '700',
   },
   empezarBtn: {
-    width: '85%',
-    height: 52,
-    backgroundColor: '#4AA0F6',
-    borderRadius: 26,
+    width: 240,
+    height: 54,
+    backgroundColor: '#1877F2',
+    borderRadius: 27,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#2B82FB',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    borderBottomWidth: 4,
+    borderBottomColor: '#0B3C91',
   },
   empezarBtnText: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
-  cityGraphicContainer: {
-    height: 280,
-    backgroundColor: '#E0F2FE',
-    borderTopLeftRadius: 180,
-    borderTopRightRadius: 180,
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
-  },
-  citySkyBg: {
-    position: 'absolute',
-    top: 40,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  birdIcon1: { fontSize: 16, opacity: 0.6 },
-  birdIcon2: { fontSize: 14, opacity: 0.4 },
-  buildingRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
-  houseLeft: {
-    width: 110,
-    height: 140,
-    backgroundColor: '#3B82F6',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    padding: 10,
-  },
-  roofLeft: {
-    position: 'absolute',
-    top: -20,
-    left: 0,
-    width: 30,
-    height: 20,
-    backgroundColor: '#1E293B',
-  },
-  windowsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 80,
-  },
-  squareWindow: {
-    width: 24,
-    height: 24,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 2,
-  },
-  towerCenter: {
-    width: 100,
-    height: 220,
-    backgroundColor: '#2563EB',
-    alignItems: 'center',
-    marginHorizontal: 2,
-  },
-  towerSpire: {
-    width: 12,
-    height: 24,
-    backgroundColor: '#1D4ED8',
-    marginTop: -24,
-  },
-  towerWindowGrid: {
-    paddingTop: 16,
-    gap: 10,
-    alignItems: 'center',
-  },
-  rectWindow: {
-    width: 60,
-    height: 14,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 2,
-  },
-  buildingRight: {
-    width: 90,
-    height: 160,
-    backgroundColor: '#1E40AF',
-    alignItems: 'center',
-  },
-
-  // Step 2 & 3: Email & Password Input Styles (Image 2)
   authContainer: {
     flex: 1,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#0A0F1F',
   },
   topBlueHeader: {
-    height: 100,
-    paddingTop: 40,
+    height: 80,
+    backgroundColor: '#2A0A73',
+    borderBottomWidth: 3,
+    borderBottomColor: '#6203FF',
+    paddingTop: 10,
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
@@ -430,45 +305,43 @@ const styles = StyleSheet.create({
   backBtn: {
     position: 'absolute',
     left: 16,
-    top: 45,
+    top: 15,
     padding: 8,
   },
   backArrowText: {
-    color: '#FFFFFF',
+    color: '#FFCF36',
     fontSize: 34,
-    fontWeight: '300',
-  },
-  logoHeaderRow: {
-    alignItems: 'center',
+    fontWeight: '900',
   },
   headerLogoWhite: {
     color: '#FFFFFF',
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: 1,
   },
   cardScrollView: {
     flexGrow: 1,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#0A0F1F',
   },
-  whiteCard: {
+  darkCard: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#141A2E',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     paddingHorizontal: 28,
-    paddingTop: 80,
+    paddingTop: 48,
     alignItems: 'center',
   },
   greetingTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1E293B',
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#FFFFFF',
     marginBottom: 8,
     textAlign: 'center',
   },
   greetingSubtitle: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#CBD5E1',
     textAlign: 'center',
     marginBottom: 40,
     paddingHorizontal: 20,
@@ -478,20 +351,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    height: 52,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    marginBottom: 40,
+    height: 54,
+    borderWidth: 1.5,
+    borderColor: '#2A0A73',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    backgroundColor: '#0A0F1F',
+    marginBottom: 32,
   },
   inputIcon: {
     fontSize: 20,
     marginRight: 12,
-    color: '#94A3B8',
   },
   textInput: {
     flex: 1,
     fontSize: 16,
-    color: '#1E293B',
+    color: '#FFFFFF',
   },
   eyeBtn: {
     padding: 6,
@@ -501,31 +376,30 @@ const styles = StyleSheet.create({
   actionBtn: {
     width: '100%',
     height: 52,
-    backgroundColor: '#4AA0F6',
+    backgroundColor: '#1877F2',
     borderRadius: 26,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
+    borderBottomWidth: 4,
+    borderBottomColor: '#0B3C91',
   },
   actionBtnText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
   switchEmailBtn: {
     marginTop: 20,
     padding: 10,
   },
   switchEmailText: {
-    color: '#2563EB',
+    color: '#FFCF36',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '800',
   },
-
-  // Modal Popup: Usuario deshabilitado (Image 3)
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    backgroundColor: 'rgba(10, 15, 31, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
@@ -533,17 +407,18 @@ const styles = StyleSheet.create({
   disabledModalCard: {
     width: '100%',
     maxWidth: 340,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#141A2E',
     borderRadius: 24,
     padding: 24,
     alignItems: 'center',
-    elevation: 5,
+    borderWidth: 2,
+    borderColor: '#6203FF',
   },
   disabledIconContainer: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#E0F2FE',
+    backgroundColor: 'rgba(255, 207, 54, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -553,29 +428,31 @@ const styles = StyleSheet.create({
   },
   disabledTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1E293B',
+    fontWeight: '900',
+    color: '#FFFFFF',
     marginBottom: 6,
     textAlign: 'center',
   },
   disabledSubtitle: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#CBD5E1',
     marginBottom: 24,
     textAlign: 'center',
   },
   disabledAceptarBtn: {
     width: '100%',
     height: 48,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#1877F2',
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    borderBottomWidth: 4,
+    borderBottomColor: '#0B3C91',
   },
   disabledAceptarBtnText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
 });
 

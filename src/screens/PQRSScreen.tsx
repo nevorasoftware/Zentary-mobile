@@ -471,7 +471,7 @@ export const PQRSScreen: React.FC = () => {
 };
 
 const SafeAreaViewStyleWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 44 : 0, backgroundColor: '#2B82FB' }}>
+  <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 44 : 0, backgroundColor: '#0A0F1F' }}>
     {children}
   </View>
 );
@@ -479,11 +479,13 @@ const SafeAreaViewStyleWrapper: React.FC<{ children: React.ReactNode }> = ({ chi
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0A0F1F',
   },
   header: {
-    height: 70,
-    backgroundColor: '#2B82FB',
+    height: 80,
+    backgroundColor: '#2A0A73',
+    borderBottomWidth: 3,
+    borderBottomColor: '#6203FF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -492,12 +494,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '900',
   },
   segmentContainer: {
     flexDirection: 'row',
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#2A0A73',
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
@@ -508,15 +510,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   segmentActive: {
-    backgroundColor: '#1D4ED8',
+    backgroundColor: '#1877F2',
   },
   segmentInactive: {
     backgroundColor: 'transparent',
   },
   segmentText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#93C5FD',
+    fontWeight: '800',
+    color: '#94A3B8',
   },
   segmentActiveText: {
     color: '#FFFFFF',
@@ -528,11 +530,13 @@ const styles = StyleSheet.create({
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
-    borderRadius: 12,
+    backgroundColor: '#141A2E',
+    borderRadius: 14,
     paddingHorizontal: 16,
     height: 48,
     marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: '#2A0A73',
   },
   searchIcon: {
     fontSize: 16,
@@ -541,44 +545,43 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 15,
-    color: '#1F2937',
+    color: '#FFFFFF',
   },
   createBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EFF6FF',
-    borderRadius: 24,
+    backgroundColor: 'rgba(24, 119, 242, 0.15)',
+    borderRadius: 22,
     paddingVertical: 14,
     gap: 8,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#BFDBFE',
+    borderWidth: 2,
+    borderColor: '#1877F2',
+    borderBottomWidth: 4,
+    borderBottomColor: '#0B3C91',
   },
   createBtnPlus: {
-    color: '#2B82FB',
+    color: '#FFCF36',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
   createBtnText: {
-    color: '#2B82FB',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
   pqrsListContainer: {
     gap: 12,
   },
   pqrsCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    backgroundColor: '#141A2E',
+    borderRadius: 22,
     padding: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 2,
+    borderColor: 'rgba(98, 3, 255, 0.3)',
+    borderBottomWidth: 4,
+    borderBottomColor: '#2A0A73',
     marginBottom: 12,
   },
   pqrsCardHeader: {
@@ -588,15 +591,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   categoryTag: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: 'rgba(98, 3, 255, 0.2)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#6203FF',
   },
   categoryTagText: {
     fontSize: 11,
-    fontWeight: '700',
-    color: '#475569',
+    fontWeight: '800',
+    color: '#FFCF36',
   },
   statusBadge: {
     paddingHorizontal: 10,
@@ -606,17 +611,17 @@ const styles = StyleSheet.create({
   },
   statusBadgeText: {
     fontSize: 10,
-    fontWeight: '800',
+    fontWeight: '900',
   },
   pqrsSubject: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#0F172A',
+    fontWeight: '900',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   pqrsDescription: {
     fontSize: 13,
-    color: '#64748B',
+    color: '#CBD5E1',
     lineHeight: 18,
     marginBottom: 12,
   },
@@ -625,17 +630,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: 'rgba(255, 255, 255, 0.08)',
     paddingTop: 10,
   },
   pqrsDate: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: '#64748B',
   },
   pqrsTapText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#2B82FB',
+    fontWeight: '800',
+    color: '#FFCF36',
   },
   emptyState: {
     alignItems: 'center',

@@ -160,11 +160,13 @@ export const PaquetesScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0A0F1F',
   },
   header: {
-    height: 70,
-    backgroundColor: '#2B82FB',
+    height: 80,
+    backgroundColor: '#2A0A73',
+    borderBottomWidth: 3,
+    borderBottomColor: '#6203FF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -174,18 +176,18 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 15,
-    top: 15,
+    top: 20,
     padding: 5,
   },
   backArrow: {
-    color: '#FFFFFF',
+    color: '#FFCF36',
     fontSize: 32,
-    fontWeight: '300',
+    fontWeight: '900',
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '900',
   },
   content: {
     padding: 24,
