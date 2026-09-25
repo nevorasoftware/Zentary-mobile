@@ -213,9 +213,16 @@ class ApiService {
   async createVisit(visitData: {
     visitorName: string;
     visitorPhone?: string;
+    visitorDni?: string;
     visitDate?: string;
     validFrom?: string;
     notes?: string;
+    category?: string;
+    entryType?: string;
+    hasVehicle?: boolean;
+    vehiclePlate?: string;
+    houseId?: string;
+    maxDurationHours?: number;
   }) {
     return this.request<{
       success: boolean;
