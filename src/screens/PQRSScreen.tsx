@@ -31,6 +31,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
   const [pqrsList, setPqrsList] = useState<PqrsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   // Create Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -52,6 +53,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
     else setIsSearching(true);
 
     try {
+      setLoadError(false);
       const res = await apiService.getPqrsList(query);
       if (requestId !== latestRequestId.current) return;
       if (res.success && res.pqrsList) {
@@ -60,6 +62,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
     } catch (error: any) {
       if (requestId !== latestRequestId.current) return;
       console.log('Error fetching PQRS list:', error);
+      setLoadError(true);
     } finally {
       if (requestId === latestRequestId.current) {
         setIsLoading(false);
@@ -243,6 +246,14 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
         {isLoading ? (
           <ActivityIndicator size="large" color="#1D6BE0" style={{ marginTop: 40 }} />
+        ) : loadError ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyTitle}>No se pudieron cargar las solicitudes</Text>
+            <Text style={styles.emptySubtitle}>Revisa tu conexión e intenta de nuevo.</Text>
+              <TouchableOpacity style={styles.retryBtn} onPress={() => fetchPqrsList(debouncedQuery)}>
+                <Text style={styles.retryBtnText}>Reintentar</Text>
+              </TouchableOpacity>
+          </View>
         ) : pqrsList.length === 0 ? (
           /* Empty state */
           <View style={styles.emptyState}>
@@ -683,6 +694,8 @@ const styles = StyleSheet.create({
   sadEmoji: {
     fontSize: 34,
   },
+  retryBtn: { marginTop: 16, backgroundColor: '#1D6BE0', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  retryBtnText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 14 },
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',

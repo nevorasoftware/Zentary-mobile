@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  RefreshControl,
 } from 'react-native';
 
 // @ts-ignore
@@ -47,6 +48,8 @@ interface ReservationSlot {
 export const AmenidadesScreen: React.FC = () => {
   const [amenities, setAmenities] = useState<Amenity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [selectedAmenity, setSelectedAmenity] = useState<Amenity | null>(null);
 
   // Booking Modal State
@@ -85,17 +88,20 @@ export const AmenidadesScreen: React.FC = () => {
     }
   }, [selectedAmenity, selectedDate, isBookingModalOpen]);
 
-  const fetchAmenities = async () => {
+  const fetchAmenities = async (isRefresh = false) => {
     try {
-      setLoading(true);
+      if (!isRefresh) setLoading(true);
+      setLoadError(false);
       const res = await apiService.getResidentAmenities();
       if (res.success) {
         setAmenities(res.amenities || []);
       }
     } catch (err) {
       console.error('Error fetching resident amenities:', err);
+      setLoadError(true);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -261,8 +267,30 @@ export const AmenidadesScreen: React.FC = () => {
           <Text style={styles.loadingText}>Cargando amenidades de tu residencial...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {amenities.length === 0 ? (
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                fetchAmenities(true);
+              }}
+              colors={['#FFCF36']}
+            />
+          }
+        >
+          {loadError ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyIcon}>⚠️</Text>
+              <Text style={styles.emptyTitle}>No se pudieron cargar las amenidades</Text>
+              <Text style={styles.emptyText}>Revisa tu conexión e intenta de nuevo.</Text>
+              <TouchableOpacity style={styles.retryBtn} onPress={() => fetchAmenities()}>
+                <Text style={styles.retryBtnText}>Reintentar</Text>
+              </TouchableOpacity>
+            </View>
+          ) : amenities.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyIcon}>🏛️</Text>
               <Text style={styles.emptyTitle}>No hay amenidades disponibles</Text>
@@ -616,6 +644,8 @@ const styles = StyleSheet.create({
     fontSize: 48,
     marginBottom: 12,
   },
+  retryBtn: { marginTop: 16, backgroundColor: '#1D6BE0', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  retryBtnText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 14 },
   emptyTitle: {
     fontSize: 16,
     fontWeight: '800',

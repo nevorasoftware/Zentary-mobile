@@ -11,6 +11,7 @@ import {
   Alert,
   Linking,
   AppState,
+  RefreshControl,
 } from 'react-native';
 import { apiService } from '../services/api';
 
@@ -46,9 +47,11 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
 
-  const fetchPayments = async () => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchPayments = async (isRefresh = false) => {
     try {
-      setLoading(true);
+      if (!isRefresh) setLoading(true);
       setLoadError(false);
       const res = await apiService.getPayments();
       if (res.success && Array.isArray(res.payments)) {
@@ -69,6 +72,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
       setLoadError(true);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -182,7 +186,19 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         <Text style={styles.headerTitle}>Pagos y Cuotas</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              fetchPayments(true);
+            }}
+            colors={['#2B82FB']}
+          />
+        }
+      >
         {/* Balance Total Card */}
         <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>Saldo Pendiente Total</Text>
@@ -198,7 +214,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         {loadError && (
           <View style={styles.paymentCard}>
             <Text style={styles.conceptTitle}>No se pudieron cargar los cobros.</Text>
-            <TouchableOpacity onPress={fetchPayments}>
+            <TouchableOpacity onPress={() => fetchPayments()}>
               <Text style={styles.dueDate}>Reintentar</Text>
             </TouchableOpacity>
           </View>
