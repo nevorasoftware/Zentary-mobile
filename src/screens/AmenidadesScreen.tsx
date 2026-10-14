@@ -738,7 +738,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   priceBadge: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 12,
@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
   },
   reserveBtn: {
     marginTop: 14,
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     paddingVertical: 12,
     borderRadius: 14,
     alignItems: 'center',
@@ -854,7 +854,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedDateChip: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     borderColor: '#FFCF36',
   },
   dateChipDay: {
@@ -952,7 +952,7 @@ const styles = StyleSheet.create({
     color: '#FFCF36',
   },
   confirmBtn: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: 'center',
@@ -997,7 +997,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   wompiPayBtn: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: 'center',
@@ -1032,7 +1032,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   successCloseBtn: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 14,

@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   segmentActive: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
   },
   segmentInactive: {
     backgroundColor: 'transparent',
