@@ -103,7 +103,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
       });
 
       if (res.success) {
-        Alert.alert('PQRS Creada', 'Tu solicitud ha sido enviada a la administración con éxito.');
+        Alert.alert('PQRS creada', 'Tu solicitud ha sido enviada a la administración con éxito.');
         setSubject('');
         setDescription('');
         setShowCreateModal(false);
@@ -158,6 +158,13 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
     } finally {
       setIsSendingReply(false);
     }
+  };
+
+  const categoryLabels: Record<string, string> = {
+    PETICION: 'PETICIÓN',
+    QUEJA: 'QUEJA',
+    RECLAMO: 'RECLAMO',
+    SUGERENCIA: 'SUGERENCIA',
   };
 
   const renderStatusBadge = (status: string) => {
@@ -266,7 +273,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
             <Text style={styles.emptyTitle}>Nada por aquí...</Text>
             <Text style={styles.emptySubtitle}>
-              Hmm, parece que aún no has creado ningún PQRS o no se encontraron resultados.
+              Hmm, parece que aún no has creado ninguna solicitud o no se encontraron resultados.
             </Text>
           </View>
         ) : (
@@ -289,7 +296,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                 >
                   <View style={styles.pqrsCardHeader}>
                     <View style={styles.categoryTag}>
-                      <Text style={styles.categoryTagText}>{item.category}</Text>
+                      <Text style={styles.categoryTagText}>{categoryLabels[item.category] || item.category}</Text>
                     </View>
                     {renderStatusBadge(item.status)}
                   </View>
@@ -328,7 +335,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                   hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
                 >
                   <Text style={[styles.catText, category === cat && styles.catTextActive]}>
-                    {cat}
+                    {categoryLabels[cat]}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -415,7 +422,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                 <View style={styles.detailBanner}>
                   <View style={styles.detailBannerRow}>
                     <View style={styles.categoryTag}>
-                      <Text style={styles.categoryTagText}>{selectedPqrs.category}</Text>
+                      <Text style={styles.categoryTagText}>{categoryLabels[selectedPqrs.category] || selectedPqrs.category}</Text>
                     </View>
                     {renderStatusBadge(selectedPqrs.status)}
                   </View>
