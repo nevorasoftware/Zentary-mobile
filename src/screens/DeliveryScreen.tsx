@@ -96,26 +96,18 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
         category: 'FRECUENTE',
       });
 
-      if (res.success && res.visit) {
-        const passCode = res.visit.publicToken || `DEL-${Math.floor(1000 + Math.random() * 9000)}`;
+      if (res.success && res.visit?.publicToken) {
         setSuccessModal({
           open: true,
-          passCode,
+          passCode: res.visit.publicToken,
           platform: selectedPlatform.name,
         });
         setSelectedPlatform(null);
       } else {
-        Alert.alert('Error', res.message || 'No se pudo generar el pase de delivery.');
+        Alert.alert('Error', res.message || 'No se pudo autorizar, intenta de nuevo.');
       }
     } catch (err: any) {
-      // Fallback local pass code if server offline
-      const passCode = `DEL-${Math.floor(1000 + Math.random() * 9000)}`;
-      setSuccessModal({
-        open: true,
-        passCode,
-        platform: selectedPlatform.name,
-      });
-      setSelectedPlatform(null);
+      Alert.alert('Error', 'No se pudo autorizar, intenta de nuevo.');
     } finally {
       setIsSubmitting(false);
     }
