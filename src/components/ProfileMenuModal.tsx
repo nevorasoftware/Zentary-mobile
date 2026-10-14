@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   closeIcon: {
-    color: '#9CA3AF',
+    color: '#6B7280',
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   chevron: {
     fontSize: 20,
-    color: '#9CA3AF',
+    color: '#6B7280',
   },
   footer: {
     marginTop: 25,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   versionText: {
     fontSize: 13,
-    color: '#9CA3AF',
+    color: '#6B7280',
     fontWeight: '500',
   },
 });

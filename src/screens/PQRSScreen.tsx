@@ -157,8 +157,8 @@ export const PQRSScreen: React.FC = () => {
         );
       default:
         return (
-          <View style={[styles.statusBadge, { backgroundColor: '#EFF6FF', borderColor: '#2B82FB' }]}>
-            <Text style={[styles.statusBadgeText, { color: '#2B82FB' }]}>{status}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: '#EFF6FF', borderColor: '#1D6BE0' }]}>
+            <Text style={[styles.statusBadgeText, { color: '#1D6BE0' }]}>{status}</Text>
           </View>
         );
     }
@@ -199,7 +199,7 @@ export const PQRSScreen: React.FC = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => fetchPqrsList(searchQuery, true)}
-            colors={['#2B82FB']}
+            colors={['#1D6BE0']}
           />
         }
       >
@@ -222,7 +222,7 @@ export const PQRSScreen: React.FC = () => {
         </TouchableOpacity>
 
         {isLoading ? (
-          <ActivityIndicator size="large" color="#2B82FB" style={{ marginTop: 40 }} />
+          <ActivityIndicator size="large" color="#1D6BE0" style={{ marginTop: 40 }} />
         ) : pqrsList.length === 0 ? (
           /* Empty state */
           <View style={styles.emptyState}>
@@ -358,7 +358,7 @@ export const PQRSScreen: React.FC = () => {
 
             {isLoadingDetail || !selectedPqrs ? (
               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#2B82FB" />
+                <ActivityIndicator size="large" color="#1D6BE0" />
                 <Text style={{ marginTop: 12, color: '#64748B' }}>Cargando conversación...</Text>
               </View>
             ) : (
@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
   },
   pqrsDate: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8',
   },
   pqrsTapText: {
     fontSize: 12,
@@ -711,7 +711,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
   },
   catBadgeActive: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
   },
   catText: {
     fontSize: 12,
@@ -749,7 +749,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   saveBtn: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -762,7 +762,7 @@ const styles = StyleSheet.create({
   // Detail Modal Styles
   detailHeader: {
     height: 60,
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -829,7 +829,7 @@ const styles = StyleSheet.create({
     borderColor: '#BAE6FD',
   },
   chatUserBubble: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     borderBottomRightRadius: 4,
   },
   chatSenderName: {
@@ -859,10 +859,10 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   chatStaffTime: {
-    color: '#38BDF8',
+    color: '#0369A1',
   },
   chatUserTime: {
-    color: '#BFDBFE',
+    color: '#FFFFFF',
   },
 
   // Reply Bar
@@ -885,7 +885,7 @@ const styles = StyleSheet.create({
     color: '#0F172A',
   },
   sendReplyBtn: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 18,

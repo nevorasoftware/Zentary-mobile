@@ -57,7 +57,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 autoCapitalize="none"
                 autoCorrect={false}
                 placeholder="Ingresa tu nueva clave"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor="#64748B"
                 value={newPassword}
                 onChangeText={setNewPassword}
               />
@@ -81,7 +81,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 autoCapitalize="none"
                 autoCorrect={false}
                 placeholder="Repite tu nueva clave"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor="#64748B"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
               />
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   saveBtn: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
