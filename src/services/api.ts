@@ -431,6 +431,22 @@ class ApiService {
     }>(`/amenities/${id}/availability?date=${date}`);
   }
 
+  async getMyReservation(id: string) {
+    return this.request<{
+      success: boolean;
+      reservation: {
+        id: string;
+        amenityId: string;
+        reservationDate: string;
+        startTime: string;
+        endTime: string;
+        reservationStatus: string;
+        paymentStatus: string;
+        price: number;
+      };
+    }>(`/amenities/reservations/${id}`);
+  }
+
   async createReservation(data: {
     amenityId: string;
     reservationDate: string;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -34,6 +34,9 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
   const [payments, setPayments] = useState<PaymentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  // Cobro enviado al banco cuyo resultado aún se está verificando
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
+  const verifyingIdRef = useRef<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<PaymentItem | null>(null);
   const [processing, setProcessing] = useState(false);
 
@@ -66,6 +69,10 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
           externalTransactionId: p.externalTransactionId,
         }));
         setPayments(formatted);
+        if (verifyingIdRef.current && formatted.some((p: PaymentItem) => p.id === verifyingIdRef.current && p.status === 'PAID')) {
+          verifyingIdRef.current = null;
+          setVerifyingId(null);
+        }
       }
     } catch (err) {
       console.log('⚠️ No se pudo cargar la lista de pagos.');
@@ -146,9 +153,14 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
           '🔒 Verificación de tu banco',
           'Se abrirá la pasarela segura de Wompi para completar la verificación de tu banco.',
           [
+            { text: 'Cancelar', style: 'cancel' },
             {
               text: 'Continuar al Banco',
               onPress: async () => {
+                if (selectedPayment) {
+                  verifyingIdRef.current = selectedPayment.id;
+                  setVerifyingId(selectedPayment.id);
+                }
                 try {
                   await Linking.openURL(res.urlCompletarPago3Ds);
                 } catch (linkErr) {
@@ -243,16 +255,22 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               <View
                 style={[
                   styles.statusBadge,
-                  item.status === 'PAID' ? styles.statusPaid : styles.statusPending,
+                  item.status === 'PAID' ? styles.statusPaid : item.status === 'OVERDUE' ? styles.statusOverdue : styles.statusPending,
                 ]}
               >
                 <Text
                   style={[
                     styles.statusText,
-                    item.status === 'PAID' ? styles.statusPaidText : styles.statusPendingText,
+                    item.status === 'PAID' ? styles.statusPaidText : item.status === 'OVERDUE' ? styles.statusOverdueText : styles.statusPendingText,
                   ]}
                 >
-                  {item.status === 'PAID' ? '✓ PAGADO' : 'PENDIENTE'}
+                  {item.status === 'PAID'
+                    ? '✓ PAGADO'
+                    : item.id === verifyingId
+                    ? '⏳ Verificando pago…'
+                    : item.status === 'OVERDUE'
+                    ? 'VENCIDO'
+                    : 'PENDIENTE'}
                 </Text>
               </View>
 
@@ -541,6 +559,14 @@ const styles = StyleSheet.create({
   },
   statusPendingText: {
     color: '#FFCF36',
+  },
+  statusOverdue: {
+    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+    borderWidth: 1,
+    borderColor: '#EF4444',
+  },
+  statusOverdueText: {
+    color: '#EF4444',
   },
   statusPaid: {
     backgroundColor: 'rgba(16, 185, 129, 0.15)',
