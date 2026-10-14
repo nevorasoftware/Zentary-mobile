@@ -14,6 +14,7 @@ import {
   Share,
 } from 'react-native';
 import { apiService, VisitItem, VisitStatusType } from '../services/api';
+import { localDateISO, localTimeHM } from '../utils/dates';
 
 interface VisitasScreenProps {
   onOpenFrequentModal?: () => void;
@@ -40,7 +41,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [creating, setCreating] = useState(false);
   const [visitorName, setVisitorName] = useState('');
   const [visitorPhone, setVisitorPhone] = useState('');
-  const [visitDate, setVisitDate] = useState('2026-08-26');
+  const [visitDate, setVisitDate] = useState(localDateISO());
   const [validFrom, setValidFrom] = useState('09:00');
   const [notes, setNotes] = useState('');
 
@@ -107,9 +108,9 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       if (fastPassDateType === 'MANANA') {
         now.setDate(now.getDate() + 1);
       }
-      const dateStr = now.toISOString().split('T')[0];
+      const dateStr = localDateISO(now);
 
-      let timeStr = '09:00';
+      let timeStr = localTimeHM();
       if (fastPassTimeSlot === 'MEDIODIA') timeStr = '12:00';
       if (fastPassTimeSlot === 'TARDE') timeStr = '18:00';
       if (fastPassTimeSlot === 'NOCHE') timeStr = '21:00';
@@ -484,7 +485,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <Text style={styles.label}>2. Selecciona la Hora Estimada</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
               {[
-                { id: 'AHORA', label: '⚡ Ahora (09:00 AM)' },
+                { id: 'AHORA', label: '⚡ Ahora' },
                 { id: 'MEDIODIA', label: '☀️ Mediodía (12:00 PM)' },
                 { id: 'TARDE', label: '🌆 Tarde (06:00 PM)' },
                 { id: 'NOCHE', label: '🌙 Noche (09:00 PM)' },
