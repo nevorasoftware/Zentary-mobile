@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { notificationService, AppNotification, NotificationConfig } from '../services/notificationService';
 import NotificationSettingsModal from '../components/NotificationSettingsModal';
+import { UserProfile } from '../services/api';
 
 interface HomeScreenProps {
+  user?: UserProfile;
   onNavigateToVisitas: () => void;
   onNavigateToFastPass?: () => void;
   onNavigateToPaquetes: () => void;
@@ -13,17 +14,8 @@ interface HomeScreenProps {
   onNavigateToDelivery?: () => void;
 }
 
-const MOCK_PAYMENTS = [
-  {
-    id: 'pay-001',
-    concept: 'Cuota de Mantenimiento Agosto 2026',
-    amount: 85.0,
-    dueDate: '30 Ago 2026',
-    status: 'PENDING' as const,
-  },
-];
-
 export const HomeScreen: React.FC<HomeScreenProps> = ({
+  user,
   onNavigateToVisitas,
   onNavigateToFastPass,
   onNavigateToPaquetes,
@@ -32,22 +24,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToAmenidades,
   onNavigateToDelivery,
 }) => {
-  const [pendingReminder, setPendingReminder] = useState<AppNotification | null>(null);
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
-  const [notifConfig, setNotifConfig] = useState<NotificationConfig | null>(null);
 
-  useEffect(() => {
-    const loadReminders = async () => {
-      const cfg = await notificationService.getConfig();
-      setNotifConfig(cfg);
-
-      const reminder = await notificationService.checkPendingPaymentReminder(MOCK_PAYMENTS);
-      if (reminder) {
-        setPendingReminder(reminder);
-      }
-    };
-    loadReminders();
-  }, []);
+  const firstName = user?.fullName?.trim().split(/\s+/)[0];
+  const unitLabel = [user?.community?.name, user?.property?.unitNumber].filter(Boolean).join(' • ');
 
   return (
     <View style={styles.container}>
@@ -60,38 +40,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               style={styles.logoImage}
             />
             <View>
-              <Text style={styles.greetingText}>¡Hola, María! 👋</Text>
-              <Text style={styles.subGreetingText}>Residencial Zentary • Apt 502</Text>
+              <Text style={styles.greetingText}>{firstName ? `¡Hola, ${firstName}! 👋` : '¡Hola! 👋'}</Text>
+              {!!unitLabel && <Text style={styles.subGreetingText}>{unitLabel}</Text>}
             </View>
           </View>
 
           <TouchableOpacity style={styles.bellBtn} onPress={() => setIsNotifModalOpen(true)}>
             <Text style={styles.bellIcon}>🔔</Text>
-            {pendingReminder && <View style={styles.redBadgeDot} />}
           </TouchableOpacity>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Recordatorio de Pago con Estilo Duolingo Badges */}
-        {pendingReminder && notifConfig?.enabled && (
-          <TouchableOpacity style={styles.reminderCard} onPress={onNavigateToPagos} activeOpacity={0.85}>
-            <View style={styles.reminderHeader}>
-              <View style={styles.reminderBadge}>
-                <Text style={styles.reminderBadgeText}>
-                  ⚡ RECORDATORIO ({notifConfig.frequency === 'DAILY' ? 'DIARIO' : 'PARAMETRIZADO'})
-                </Text>
-              </View>
-              <Text style={styles.reminderTime}>{notifConfig.reminderTime}</Text>
-            </View>
-            <Text style={styles.reminderTitle}>{pendingReminder.title}</Text>
-            <Text style={styles.reminderBody}>{pendingReminder.body}</Text>
-            <View style={styles.reminderActionRow}>
-              <Text style={styles.reminderActionText}>Pagar Cuota del Mes ($85.00) ›</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-
         {/* Action Grid (Iconografía Duolingo 3D + Colores Oficiales) */}
         <View style={styles.sectionHeaderRow}>
           <Text style={styles.sectionTitle}>Accesos Rápidos</Text>
@@ -174,28 +134,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Anuncios Residenciales */}
-        <Text style={styles.sectionTitle}>Anuncios Residenciales</Text>
-        <View style={styles.announcementCard}>
-          <View style={styles.announcementTag}>
-            <Text style={styles.announcementTagText}>📢 MANTENIMIENTO</Text>
-          </View>
-          <Text style={styles.announcementTitle}>Mantenimiento de Piscina Principal</Text>
-          <Text style={styles.announcementBody}>
-            Estimados residentes, el área de la piscina permanecerá cerrada el próximo jueves por labores de limpieza general.
-          </Text>
-          <Text style={styles.announcementDate}>Publicado hoy a las 09:30 AM</Text>
-        </View>
       </ScrollView>
 
       {/* Dialogo de Notificaciones */}
       <NotificationSettingsModal
         visible={isNotifModalOpen}
-        onClose={async () => {
-          setIsNotifModalOpen(false);
-          const updatedCfg = await notificationService.getConfig();
-          setNotifConfig(updatedCfg);
-        }}
+        onClose={() => setIsNotifModalOpen(false)}
       />
     </View>
   );

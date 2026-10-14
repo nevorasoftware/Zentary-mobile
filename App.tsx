@@ -147,6 +147,7 @@ export default function App() {
       case 'Inicio':
         return (
           <HomeScreen
+            user={currentUser}
             onNavigateToVisitas={() => {
               setAutoOpenFastPass(false);
               setCurrentTab('Visitas');
@@ -180,6 +181,7 @@ export default function App() {
       default:
         return (
           <HomeScreen
+            user={currentUser}
             onNavigateToVisitas={() => {
               setAutoOpenFastPass(false);
               setCurrentTab('Visitas');
@@ -218,9 +220,9 @@ export default function App() {
         user={{
           fullName: currentUser.fullName || 'Residente',
           email: currentUser.email || '',
-          communityName: 'Residencial Zentary',
-          unitNumber: 'Casa / Apt',
-          avatarUrl: currentUser.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+          communityName: currentUser.community?.name,
+          unitNumber: currentUser.property?.unitNumber,
+          avatarUrl: currentUser.avatarUrl,
         }}
         onClose={() => setIsProfileMenuOpen(false)}
         onLogout={async () => {

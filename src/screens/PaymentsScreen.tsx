@@ -25,32 +25,14 @@ interface PaymentItem {
   externalTransactionId?: string;
 }
 
-const INITIAL_FALLBACK_PAYMENTS: PaymentItem[] = [
-  {
-    id: 'pay-001',
-    concept: 'Cuota de Mantenimiento Agosto 2026',
-    amount: 85.0,
-    dueDate: '30 Ago 2026',
-    status: 'PENDING',
-  },
-  {
-    id: 'pay-002',
-    concept: 'Reserva de Área Social - Terraza',
-    amount: 25.0,
-    dueDate: '15 Ago 2026',
-    status: 'PAID',
-    paymentMethod: 'Wompi 3DS',
-    externalTransactionId: 'WOMPI-TXN-99820',
-  },
-];
-
 interface PaymentsScreenProps {
   onBack?: () => void;
 }
 
 export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
-  const [payments, setPayments] = useState<PaymentItem[]>(INITIAL_FALLBACK_PAYMENTS);
-  const [loading, setLoading] = useState(false);
+  const [payments, setPayments] = useState<PaymentItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<PaymentItem | null>(null);
   const [processing, setProcessing] = useState(false);
 
@@ -67,8 +49,9 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
   const fetchPayments = async () => {
     try {
       setLoading(true);
+      setLoadError(false);
       const res = await apiService.getPayments();
-      if (res.success && Array.isArray(res.payments) && res.payments.length > 0) {
+      if (res.success && Array.isArray(res.payments)) {
         const formatted = res.payments.map((p: any) => ({
           id: p.id,
           concept: p.concept,
@@ -82,7 +65,8 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         setPayments(formatted);
       }
     } catch (err) {
-      console.log('⚠️ Usando datos de respaldo para la lista de pagos.');
+      console.log('⚠️ No se pudo cargar la lista de pagos.');
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -210,6 +194,21 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
           <Text style={styles.sectionTitle}>Historial de Cobros</Text>
           {loading && <ActivityIndicator size="small" color="#2B82FB" />}
         </View>
+
+        {loadError && (
+          <View style={styles.paymentCard}>
+            <Text style={styles.conceptTitle}>No se pudieron cargar los cobros.</Text>
+            <TouchableOpacity onPress={fetchPayments}>
+              <Text style={styles.dueDate}>Reintentar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {!loading && !loadError && payments.length === 0 && (
+          <View style={styles.paymentCard}>
+            <Text style={styles.conceptTitle}>Sin cobros</Text>
+          </View>
+        )}
 
         {payments.map((item) => (
           <View key={item.id} style={styles.paymentCard}>
