@@ -171,7 +171,6 @@ export default function App() {
           <VisitasScreen
             autoOpenFastPass={autoOpenFastPass}
             userRole={currentUser.role}
-            onOpenFrequentModal={() => setIsFrequentModalOpen(true)}
           />
         );
       case 'Amenidades':

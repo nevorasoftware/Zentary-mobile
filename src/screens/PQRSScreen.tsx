@@ -22,7 +22,7 @@ interface PQRSScreenProps {
 }
 
 export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitialPqrsHandled }) => {
-  const [activeSegment, setActiveSegment] = useState<'Chat' | 'PQRS'>('PQRS');
+  const [activeSegment, setActiveSegment] = useState<'PQRS'>('PQRS');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -201,15 +201,6 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
       {/* Segmented Control */}
       <View style={styles.segmentContainer}>
-        <TouchableOpacity
-          style={[styles.segmentBtn, activeSegment === 'Chat' ? styles.segmentActive : styles.segmentInactive]}
-          onPress={() => setActiveSegment('Chat')}
-        >
-          <Text style={[styles.segmentText, activeSegment === 'Chat' && styles.segmentActiveText]}>
-            Chat
-          </Text>
-        </TouchableOpacity>
-
         <TouchableOpacity
           style={[styles.segmentBtn, activeSegment === 'PQRS' ? styles.segmentActive : styles.segmentInactive]}
           onPress={() => setActiveSegment('PQRS')}
