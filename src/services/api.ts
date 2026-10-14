@@ -128,10 +128,15 @@ class ApiService {
       headers['x-device-id'] = this.deviceId;
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers,
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        ...options,
+        headers,
+      });
+    } catch (e) {
+      throw new Error('Sin conexión. Revisa tu internet e intenta de nuevo.');
+    }
 
     const data = await response.json();
     if (!response.ok) {

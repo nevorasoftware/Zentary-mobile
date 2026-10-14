@@ -139,7 +139,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                 <Text style={styles.inputIcon}>✉️</Text>
                 <TextInput
                   style={styles.textInput}
-                  placeholder="Email"
+                  placeholder="Correo electrónico"
                   placeholderTextColor="#94A3B8"
                   keyboardType="email-address"
                   autoCapitalize="none"

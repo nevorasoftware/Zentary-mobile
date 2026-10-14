@@ -329,7 +329,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     <View style={styles.container}>
       {/* Top Bar Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Visitas & Accesos</Text>
+        <Text style={styles.headerTitle}>Visitas y accesos</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <TouchableOpacity style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)}>
             <Text style={styles.guardHeaderBtnText}>🏃‍♀️ FastPass</Text>
@@ -376,7 +376,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       {loading ? (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color="#1D6BE0" />
-          <Text style={styles.loadingText}>Cargando visitas desde la base de datos...</Text>
+          <Text style={styles.loadingText}>Cargando visitas...</Text>
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -558,7 +558,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Crear Nueva Invitación</Text>
-            <Text style={styles.modalDesc}>El visitante completará sus datos personales desde el enlace enviad0.</Text>
+            <Text style={styles.modalDesc}>El visitante completará sus datos personales desde el enlace enviado.</Text>
 
             <Text style={styles.label}>Nombre completo del visitante *</Text>
             <TextInput
@@ -734,7 +734,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 setQrInputToken('');
               }}
             >
-              <Text style={styles.cancelBtnText}>Cerrar Scanner</Text>
+              <Text style={styles.cancelBtnText}>Cerrar escáner</Text>
             </TouchableOpacity>
           </View>
         </View>
