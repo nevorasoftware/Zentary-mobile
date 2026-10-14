@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 
 interface CarrierOption {
   id: string;
@@ -113,7 +113,8 @@ export const PaquetesScreen: React.FC = () => {
 
       {/* Parcel Detail Modal */}
       <Modal visible={!!selectedCarrier} transparent animationType="slide" onRequestClose={() => setSelectedCarrier(null)}>
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>
               Registrar Recepción de Paquete: {selectedCarrier?.name}
@@ -135,6 +136,8 @@ export const PaquetesScreen: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Ej. 1Z9999999999999999"
+              returnKeyType="done"
+              onSubmitEditing={handleSaveParcel}
               value={trackingNumber}
               onChangeText={setTrackingNumber}
             />
@@ -148,7 +151,8 @@ export const PaquetesScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );

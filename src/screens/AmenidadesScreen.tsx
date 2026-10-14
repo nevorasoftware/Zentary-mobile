@@ -12,6 +12,8 @@ import {
   Alert,
   Linking,
   RefreshControl,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 // @ts-ignore
@@ -383,7 +385,7 @@ export const AmenidadesScreen: React.FC = () => {
 
       {/* BOOKING MODAL */}
       <Modal visible={isBookingModalOpen} animationType="slide" transparent onRequestClose={() => setIsBookingModalOpen(false)}>
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Reservar {selectedAmenity?.name}</Text>
@@ -392,7 +394,7 @@ export const AmenidadesScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               {/* Step 1: Select Date */}
               <Text style={styles.inputLabel}>1. Selecciona la Fecha:</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelectorRow}>
@@ -495,12 +497,12 @@ export const AmenidadesScreen: React.FC = () => {
               </TouchableOpacity>
             </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* WOMPI CARD PAYMENT MODAL */}
       <Modal visible={isPaymentModalOpen} animationType="slide" transparent onRequestClose={() => setIsPaymentModalOpen(false)}>
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>💳 Pago con tarjeta</Text>
@@ -509,7 +511,7 @@ export const AmenidadesScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               <View style={styles.paymentSummaryBox}>
                 <Text style={styles.paySummaryTitle}>Reserva de {selectedAmenity?.name}</Text>
                 <Text style={styles.paySummaryPrice}>
@@ -591,7 +593,7 @@ export const AmenidadesScreen: React.FC = () => {
               </TouchableOpacity>
             </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* SUCCESS CONFIRMATION MODAL */}

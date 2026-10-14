@@ -13,6 +13,8 @@ import {
   Linking,
   Share,
   RefreshControl,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { apiService, VisitItem, VisitStatusType } from '../services/api';
 import { localDateISO, localTimeHM } from '../utils/dates';
@@ -104,6 +106,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
   // FastPass Generation Handler ("¿Cuándo te visitan? 🏃‍♀️")
   const handleCreateFastPass = async () => {
+    if (generatingFastPass) return;
     if (!fastPassContactName.trim()) {
       Alert.alert('Campo requerido', 'Por favor ingresa o selecciona un contacto para la visita.');
       return;
@@ -160,6 +163,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
   // Create Visit Handler
   const handleCreateVisit = async () => {
+    if (creating) return;
     if (!visitorName.trim()) {
       Alert.alert('Campo requerido', 'Por favor ingresa el nombre del visitante.');
       return;
@@ -257,6 +261,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
   // Guard Scan QR Code Handler
   const handleScanQR = async () => {
+    if (validatingQr) return;
     if (!qrInputToken.trim()) {
       Alert.alert('Requerido', 'Ingresa o escanea un código QR dinámico.');
       return;
@@ -479,7 +484,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
       {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
       <Modal visible={showFastPassModal} transparent animationType="slide" onRequestClose={() => setShowFastPassModal(false)}>
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text style={[styles.modalTitle, { fontSize: 20, color: '#1D4ED8' }]}>¿Cuándo te visitan? 🏃‍♀️</Text>
@@ -559,6 +565,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               style={styles.input}
               placeholder="Ej. 7000-0000"
               keyboardType="phone-pad"
+              returnKeyType="done"
+              onSubmitEditing={handleCreateFastPass}
               value={fastPassPhone}
               onChangeText={setFastPassPhone}
             />
@@ -580,12 +588,14 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* MODAL 1: Create Invitation (Resident) */}
       <Modal visible={showAddModal} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Crear Nueva Invitación</Text>
             <Text style={styles.modalDesc}>El visitante completará sus datos personales desde el enlace enviado.</Text>
@@ -632,6 +642,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <TextInput
               style={styles.input}
               placeholder="Ej. Visita familiar"
+              returnKeyType="done"
+              onSubmitEditing={handleCreateVisit}
               value={notes}
               onChangeText={setNotes}
             />
@@ -649,7 +661,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* MODAL 2: Automatic WhatsApp Sent Confirmation */}
@@ -694,7 +707,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           setQrInputToken('');
         }}
       >
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={[styles.modalCard, { maxHeight: '90%' }]}>
             <Text style={styles.modalTitle}>Validar Visitante (Caseta de Seguridad)</Text>
             <Text style={styles.modalDesc}>Escanea o ingresa el código de token dinámico del visitante.</Text>
@@ -702,6 +716,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <TextInput
               style={[styles.input, { fontSize: 18, fontWeight: 'bold', textTransform: 'uppercase' }]}
               placeholder="Ej. ACCESS-8F92A7C1"
+              returnKeyType="done"
+              onSubmitEditing={handleScanQR}
               value={qrInputToken}
               onChangeText={setQrInputToken}
             />
@@ -776,7 +792,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               <Text style={styles.cancelBtnText}>Cerrar escáner</Text>
             </TouchableOpacity>
           </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* MODAL 4: Visit Detail View */}

@@ -12,6 +12,8 @@ import {
   Linking,
   AppState,
   RefreshControl,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { apiService } from '../services/api';
 
@@ -286,8 +288,8 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
 
       {/* Wompi 3DS Payment Dialog Modal */}
       <Modal visible={!!selectedPayment} transparent animationType="slide" onRequestClose={() => setSelectedPayment(null)}>
-        <View style={styles.modalOverlay}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
             <View style={styles.modalCard}>
               <Text style={styles.modalTitle}>Pago con tarjeta</Text>
               <Text style={styles.modalSub}>
@@ -421,7 +423,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               </View>
             </View>
           </ScrollView>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );
