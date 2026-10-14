@@ -168,46 +168,6 @@ class NotificationService {
 
     return updated;
   }
-
-  /**
-   * Checks if a daily payment reminder should be triggered natively for pending payments
-   */
-  async checkPendingPaymentReminder(payments: Array<{ id: string; concept: string; amount: number; dueDate: string; status: 'PENDING' | 'PAID' | 'OVERDUE' }>): Promise<AppNotification | null> {
-    const config = await this.getConfig();
-    if (!config.enabled) {
-      return null;
-    }
-
-    const todayStr = localDateISO();
-
-    // Find pending payment for current month
-    const pendingPayment = payments.find((p) => p.status === 'PENDING' || p.status === 'OVERDUE');
-
-    if (!pendingPayment) {
-      return null;
-    }
-
-    const title = '💳 Recordatorio de Pago Zentary';
-    const body = `Tienes un pago pendiente por $${pendingPayment.amount.toFixed(2)} (${pendingPayment.concept}). Vence el ${pendingPayment.dueDate}.`;
-
-    // Fire native Android status bar notification if not already fired today
-    if (config.lastNotifiedDate !== todayStr) {
-      await this.requestPermissions();
-      await this.triggerNativeSystemNotification(title, body, { paymentId: pendingPayment.id });
-      await this.saveConfig({ lastNotifiedDate: todayStr });
-    }
-
-    return {
-      id: `notif-pay-${pendingPayment.id}`,
-      title: title,
-      body: body,
-      type: 'PAYMENT_REMINDER',
-      date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      read: false,
-      amount: pendingPayment.amount,
-      dueDate: pendingPayment.dueDate,
-    };
-  }
 }
 
 export const notificationService = new NotificationService();

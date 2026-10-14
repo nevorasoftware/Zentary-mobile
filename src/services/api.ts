@@ -9,6 +9,8 @@ export interface UserProfile {
   phone?: string;
   role: 'RESIDENT' | 'GUARD' | 'ADMIN';
   avatarUrl?: string;
+  community?: { name: string };
+  property?: { unitNumber: string; block?: string };
 }
 
 export type VisitStatusType =

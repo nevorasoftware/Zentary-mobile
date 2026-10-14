@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, Image } from 'react-native';
+import Constants from 'expo-constants';
 import NotificationSettingsModal from './NotificationSettingsModal';
 
 interface ProfileMenuModalProps {
@@ -23,6 +24,15 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 }) => {
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
 
+  const initials =
+    user.fullName
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w.charAt(0).toUpperCase())
+      .join('') || '?';
+  const unitLabel = [user.communityName, user.unitNumber].filter(Boolean).join(' • ');
+
   return (
     <>
       <Modal visible={visible} transparent animationType="slide">
@@ -30,12 +40,13 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
           <View style={styles.sheetContainer}>
             {/* Top Avatar badge matching Image 4 */}
             <View style={styles.avatarWrapper}>
-              <Image
-                source={{
-                  uri: user.avatarUrl || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-                }}
-                style={styles.avatarImage}
-              />
+              {user.avatarUrl ? (
+                <Image source={{ uri: user.avatarUrl }} style={styles.avatarImage} />
+              ) : (
+                <View style={styles.avatarInitialsBox}>
+                  <Text style={styles.avatarInitialsText}>{initials}</Text>
+                </View>
+              )}
             </View>
 
             {/* Close button top right */}
@@ -47,6 +58,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             <View style={styles.profileHeader}>
               <Text style={styles.userName}>{user.fullName}</Text>
               <Text style={styles.userEmail}>{user.email}</Text>
+              {!!unitLabel && <Text style={styles.userEmail}>{unitLabel}</Text>}
             </View>
 
             {/* Menu Options */}
@@ -92,7 +104,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 
             {/* Version Footer */}
             <View style={styles.footer}>
-              <Text style={styles.versionText}>V 2.53.0</Text>
+              <Text style={styles.versionText}>{Constants.expoConfig?.version ? `V ${Constants.expoConfig.version}` : ''}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -138,6 +150,18 @@ const styles = StyleSheet.create({
   avatarImage: {
     width: '100%',
     height: '100%',
+  },
+  avatarInitialsBox: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#6203FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarInitialsText: {
+    color: '#FFFFFF',
+    fontSize: 32,
+    fontWeight: 'bold',
   },
   closeButton: {
     position: 'absolute',

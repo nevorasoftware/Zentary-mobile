@@ -50,32 +50,9 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
               </Text>
             </View>
 
-            {/* Active Payment Reminder Card */}
             <View style={styles.cardSection}>
-              <Text style={styles.sectionLabel}>RECORDATORIO AUTOMÁTICO VIGENTE</Text>
-              
-              <View style={styles.reminderCard}>
-                <View style={styles.rowBetween}>
-                  <Text style={styles.reminderTypeTag}>💳 CUOTA PENDIENTE DEL MES</Text>
-                  <Text style={styles.statusActiveBadge}>ACTIVO</Text>
-                </View>
-                
-                <Text style={styles.reminderTitle}>Mantenimiento de Agosto 2026</Text>
-                <Text style={styles.reminderBody}>
-                  La administración ha establecido un aviso automático diario para recordar el pago de la cuota del mes en curso ($85.00).
-                </Text>
-
-                <View style={styles.metaDivider} />
-
-                <View style={styles.metaRow}>
-                  <Text style={styles.metaLabel}>Frecuencia programada:</Text>
-                  <Text style={styles.metaValue}>Una vez al día (Diario)</Text>
-                </View>
-                <View style={styles.metaRow}>
-                  <Text style={styles.metaLabel}>Hora del recordatorio:</Text>
-                  <Text style={styles.metaValue}>{config.reminderTime}</Text>
-                </View>
-              </View>
+              <Text style={styles.sectionLabel}>RECORDATORIOS</Text>
+              <Text style={styles.adminBadgeSub}>No tienes recordatorios activos.</Text>
             </View>
 
             <TouchableOpacity style={styles.closeActionBtn} onPress={onClose}>
