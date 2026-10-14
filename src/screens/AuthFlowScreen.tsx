@@ -52,6 +52,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
 
   // Email Validation Handler (Step 2 -> Step 3)
   const handleCheckEmail = async () => {
+    if (loading) return;
     if (!email.trim()) {
       Alert.alert('Campo requerido', 'Por favor ingresa tu correo electrónico.');
       return;
@@ -81,6 +82,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
 
   // Login Handler (Step 3)
   const handleLogin = async () => {
+    if (loading) return;
     if (!password) {
       Alert.alert('Campo requerido', 'Por favor ingresa tu contraseña.');
       return;

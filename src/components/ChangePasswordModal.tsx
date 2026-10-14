@@ -30,6 +30,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   const confirmInputRef = useRef<{ focus: () => void }>(null);
 
   const handleSubmit = async () => {
+    if (isSaving) return;
     if (!newPassword || newPassword.length < 6) {
       Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres.');
       return;

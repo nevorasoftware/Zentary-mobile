@@ -106,6 +106,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
   // FastPass Generation Handler ("¿Cuándo te visitan? 🏃‍♀️")
   const handleCreateFastPass = async () => {
+    if (generatingFastPass) return;
     if (!fastPassContactName.trim()) {
       Alert.alert('Campo requerido', 'Por favor ingresa o selecciona un contacto para la visita.');
       return;
@@ -162,6 +163,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
   // Create Visit Handler
   const handleCreateVisit = async () => {
+    if (creating) return;
     if (!visitorName.trim()) {
       Alert.alert('Campo requerido', 'Por favor ingresa el nombre del visitante.');
       return;
@@ -259,6 +261,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
   // Guard Scan QR Code Handler
   const handleScanQR = async () => {
+    if (validatingQr) return;
     if (!qrInputToken.trim()) {
       Alert.alert('Requerido', 'Ingresa o escanea un código QR dinámico.');
       return;
