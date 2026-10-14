@@ -90,12 +90,22 @@ export interface PqrsDetailItem extends PqrsItem {
   messages: PqrsMessageItem[];
 }
 
+// Rechazos del servidor que indican que la sesión ya no es válida
+export const isAuthRejection = (status?: number, code?: string) =>
+  (status === 401 && (code === 'NO_TOKEN' || code === 'INVALID_TOKEN')) ||
+  (status === 403 && (code === 'USER_DISABLED' || code === 'TENANT_REQUIRED'));
+
 class ApiService {
   private token: string | null = null;
+  private authErrorHandler: (() => void) | null = null;
   private deviceId: string | null = null;
 
   setAuthToken(token: string) {
     this.token = token;
+  }
+
+  onAuthError(handler: (() => void) | null) {
+    this.authErrorHandler = handler;
   }
 
   setDeviceId(deviceId: string) {
@@ -123,7 +133,13 @@ class ApiService {
 
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message || 'Error en la petición al servidor');
+      const error: any = new Error(data.message || 'Error en la petición al servidor');
+      error.status = response.status;
+      error.code = data.code;
+      if (isAuthRejection(error.status, error.code) && this.authErrorHandler) {
+        this.authErrorHandler();
+      }
+      throw error;
     }
 
     return data;

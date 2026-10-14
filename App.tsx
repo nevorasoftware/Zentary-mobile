@@ -62,6 +62,11 @@ export default function App() {
 
   // Restore session
   useEffect(() => {
+    apiService.onAuthError(async () => {
+      await deviceService.clearSession();
+      setIsLoggedIn(false);
+    });
+
     const checkSavedSession = async () => {
       try {
         const session = await deviceService.restoreAndRenewSession();
@@ -86,6 +91,7 @@ export default function App() {
     });
 
     return () => {
+      apiService.onAuthError(null);
       cleanupNotificationListener();
     };
   }, []);
