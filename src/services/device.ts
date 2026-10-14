@@ -2,7 +2,7 @@
 // Manages persistent device identification and long-lived 15-day session storage across Web and Native platforms
 
 import * as FileSystem from 'expo-file-system';
-import { apiService, UserProfile } from './api';
+import { apiService, isAuthRejection, UserProfile } from './api';
 
 const DEVICE_ID_KEY = 'zentary_device_id_v1';
 const SESSION_TOKEN_KEY = 'zentary_session_token_v1';
@@ -193,7 +193,7 @@ class DeviceService {
     } catch (err: any) {
       console.log('⚠️ [SESSION RENEWAL WARN]:', err.message);
       // Only clear session if account is explicitly disabled by administration
-      if (err.message && err.message.includes('deshabilitado')) {
+      if ((err.message && err.message.includes('deshabilitado')) || isAuthRejection(err.status, err.code)) {
         await this.clearSession();
         return { loggedIn: false };
       }
