@@ -89,12 +89,13 @@ export const PaquetesScreen: React.FC = () => {
           {CARRIERS.map((item) => (
             <View key={item.id} style={styles.gridItem}>
               <TouchableOpacity
+                accessibilityRole="button"
                 style={[styles.carrierCard, { backgroundColor: item.bgColor }]}
                 onPress={() => handleSelectCarrier(item)}
               >
                 {item.isCustom ? (
                   <View style={styles.customAvatarWrap}>
-                    <Text style={styles.customIcon}>👤</Text>
+                    <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.customIcon}>👤</Text>
                     <View style={styles.plusBadge}>
                       <Text style={styles.plusBadgeText}>+</Text>
                     </View>
@@ -124,6 +125,7 @@ export const PaquetesScreen: React.FC = () => {
               <>
                 <Text style={styles.label}>Nombre de la Paquetería / Transportista *</Text>
                 <TextInput
+                  accessibilityLabel="Nombre de la paquetería o transportista"
                   style={styles.input}
                   placeholder="Ej. Delivery Local / Correos"
                   value={customName}
@@ -134,6 +136,7 @@ export const PaquetesScreen: React.FC = () => {
 
             <Text style={styles.label}>Código de Rastreo / Guía (Opcional)</Text>
             <TextInput
+              accessibilityLabel="Código de rastreo o guía"
               style={styles.input}
               placeholder="Ej. 1Z9999999999999999"
               returnKeyType="done"
@@ -143,10 +146,10 @@ export const PaquetesScreen: React.FC = () => {
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setSelectedCarrier(null)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+              <TouchableOpacity accessibilityRole="button" style={styles.cancelBtn} onPress={() => setSelectedCarrier(null)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.saveBtn} onPress={handleSaveParcel}>
+              <TouchableOpacity accessibilityRole="button" style={styles.saveBtn} onPress={handleSaveParcel}>
                 <Text style={styles.saveBtnText}>Registrar</Text>
               </TouchableOpacity>
             </View>

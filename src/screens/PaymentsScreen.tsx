@@ -193,8 +193,8 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
       {/* Header Bar */}
       <View style={styles.header}>
         {onBack && (
-          <TouchableOpacity style={styles.backButton} onPress={onBack}>
-            <Text style={styles.backArrow}>‹</Text>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" style={styles.backButton} onPress={onBack}>
+            <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.backArrow}>‹</Text>
           </TouchableOpacity>
         )}
         <Text style={styles.headerTitle}>Pagos y Cuotas</Text>
@@ -228,7 +228,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         {loadError && (
           <View style={styles.paymentCard}>
             <Text style={styles.conceptTitle}>No se pudieron cargar los cobros.</Text>
-            <TouchableOpacity onPress={() => fetchPayments()}>
+            <TouchableOpacity accessibilityRole="button" onPress={() => fetchPayments()}>
               <Text style={styles.dueDate}>Reintentar</Text>
             </TouchableOpacity>
           </View>
@@ -277,7 +277,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               </View>
 
               {item.status !== 'PAID' && (
-                <TouchableOpacity style={styles.payBtn} onPress={() => handlePayNow(item)}>
+                <TouchableOpacity accessibilityRole="button" style={styles.payBtn} onPress={() => handlePayNow(item)}>
                   <Text style={styles.payBtnText}>Pagar con Wompi 💳</Text>
                 </TouchableOpacity>
               )}
@@ -306,6 +306,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Nombre en la Tarjeta *</Text>
                 <TextInput
+                  accessibilityLabel="Nombre en la tarjeta"
                   style={styles.input}
                   placeholder="Ej. Juan Carlos"
                   placeholderTextColor="#94A3B8"
@@ -317,6 +318,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Apellido *</Text>
                 <TextInput
+                  accessibilityLabel="Apellido"
                   style={styles.input}
                   placeholder="Ej. Pérez Gómez"
                   placeholderTextColor="#94A3B8"
@@ -328,6 +330,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Número de Tarjeta (Sin espacios) *</Text>
                 <TextInput
+                  accessibilityLabel="Número de tarjeta"
                   style={styles.input}
                   placeholder="4000 1234 5678 9010"
                   placeholderTextColor="#94A3B8"
@@ -342,6 +345,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
                   <Text style={styles.label}>Mes (MM) *</Text>
                   <TextInput
+                    accessibilityLabel="Mes de vencimiento"
                     style={styles.input}
                     placeholder="08"
                     placeholderTextColor="#94A3B8"
@@ -355,6 +359,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
                   <Text style={styles.label}>Año (AA) *</Text>
                   <TextInput
+                    accessibilityLabel="Año de vencimiento"
                     style={styles.input}
                     placeholder="28"
                     placeholderTextColor="#94A3B8"
@@ -368,6 +373,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 <View style={[styles.formGroup, { flex: 1 }]}>
                   <Text style={styles.label}>CVV *</Text>
                   <TextInput
+                    accessibilityLabel="CVV"
                     style={styles.input}
                     placeholder="123"
                     placeholderTextColor="#94A3B8"
@@ -383,6 +389,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Correo Electrónico (Notificación)</Text>
                 <TextInput
+                  accessibilityLabel="Correo electrónico"
                   style={styles.input}
                   placeholder="correo@ejemplo.com"
                   placeholderTextColor="#94A3B8"
@@ -396,6 +403,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Teléfono de Contacto</Text>
                 <TextInput
+                  accessibilityLabel="Teléfono de contacto"
                   style={styles.input}
                   placeholder="Ej. 78901234"
                   placeholderTextColor="#94A3B8"
@@ -406,10 +414,11 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               </View>
 
               <View style={styles.modalActions}>
-                <TouchableOpacity style={styles.cancelBtn} onPress={() => setSelectedPayment(null)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+                <TouchableOpacity accessibilityRole="button" style={styles.cancelBtn} onPress={() => setSelectedPayment(null)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
                   <Text style={styles.cancelBtnText}>Cancelar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  accessibilityRole="button"
                   style={[styles.saveBtn, processing && { opacity: 0.7 }]}
                   onPress={handleProcessWompi3Ds}
                   disabled={processing}

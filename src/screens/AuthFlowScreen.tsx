@@ -117,7 +117,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
           <Text style={styles.logoTextMain}>ZENTARY</Text>
           <Text style={styles.sloganText}>Cada día más seguros y conectados</Text>
 
-          <TouchableOpacity style={styles.empezarBtn} onPress={() => setStep(2)}>
+          <TouchableOpacity accessibilityRole="button" style={styles.empezarBtn} onPress={() => setStep(2)}>
             <Text style={styles.empezarBtnText}>Empezar</Text>
           </TouchableOpacity>
         </View>
@@ -134,13 +134,14 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
       {/* Top Header with Back Button */}
       <View style={styles.topBlueHeader}>
         <TouchableOpacity
+          accessibilityRole="button" accessibilityLabel="Volver"
           style={styles.backBtn}
           onPress={() => {
             if (step === 3) setStep(2);
             else setStep(1);
           }}
         >
-          <Text style={styles.backArrowText}>‹</Text>
+          <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.backArrowText}>‹</Text>
         </TouchableOpacity>
         <Text style={styles.headerLogoWhite}>ZENTARY</Text>
       </View>
@@ -156,8 +157,9 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               </Text>
 
               <View style={styles.inputWrap}>
-                <Text style={styles.inputIcon}>✉️</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.inputIcon}>✉️</Text>
                 <TextInput
+                  accessibilityLabel="Correo electrónico"
                   style={styles.textInput}
                   placeholder="Correo electrónico"
                   placeholderTextColor="#94A3B8"
@@ -174,6 +176,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               </View>
 
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.actionBtn}
                 onPress={handleCheckEmail}
                 disabled={loading}
@@ -193,8 +196,9 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               </Text>
 
               <View style={styles.inputWrap}>
-                <Text style={styles.inputIcon}>🔒</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.inputIcon}>🔒</Text>
                 <TextInput
+                  accessibilityLabel="Contraseña"
                   key={showPassword ? 'pass-text-field' : 'pass-secure-field'}
                   style={styles.textInput}
                   placeholder="Contraseña"
@@ -210,6 +214,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                   onChangeText={setPassword}
                 />
                 <TouchableOpacity
+                  accessibilityRole="button" accessibilityLabel={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   style={styles.eyeBtn}
                   onPress={() => setShowPassword(!showPassword)}
                   activeOpacity={0.7}
@@ -226,6 +231,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               </View>
 
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.actionBtn}
                 onPress={handleLogin}
                 disabled={loading}
@@ -238,6 +244,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               </TouchableOpacity>
 
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.switchEmailBtn}
                 onPress={() => setStep(2)}
               >
@@ -257,13 +264,14 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
         <View style={styles.modalOverlay}>
           <View style={styles.disabledModalCard}>
             <View style={styles.disabledIconContainer}>
-              <Text style={styles.disabledIconEmoji}>⚡</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.disabledIconEmoji}>⚡</Text>
             </View>
 
             <Text style={styles.disabledTitle}>Usuario deshabilitado</Text>
             <Text style={styles.disabledSubtitle}>Comunícate con la administración</Text>
 
             <TouchableOpacity
+              accessibilityRole="button"
               style={styles.disabledAceptarBtn}
               onPress={() => setShowDisabledModal(false)}
             >

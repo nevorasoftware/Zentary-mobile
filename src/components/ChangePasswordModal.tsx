@@ -65,6 +65,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <Text style={styles.label}>NUEVA CONTRASEÑA</Text>
             <View style={styles.inputWrap}>
               <TextInput
+                accessibilityLabel="Nueva contraseña"
                 key={showPassword ? 'new-text-field' : 'new-secure-field'}
                 style={styles.input}
                 secureTextEntry={!showPassword}
@@ -81,6 +82,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 blurOnSubmit={false}
               />
               <TouchableOpacity
+                accessibilityRole="button" accessibilityLabel={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 style={styles.eyeBtn}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 onPress={() => setShowPassword(!showPassword)}
@@ -95,6 +97,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <Text style={styles.label}>CONFIRMAR CONTRASEÑA</Text>
             <View style={styles.inputWrap}>
               <TextInput
+                accessibilityLabel="Confirmar contraseña"
                 key={showPassword ? 'conf-text-field' : 'conf-secure-field'}
                 style={styles.input}
                 secureTextEntry={!showPassword}
@@ -111,6 +114,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 onSubmitEditing={handleSubmit}
               />
               <TouchableOpacity
+                accessibilityRole="button" accessibilityLabel={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 style={styles.eyeBtn}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 onPress={() => setShowPassword(!showPassword)}
@@ -121,7 +125,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             </View>
           </View>
 
-          <TouchableOpacity style={styles.saveBtn} onPress={handleSubmit} disabled={isSaving}>
+          <TouchableOpacity accessibilityRole="button" style={styles.saveBtn} onPress={handleSubmit} disabled={isSaving}>
             {isSaving ? (
               <ActivityIndicator color="#FFFFFF" />
             ) : (

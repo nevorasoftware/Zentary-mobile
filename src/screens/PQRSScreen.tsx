@@ -205,6 +205,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
       {/* Segmented Control */}
       <View style={styles.segmentContainer}>
         <TouchableOpacity
+          accessibilityRole="tab" accessibilityState={{ selected: activeSegment === 'PQRS' }}
           style={[styles.segmentBtn, activeSegment === 'PQRS' ? styles.segmentActive : styles.segmentInactive]}
           onPress={() => setActiveSegment('PQRS')}
           hitSlop={{ top: 2, bottom: 2 }}
@@ -228,8 +229,9 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
       >
         {/* Search input */}
         <View style={styles.searchBox}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.searchIcon}>🔍</Text>
           <TextInput
+            accessibilityLabel="Buscar solicitudes"
             style={styles.searchInput}
             placeholder="Busca tus solicitudes..."
             placeholderTextColor="#9CA3AF"
@@ -240,8 +242,8 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
         </View>
 
         {/* Blue "+ Crear nueva PQRS" button */}
-        <TouchableOpacity style={styles.createBtn} onPress={() => setShowCreateModal(true)}>
-          <Text style={styles.createBtnPlus}>+</Text>
+        <TouchableOpacity accessibilityRole="button" style={styles.createBtn} onPress={() => setShowCreateModal(true)}>
+          <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.createBtnPlus}>+</Text>
           <Text style={styles.createBtnText}>Crear nueva PQRS</Text>
         </TouchableOpacity>
 
@@ -251,7 +253,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
           <View style={styles.emptyState}>
             <Text style={styles.emptyTitle}>No se pudieron cargar las solicitudes</Text>
             <Text style={styles.emptySubtitle}>Revisa tu conexión e intenta de nuevo.</Text>
-              <TouchableOpacity style={styles.retryBtn} onPress={() => fetchPqrsList(debouncedQuery)}>
+              <TouchableOpacity accessibilityRole="button" style={styles.retryBtn} onPress={() => fetchPqrsList(debouncedQuery)}>
                 <Text style={styles.retryBtnText}>Reintentar</Text>
               </TouchableOpacity>
           </View>
@@ -259,7 +261,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
           /* Empty state */
           <View style={styles.emptyState}>
             <View style={styles.inboxIllustration}>
-              <Text style={styles.sadEmoji}>😟</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.sadEmoji}>😟</Text>
             </View>
 
             <Text style={styles.emptyTitle}>Nada por aquí...</Text>
@@ -279,6 +281,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
               return (
                 <TouchableOpacity
+                  accessibilityRole="button"
                   key={item.id}
                   style={styles.pqrsCard}
                   onPress={() => handleOpenDetail(item.id)}
@@ -318,6 +321,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
             <View style={styles.categoryPickerRow}>
               {(['PETICION', 'QUEJA', 'RECLAMO', 'SUGERENCIA'] as const).map((cat) => (
                 <TouchableOpacity
+                  accessibilityRole="button" accessibilityState={{ selected: category === cat }}
                   key={cat}
                   style={[styles.catBadge, category === cat && styles.catBadgeActive]}
                   onPress={() => setCategory(cat)}
@@ -332,6 +336,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
             <Text style={styles.label}>Asunto *</Text>
             <TextInput
+              accessibilityLabel="Asunto"
               style={styles.input}
               placeholder="Ej. Ruido en áreas comunes"
               value={subject}
@@ -340,6 +345,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
             <Text style={styles.label}>Descripción detallada *</Text>
             <TextInput
+              accessibilityLabel="Descripción"
               style={[styles.input, styles.textArea]}
               placeholder="Explica en detalle tu reporte..."
               multiline
@@ -350,6 +356,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
             <View style={styles.modalActions}>
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.cancelBtn}
                 onPress={() => setShowCreateModal(false)}
                 disabled={isSubmitting}
@@ -357,6 +364,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                accessibilityRole="button"
                 style={[styles.saveBtn, isSubmitting && { opacity: 0.6 }]}
                 onPress={handleCreateSubmit}
                 disabled={isSubmitting}
@@ -383,6 +391,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
             {/* Modal Top Header */}
             <View style={styles.detailHeader}>
               <TouchableOpacity
+                accessibilityRole="button" accessibilityLabel="Volver"
                 style={styles.closeDetailBtn}
                 onPress={() => { setShowDetailModal(false); setSelectedPqrs(null); }}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -482,6 +491,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                 {selectedPqrs.status !== 'RESOLVED' && selectedPqrs.status !== 'CLOSED' && (
                   <View style={styles.replyBar}>
                     <TextInput
+                      accessibilityLabel="Mensaje a la administración"
                       style={styles.replyInput}
                       placeholder="Escribe tu mensaje a la administración..."
                       placeholderTextColor="#94A3B8"
@@ -489,6 +499,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                       onChangeText={setReplyText}
                     />
                     <TouchableOpacity
+                      accessibilityRole="button"
                       style={[
                         styles.sendReplyBtn,
                         (!replyText.trim() || isSendingReply) && { opacity: 0.5 },

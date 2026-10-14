@@ -36,13 +36,14 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         const isActive = currentTab === tab.id;
         return (
           <TouchableOpacity
+            accessibilityRole="tab" accessibilityLabel={tab.label} accessibilityState={{ selected: isActive }}
             key={tab.id}
             activeOpacity={0.8}
             style={[styles.tabButton, isActive && styles.activeTabButton]}
             onPress={() => handlePress(tab.id)}
           >
             <View style={[styles.iconBadge, isActive && styles.activeIconBadge]}>
-              <Text style={[styles.tabIcon, isActive && styles.activeIcon]}>{tab.icon}</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={[styles.tabIcon, isActive && styles.activeIcon]}>{tab.icon}</Text>
             </View>
             <Text style={[styles.tabLabel, isActive && styles.activeLabel]}>{tab.label}</Text>
           </TouchableOpacity>
