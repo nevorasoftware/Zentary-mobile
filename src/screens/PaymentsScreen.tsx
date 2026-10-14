@@ -151,7 +151,6 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         codigoPostal: '01101',
       };
 
-      console.log('💳 [WOMPI 3DS SUBMIT] Enviando payload:', payload);
       const res = await apiService.createWompi3DsPayment(payload);
 
       if (res.success && res.urlCompletarPago3Ds) {

@@ -37,7 +37,7 @@ export const registerForPushNotificationsAsync = async (userEmail?: string): Pro
         ...(projectId ? { projectId } : {}),
       });
       token = tokenData.data;
-      console.log('[NotificationService] Expo Push Token obtained:', token);
+      console.log('[NotificationService] Expo Push Token obtained');
 
       if (token) {
         const deviceId = await deviceService.getDeviceId();
@@ -47,7 +47,7 @@ export const registerForPushNotificationsAsync = async (userEmail?: string): Pro
           appVersion: '2.50.0',
           email: userEmail,
         });
-        console.log('[NotificationService] Push token registered on backend:', res);
+        console.log('[NotificationService] Push token registered on backend');
       }
     } catch (error) {
       console.error('[NotificationService] Error fetching Expo Push Token:', error);
