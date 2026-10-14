@@ -356,7 +356,7 @@ export const AmenidadesScreen: React.FC = () => {
       )}
 
       {/* BOOKING MODAL */}
-      <Modal visible={isBookingModalOpen} animationType="slide" transparent>
+      <Modal visible={isBookingModalOpen} animationType="slide" transparent onRequestClose={() => setIsBookingModalOpen(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
@@ -473,7 +473,7 @@ export const AmenidadesScreen: React.FC = () => {
       </Modal>
 
       {/* WOMPI CARD PAYMENT MODAL */}
-      <Modal visible={isPaymentModalOpen} animationType="slide" transparent>
+      <Modal visible={isPaymentModalOpen} animationType="slide" transparent onRequestClose={() => setIsPaymentModalOpen(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
@@ -569,7 +569,7 @@ export const AmenidadesScreen: React.FC = () => {
       </Modal>
 
       {/* SUCCESS CONFIRMATION MODAL */}
-      <Modal visible={isSuccessModalOpen} animationType="fade" transparent>
+      <Modal visible={isSuccessModalOpen} animationType="fade" transparent onRequestClose={() => setIsSuccessModalOpen(false)}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, styles.successModalContent]}>
             <Text style={styles.successIcon}>🎉</Text>

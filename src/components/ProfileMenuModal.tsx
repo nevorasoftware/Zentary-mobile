@@ -36,7 +36,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 
   return (
     <>
-      <Modal visible={visible} transparent animationType="slide">
+      <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
         <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
           <View style={styles.sheetContainer} onStartShouldSetResponder={() => true}>
             {/* Top Avatar badge matching Image 4 */}
@@ -111,7 +111,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
         </TouchableOpacity>
       </Modal>
 
-      <Modal visible={isLogoutConfirmOpen} transparent animationType="fade">
+      <Modal visible={isLogoutConfirmOpen} transparent animationType="fade" onRequestClose={() => setIsLogoutConfirmOpen(false)}>
         <View style={styles.confirmBackdrop}>
           <View style={styles.confirmBox}>
             <Text style={styles.confirmTitle}>Cerrar sesión</Text>

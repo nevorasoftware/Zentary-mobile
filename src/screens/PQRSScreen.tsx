@@ -307,7 +307,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
       </ScrollView>
 
       {/* Modal for Creating PQRS */}
-      <Modal visible={showCreateModal} transparent animationType="slide">
+      <Modal visible={showCreateModal} transparent animationType="slide" onRequestClose={() => setShowCreateModal(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Crear Nueva PQRS</Text>
@@ -370,7 +370,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
       </Modal>
 
       {/* Modal for Viewing PQRS Detail & Chat */}
-      <Modal visible={showDetailModal} animationType="slide">
+      <Modal visible={showDetailModal} animationType="slide" onRequestClose={() => { setShowDetailModal(false); setSelectedPqrs(null); }}>
         <SafeAreaViewStyleWrapper>
           <KeyboardAvoidingView
             style={{ flex: 1, backgroundColor: '#F8FAFC' }}

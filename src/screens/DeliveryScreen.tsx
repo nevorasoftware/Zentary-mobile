@@ -167,7 +167,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
       </View>
 
       {/* Modal Form to register Delivery */}
-      <Modal visible={!!selectedPlatform} transparent animationType="slide">
+      <Modal visible={!!selectedPlatform} transparent animationType="slide" onRequestClose={() => setSelectedPlatform(null)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
@@ -220,7 +220,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
       </Modal>
 
       {/* Success Modal */}
-      <Modal visible={successModal.open} transparent animationType="fade">
+      <Modal visible={successModal.open} transparent animationType="fade" onRequestClose={() => setSuccessModal({ open: false, passCode: '', platform: '' })}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalCard, { alignItems: 'center', paddingVertical: 28 }]}>
             <View style={styles.successBadge}>

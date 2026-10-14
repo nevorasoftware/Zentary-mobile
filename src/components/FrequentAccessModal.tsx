@@ -24,7 +24,7 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.card}>
           {/* Back button top left */}

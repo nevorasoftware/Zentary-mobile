@@ -475,7 +475,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </TouchableOpacity>
 
       {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
-      <Modal visible={showFastPassModal} transparent animationType="slide">
+      <Modal visible={showFastPassModal} transparent animationType="slide" onRequestClose={() => setShowFastPassModal(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
@@ -578,7 +578,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </Modal>
 
       {/* MODAL 1: Create Invitation (Resident) */}
-      <Modal visible={showAddModal} transparent animationType="slide">
+      <Modal visible={showAddModal} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Crear Nueva Invitación</Text>
@@ -647,7 +647,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </Modal>
 
       {/* MODAL 2: Automatic WhatsApp Sent Confirmation */}
-      <Modal visible={!!shareData} transparent animationType="fade">
+      <Modal visible={!!shareData} transparent animationType="fade" onRequestClose={() => setShareData(null)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <View style={{ alignItems: 'center', marginBottom: 16 }}>
@@ -678,7 +678,16 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </Modal>
 
       {/* MODAL 3: Guard Access Scanner */}
-      <Modal visible={canUseGuardFunctions && showGuardModal} transparent animationType="slide">
+      <Modal
+        visible={canUseGuardFunctions && showGuardModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => {
+          setShowGuardModal(false);
+          setScanResult(null);
+          setQrInputToken('');
+        }}
+      >
         <View style={styles.modalOverlay}>
           <View style={[styles.modalCard, { maxHeight: '90%' }]}>
             <Text style={styles.modalTitle}>Validar Visitante (Caseta de Seguridad)</Text>
@@ -765,7 +774,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </Modal>
 
       {/* MODAL 4: Visit Detail View */}
-      <Modal visible={!!selectedVisit} transparent animationType="fade">
+      <Modal visible={!!selectedVisit} transparent animationType="fade" onRequestClose={() => setSelectedVisit(null)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             {selectedVisit && (
