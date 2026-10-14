@@ -167,6 +167,7 @@ export default function App() {
         return (
           <VisitasScreen
             autoOpenFastPass={autoOpenFastPass}
+            userRole={currentUser.role}
             onOpenFrequentModal={() => setIsFrequentModalOpen(true)}
           />
         );

@@ -19,9 +19,12 @@ import { localDateISO, localTimeHM } from '../utils/dates';
 interface VisitasScreenProps {
   onOpenFrequentModal?: () => void;
   autoOpenFastPass?: boolean;
+  userRole?: string;
 }
 
-export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModal, autoOpenFastPass }) => {
+export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModal, autoOpenFastPass, userRole }) => {
+  // Las funciones de garita solo son para personal autorizado (no residentes ni rol desconocido)
+  const canUseGuardFunctions = !!userRole && userRole !== 'RESIDENT';
   const [activeTab, setActiveTab] = useState<'EN_CURSO' | 'HISTORIAL' | 'OTRAS'>('EN_CURSO');
   const [visits, setVisits] = useState<VisitItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -326,9 +329,11 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           <TouchableOpacity style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)}>
             <Text style={styles.guardHeaderBtnText}>🏃‍♀️ FastPass</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)}>
-            <Text style={styles.guardHeaderBtnText}>📷 Validar</Text>
-          </TouchableOpacity>
+          {canUseGuardFunctions && (
+            <TouchableOpacity style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)}>
+              <Text style={styles.guardHeaderBtnText}>Validar código</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -644,10 +649,10 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </Modal>
 
       {/* MODAL 3: Guard Access Scanner */}
-      <Modal visible={showGuardModal} transparent animationType="slide">
+      <Modal visible={canUseGuardFunctions && showGuardModal} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={[styles.modalCard, { maxHeight: '90%' }]}>
-            <Text style={styles.modalTitle}>📷 Validar Visitante (Caseta de Seguridad)</Text>
+            <Text style={styles.modalTitle}>Validar Visitante (Caseta de Seguridad)</Text>
             <Text style={styles.modalDesc}>Escanea o ingresa el código de token dinámico del visitante.</Text>
 
             <TextInput
