@@ -125,7 +125,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* Delivery */}
           <TouchableOpacity style={styles.actionCard} onPress={onNavigateToDelivery || onNavigateToVisitas} activeOpacity={0.85}>
-            <View style={[styles.emojiBadge, { backgroundColor: '#2B82FB', borderColor: '#1D4ED8' }]}>
+            <View style={[styles.emojiBadge, { backgroundColor: '#1D6BE0', borderColor: '#1D4ED8' }]}>
               <Text style={styles.actionEmoji}>🛵</Text>
             </View>
             <Text style={styles.actionTitle}>Delivery</Text>
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
     borderColor: '#1877F2',
   },
   announcementTagText: {
-    color: '#1877F2',
+    color: '#60A5FA',
     fontSize: 11,
     fontWeight: '900',
   },
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
   },
   announcementDate: {
     fontSize: 11,
-    color: '#64748B',
+    color: '#94A3B8',
     fontWeight: '600',
   },
 });

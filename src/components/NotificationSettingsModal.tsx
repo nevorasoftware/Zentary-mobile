@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     color: '#78350F',
   },
   closeActionBtn: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     borderRadius: 16,
     paddingVertical: 14,
     alignItems: 'center',

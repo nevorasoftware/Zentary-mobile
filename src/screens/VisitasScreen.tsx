@@ -301,14 +301,14 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const getStatusBadge = (status: VisitStatusType) => {
     switch (status) {
       case 'PENDIENTE_REGISTRO':
-        return { text: 'PENDIENTE DATOS', bg: '#FEF3C7', color: '#D97706' };
+        return { text: 'PENDIENTE DATOS', bg: '#FEF3C7', color: '#92400E' };
       case 'DATOS_COMPLETADOS':
-        return { text: 'DATOS COMPLETOS (QR)', bg: '#DBEAFE', color: '#2563EB' };
+        return { text: 'DATOS COMPLETOS (QR)', bg: '#DBEAFE', color: '#1D4ED8' };
       case 'INGRESADA':
       case 'COMPLETED':
-        return { text: '🟢 INGRESADA', bg: '#DCFCE7', color: '#16A34A' };
+        return { text: '🟢 INGRESADA', bg: '#DCFCE7', color: '#15803D' };
       case 'CANCELADA':
-        return { text: '❌ CANCELADA', bg: '#FEE2E2', color: '#DC2626' };
+        return { text: '❌ CANCELADA', bg: '#FEE2E2', color: '#B91C1C' };
       case 'VENCIDA':
         return { text: '⚫ VENCIDA', bg: '#F3F4F6', color: '#4B5563' };
       default:
@@ -364,7 +364,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       {/* Main Content Area */}
       {loading ? (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#2B82FB" />
+          <ActivityIndicator size="large" color="#1D6BE0" />
           <Text style={styles.loadingText}>Cargando visitas desde la base de datos...</Text>
         </View>
       ) : (
@@ -527,7 +527,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.saveBtn, { backgroundColor: '#25D366' }]}
+                style={[styles.saveBtn, { backgroundColor: '#16803C' }]}
                 onPress={handleCreateFastPass}
                 disabled={generatingFastPass}
               >
@@ -753,7 +753,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                   )}
 
                   {selectedVisit.entryDate && (
-                    <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold', color: '#16A34A' }}>Hora de ingreso:</Text> {new Date(selectedVisit.entryDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                    <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold', color: '#15803D' }}>Hora de ingreso:</Text> {new Date(selectedVisit.entryDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                   )}
                 </View>
 
@@ -844,11 +844,11 @@ const styles = StyleSheet.create({
   modalActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 10, marginTop: 20 },
   cancelBtn: { paddingVertical: 10, paddingHorizontal: 16 },
   cancelBtnText: { color: '#64748B', fontWeight: '600' },
-  saveBtn: { backgroundColor: '#2B82FB', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, alignItems: 'center', marginTop: 10 },
+  saveBtn: { backgroundColor: '#1D6BE0', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, alignItems: 'center', marginTop: 10 },
   saveBtnText: { color: '#FFFFFF', fontWeight: 'bold' },
   linkBox: { backgroundColor: '#F1F5F9', padding: 12, borderRadius: 12, marginBottom: 12 },
   linkText: { fontSize: 12, color: '#2563EB', fontWeight: '600' },
-  waBtn: { backgroundColor: '#25D366', paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginBottom: 8 },
+  waBtn: { backgroundColor: '#16803C', paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginBottom: 8 },
   waBtnText: { color: '#FFFFFF', fontWeight: 'bold' },
   copyBtn: { backgroundColor: '#E2E8F0', paddingVertical: 12, borderRadius: 12, alignItems: 'center' },
   copyBtnText: { color: '#334155', fontWeight: 'bold' },

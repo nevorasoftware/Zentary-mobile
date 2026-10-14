@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0F1F',
   },
   header: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     paddingTop: 46,
     paddingBottom: 16,
     paddingHorizontal: 20,
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 24,
     borderWidth: 2,
-    borderColor: '#2B82FB',
+    borderColor: '#1D6BE0',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   submitBtn: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   closeSuccessBtn: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     borderRadius: 14,
     paddingHorizontal: 32,
     paddingVertical: 12,

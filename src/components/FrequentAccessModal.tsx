@@ -105,7 +105,7 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   boxSubTitle: {
-    color: '#93C5FD',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   understoodText: {
-    color: '#2B82FB',
+    color: '#1D6BE0',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   checkmark: {
-    color: '#2B82FB',
+    color: '#1D6BE0',
     fontSize: 12,
     fontWeight: 'bold',
   },

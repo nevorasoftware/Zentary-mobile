@@ -23,7 +23,7 @@ const CARRIERS: CarrierOption[] = [
     id: 'DHL',
     name: 'DHL',
     bgColor: '#FFCC00',
-    textColor: '#D97706',
+    textColor: '#78350F',
     logoText: 'DHL',
   },
   {
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   carrierName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: '#CBD5E1',
     textAlign: 'center',
   },
   modalOverlay: {
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   saveBtn: {
-    backgroundColor: '#2B82FB',
+    backgroundColor: '#1D6BE0',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,

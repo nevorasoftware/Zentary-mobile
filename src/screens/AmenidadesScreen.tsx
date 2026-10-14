@@ -672,7 +672,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   freeBadge: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#047857',
   },
   priceBadgeText: {
     color: '#FFFFFF',
