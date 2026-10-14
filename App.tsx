@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, SafeAreaView, StatusBar, ActivityIndicator, Text, Image, Animated } from 'react-native';
+import { StyleSheet, View, SafeAreaView, StatusBar, ActivityIndicator, Text, Image, Animated, BackHandler } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import VisitasScreen from './src/screens/VisitasScreen';
 import PQRSScreen from './src/screens/PQRSScreen';
@@ -109,6 +109,22 @@ export default function App() {
     registerForPushNotificationsAsync(user.email);
   };
 
+  // Botón Atrás de Android: cierra Delivery, luego vuelve a Inicio; en Inicio sale de la app
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isDeliveryOpen) {
+        setIsDeliveryOpen(false);
+        return true;
+      }
+      if (currentTab !== 'Inicio') {
+        setCurrentTab('Inicio');
+        return true;
+      }
+      return false;
+    });
+    return () => subscription.remove();
+  }, [isDeliveryOpen, currentTab]);
+
   const handleTabChange = (tab: TabType) => {
     setIsDeliveryOpen(false);
     setCurrentTab(tab);
@@ -212,7 +228,7 @@ export default function App() {
 
       {/* Persistent Bottom Bar */}
       <BottomNavBar
-        currentTab={currentTab}
+        currentTab={isDeliveryOpen || currentTab === 'Pagos' || currentTab === 'Paquetes' ? 'Inicio' : currentTab}
         onTabChange={handleTabChange}
         onOpenMenu={() => setIsProfileMenuOpen(true)}
       />

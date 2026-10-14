@@ -251,7 +251,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
       </ScrollView>
 
       {/* Wompi 3DS Payment Dialog Modal */}
-      <Modal visible={!!selectedPayment} transparent animationType="slide">
+      <Modal visible={!!selectedPayment} transparent animationType="slide" onRequestClose={() => setSelectedPayment(null)}>
         <View style={styles.modalOverlay}>
           <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
             <View style={styles.modalCard}>

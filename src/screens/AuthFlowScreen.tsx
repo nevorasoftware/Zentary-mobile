@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
   Image,
+  BackHandler,
 } from 'react-native';
 import { apiService, UserProfile } from '../services/api';
 import { deviceService } from '../services/device';
@@ -32,6 +33,22 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
 
   // Disabled User Popup Modal State
   const [showDisabledModal, setShowDisabledModal] = useState(false);
+
+  // Botón Atrás de Android: en los pasos 2 y 3 retrocede un paso; en el paso 1 sale de la app
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (step === 3) {
+        setStep(2);
+        return true;
+      }
+      if (step === 2) {
+        setStep(1);
+        return true;
+      }
+      return false;
+    });
+    return () => subscription.remove();
+  }, [step]);
 
   // Email Validation Handler (Step 2 -> Step 3)
   const handleCheckEmail = async () => {
@@ -220,7 +237,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
       </ScrollView>
 
       {/* POPUP MODAL: Usuario deshabilitado */}
-      <Modal visible={showDisabledModal} transparent animationType="fade">
+      <Modal visible={showDisabledModal} transparent animationType="fade" onRequestClose={() => setShowDisabledModal(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.disabledModalCard}>
             <View style={styles.disabledIconContainer}>

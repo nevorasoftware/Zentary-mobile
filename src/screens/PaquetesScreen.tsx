@@ -112,7 +112,7 @@ export const PaquetesScreen: React.FC = () => {
       </ScrollView>
 
       {/* Parcel Detail Modal */}
-      <Modal visible={!!selectedCarrier} transparent animationType="slide">
+      <Modal visible={!!selectedCarrier} transparent animationType="slide" onRequestClose={() => setSelectedCarrier(null)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>

@@ -46,7 +46,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={() => {}}>
       <View style={styles.overlay}>
         <View style={styles.modalCard}>
           <Text style={styles.badge}>🔐 PRIMER INICIO DE SESIÓN</Text>
