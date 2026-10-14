@@ -9,6 +9,8 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { apiService } from '../services/api';
 
@@ -168,7 +170,8 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
 
       {/* Modal Form to register Delivery */}
       <Modal visible={!!selectedPlatform} transparent animationType="slide" onRequestClose={() => setSelectedPlatform(null)}>
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Delivery {selectedPlatform?.name} 🛵</Text>
@@ -216,7 +219,8 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
               )}
             </TouchableOpacity>
           </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* Success Modal */}

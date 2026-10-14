@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
 
@@ -24,6 +27,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const confirmInputRef = useRef<{ focus: () => void }>(null);
 
   const handleSubmit = async () => {
     if (!newPassword || newPassword.length < 6) {
@@ -47,7 +51,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={() => {}}>
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
         <View style={styles.modalCard}>
           <Text style={styles.badge}>🔐 PRIMER INICIO DE SESIÓN</Text>
           <Text style={styles.title}>Actualiza tu Contraseña</Text>
@@ -68,6 +73,11 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 placeholderTextColor="#64748B"
                 value={newPassword}
                 onChangeText={setNewPassword}
+                autoComplete="new-password"
+                textContentType="newPassword"
+                returnKeyType="next"
+                onSubmitEditing={() => confirmInputRef.current?.focus()}
+                blurOnSubmit={false}
               />
               <TouchableOpacity
                 style={styles.eyeBtn}
@@ -92,6 +102,11 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 placeholderTextColor="#64748B"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
+                ref={confirmInputRef}
+                autoComplete="new-password"
+                textContentType="newPassword"
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit}
               />
               <TouchableOpacity
                 style={styles.eyeBtn}
@@ -111,7 +126,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             )}
           </TouchableOpacity>
         </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };

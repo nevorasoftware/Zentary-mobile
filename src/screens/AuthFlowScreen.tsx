@@ -67,11 +67,12 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
     } catch (err: any) {
       if (err.message && err.message.includes('deshabilitado')) {
         setShowDisabledModal(true);
+      } else if (err.status === 429) {
+        Alert.alert('Demasiados intentos', err.message || 'Demasiados intentos. Espera unos minutos e intenta de nuevo.');
+      } else if (!err.status) {
+        Alert.alert('Sin conexión', err.message || 'No se pudo verificar el correo. Intenta de nuevo.');
       } else {
-        Alert.alert(
-          'Correo no registrado',
-          err.message || 'Este correo electrónico no está registrado en el sistema. Comunícate con la administración de tu residencial.'
-        );
+        Alert.alert('Error', 'No se pudo verificar el correo. Intenta de nuevo.');
       }
     } finally {
       setLoading(false);
@@ -149,7 +150,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
             <>
               <Text style={styles.greetingTitle}>¡Hola vecino!</Text>
               <Text style={styles.greetingSubtitle}>
-                Únete al mejor espacio para vivir en comunidad
+                Ingresa tu correo electrónico para iniciar sesión
               </Text>
 
               <View style={styles.inputWrap}>
@@ -160,6 +161,11 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                   placeholderTextColor="#94A3B8"
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  autoCorrect={false}
+                  autoComplete="email"
+                  textContentType="emailAddress"
+                  returnKeyType="next"
+                  onSubmitEditing={handleCheckEmail}
                   value={email}
                   onChangeText={setEmail}
                 />
@@ -194,6 +200,10 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
                   autoCorrect={false}
+                  autoComplete="password"
+                  textContentType="password"
+                  returnKeyType="go"
+                  onSubmitEditing={handleLogin}
                   value={password}
                   onChangeText={setPassword}
                 />
@@ -231,6 +241,10 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               >
                 <Text style={styles.switchEmailText}>Cambiar correo electrónico</Text>
               </TouchableOpacity>
+
+              <Text style={styles.forgotPasswordText}>
+                ¿Olvidaste tu contraseña? Contacta a la administración de tu residencial.
+              </Text>
             </>
           )}
         </View>
@@ -415,6 +429,13 @@ const styles = StyleSheet.create({
     color: '#FFCF36',
     fontSize: 14,
     fontWeight: '800',
+  },
+  forgotPasswordText: {
+    color: '#CBD5E1',
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 12,
+    lineHeight: 18,
   },
   modalOverlay: {
     flex: 1,
