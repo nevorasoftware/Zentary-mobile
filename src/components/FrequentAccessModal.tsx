@@ -88,7 +88,11 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
           </TouchableOpacity>
 
           {/* Checkbox option */}
-          <TouchableOpacity style={styles.checkboxContainer} onPress={handleToggleCheck}>
+          <TouchableOpacity
+            style={styles.checkboxContainer}
+            onPress={handleToggleCheck}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
             <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
               {isChecked && <Text style={styles.checkmark}>✓</Text>}
             </View>

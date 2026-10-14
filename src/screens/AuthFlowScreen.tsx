@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   empezarBtn: {
     width: 240,
-    height: 54,
+    minHeight: 54,
     backgroundColor: '#1877F2',
     borderRadius: 27,
     justifyContent: 'center',
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0F1F',
   },
   topBlueHeader: {
-    height: 80,
+    minHeight: 80,
     backgroundColor: '#2A0A73',
     borderBottomWidth: 3,
     borderBottomColor: '#6203FF',
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    height: 54,
+    minHeight: 54,
     borderWidth: 1.5,
     borderColor: '#2A0A73',
     borderRadius: 14,
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     width: '100%',
-    height: 52,
+    minHeight: 52,
     backgroundColor: '#1877F2',
     borderRadius: 26,
     justifyContent: 'center',
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   },
   disabledAceptarBtn: {
     width: '100%',
-    height: 48,
+    minHeight: 48,
     backgroundColor: '#1877F2',
     borderRadius: 24,
     justifyContent: 'center',
