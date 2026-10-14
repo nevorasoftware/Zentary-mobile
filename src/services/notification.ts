@@ -32,7 +32,7 @@ export const registerForPushNotificationsAsync = async (userEmail?: string): Pro
     }
 
     try {
-      const projectId = Constants.expoConfig?.extra?.eas?.projectId || Constants.easConfig?.projectId || '5bcf0457-d9fb-4830-917d-908a49dcd01a';
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId || Constants.easConfig?.projectId || 'e9f29d4d-b323-4379-be90-e64395b71c9d';
       const tokenData = await Notifications.getExpoPushTokenAsync({
         ...(projectId ? { projectId } : {}),
       });
@@ -44,7 +44,7 @@ export const registerForPushNotificationsAsync = async (userEmail?: string): Pro
         const res = await apiService.registerPushToken(token, {
           platform: Platform.OS.toUpperCase(),
           deviceId,
-          appVersion: '2.50.0',
+          appVersion: Constants.expoConfig?.version,
           email: userEmail,
         });
         console.log('[NotificationService] Push token registered on backend');
