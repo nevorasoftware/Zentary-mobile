@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   empezarBtn: {
     width: 240,
     minHeight: 54,
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     borderRadius: 27,
     justifyContent: 'center',
     alignItems: 'center',
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
   actionBtn: {
     width: '100%',
     minHeight: 52,
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     borderRadius: 26,
     justifyContent: 'center',
     alignItems: 'center',
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   disabledAceptarBtn: {
     width: '100%',
     minHeight: 48,
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',

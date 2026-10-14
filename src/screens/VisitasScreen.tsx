@@ -922,7 +922,7 @@ const styles = StyleSheet.create({
     width: 58,
     height: 58,
     borderRadius: 29,
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 6,

@@ -577,7 +577,7 @@ const styles = StyleSheet.create({
     borderColor: '#EF4444',
   },
   statusOverdueText: {
-    color: '#EF4444',
+    color: '#F87171',
   },
   statusPaid: {
     backgroundColor: 'rgba(16, 185, 129, 0.15)',
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   payBtn: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 14,
@@ -687,7 +687,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   saveBtn: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     paddingVertical: 12,
     paddingHorizontal: 22,
     borderRadius: 14,

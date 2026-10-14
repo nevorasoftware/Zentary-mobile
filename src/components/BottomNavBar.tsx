@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   activeIconBadge: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     borderColor: '#FFCF36',
     borderWidth: 2,
     shadowColor: '#1877F2',

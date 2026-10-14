@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   reminderActionRow: {
-    backgroundColor: '#1877F2',
+    backgroundColor: '#1A6FE8',
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 16,
