@@ -7,12 +7,13 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
 
 interface ChangePasswordModalProps {
   visible: boolean;
-  onPasswordChanged: (newPass: string) => void;
+  onPasswordChanged: (newPass: string) => Promise<void>;
 }
 
 export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
@@ -22,8 +23,9 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!newPassword || newPassword.length < 6) {
       Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres.');
       return;
@@ -32,9 +34,15 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       Alert.alert('Error', 'Las contraseñas no coinciden.');
       return;
     }
-    Alert.alert('¡Éxito!', 'Tu contraseña ha sido actualizada correctamente.', [
-      { text: 'Aceptar', onPress: () => onPasswordChanged(newPassword) },
-    ]);
+    setIsSaving(true);
+    try {
+      await onPasswordChanged(newPassword);
+      Alert.alert('¡Éxito!', 'Tu contraseña ha sido actualizada correctamente.');
+    } catch (e: any) {
+      Alert.alert('Error', e?.message || 'No se pudo actualizar la contraseña. Intenta de nuevo.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -95,8 +103,12 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             </View>
           </View>
 
-          <TouchableOpacity style={styles.saveBtn} onPress={handleSubmit}>
-            <Text style={styles.saveBtnText}>Guardar y Continuar a Zentary</Text>
+          <TouchableOpacity style={styles.saveBtn} onPress={handleSubmit} disabled={isSaving}>
+            {isSaving ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.saveBtnText}>Guardar y Continuar a Zentary</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

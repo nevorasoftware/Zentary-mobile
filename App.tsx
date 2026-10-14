@@ -246,17 +246,13 @@ export default function App() {
       <ChangePasswordModal
         visible={mustChangePassword}
         onPasswordChanged={async (newPass) => {
-          try {
-            const deviceId = await deviceService.getDeviceId();
-            const res = await apiService.changePassword(newPass, deviceId);
-            if (res.token && res.user) {
-              await deviceService.saveSession(res.token, res.user);
-            }
-            setMustChangePassword(false);
-          } catch (e) {
-            console.error('Error changing password:', e);
-            setMustChangePassword(false);
+          // Si la API falla, el error se propaga al modal para que siga abierto y lo muestre
+          const deviceId = await deviceService.getDeviceId();
+          const res = await apiService.changePassword(newPass, deviceId);
+          if (res.token && res.user) {
+            await deviceService.saveSession(res.token, res.user);
           }
+          setMustChangePassword(false);
         }}
       />
     </SafeAreaView>
