@@ -77,6 +77,8 @@ export const AmenidadesScreen: React.FC = () => {
   // Success Confirmation Modal State
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [resultTitle, setResultTitle] = useState('¡Reserva Confirmada!');
+  const [resultIcon, setResultIcon] = useState('🎉');
 
   useEffect(() => {
     fetchAmenities();
@@ -173,6 +175,8 @@ export const AmenidadesScreen: React.FC = () => {
           setIsPaymentModalOpen(true);
         } else {
           // Free reservation confirmed directly
+          setResultTitle('¡Reserva Confirmada!');
+          setResultIcon('🎉');
           setSuccessMessage(`¡Tu reservación para "${selectedAmenity.name}" ha sido confirmada exitosamente!`);
           setIsSuccessModalOpen(true);
           fetchAmenities();
@@ -184,6 +188,17 @@ export const AmenidadesScreen: React.FC = () => {
       Alert.alert('Error', err.message || 'Error de comunicación con el servidor.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Consulta si la reserva ya figura como CONFIRMED (no hay endpoint de residente para leer una reserva por id)
+  const verifyReservationConfirmed = async (amenityId: string, reservationId: string) => {
+    try {
+      const res = await apiService.getAmenityAvailability(amenityId, selectedDate);
+      const slot = (res.bookedSlots || []).find((s: any) => s.id === reservationId);
+      return slot?.reservationStatus === 'CONFIRMED';
+    } catch (err) {
+      return false;
     }
   };
 
@@ -225,15 +240,27 @@ export const AmenidadesScreen: React.FC = () => {
             'zentary://amenities'
           );
 
+          // El resultado del navegador no confirma el pago: se consulta el estado real de la reserva
           if (authResult.type === 'success' || authResult.type === 'dismiss') {
-            setSuccessMessage(`¡Pago procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
+            const confirmed = await verifyReservationConfirmed(selectedAmenity.id, pendingReservationId);
+            if (confirmed) {
+              setResultTitle('¡Reserva Confirmada!');
+              setResultIcon('🎉');
+              setSuccessMessage(`¡Pago procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
+            } else {
+              setResultTitle('Pago en verificación');
+              setResultIcon('⏳');
+              setSuccessMessage('Estamos verificando tu pago; te avisaremos cuando se confirme.');
+            }
             setIsSuccessModalOpen(true);
             fetchAmenities();
           }
         } catch (webErr) {
           console.warn('WebBrowser error, falling back to Linking:', webErr);
           await Linking.openURL(res.urlCompletarPago3Ds);
-          setSuccessMessage(`¡Pago iniciado! Revisa tu reservación tras completar la verificación de tu banco.`);
+          setResultTitle('Pago en verificación');
+          setResultIcon('⏳');
+          setSuccessMessage('Estamos verificando tu pago; te avisaremos cuando se confirme.');
           setIsSuccessModalOpen(true);
           fetchAmenities();
         }
@@ -572,8 +599,8 @@ export const AmenidadesScreen: React.FC = () => {
       <Modal visible={isSuccessModalOpen} animationType="fade" transparent onRequestClose={() => setIsSuccessModalOpen(false)}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, styles.successModalContent]}>
-            <Text style={styles.successIcon}>🎉</Text>
-            <Text style={styles.successTitle}>¡Reserva Confirmada!</Text>
+            <Text style={styles.successIcon}>{resultIcon}</Text>
+            <Text style={styles.successTitle}>{resultTitle}</Text>
             <Text style={styles.successBody}>{successMessage}</Text>
             <TouchableOpacity
               style={styles.successCloseBtn}
