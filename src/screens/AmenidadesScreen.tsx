@@ -191,12 +191,11 @@ export const AmenidadesScreen: React.FC = () => {
     }
   };
 
-  // Consulta si la reserva ya figura como CONFIRMED (no hay endpoint de residente para leer una reserva por id)
-  const verifyReservationConfirmed = async (amenityId: string, reservationId: string) => {
+  // Consulta el estado real de la reserva propia
+  const verifyReservationConfirmed = async (reservationId: string) => {
     try {
-      const res = await apiService.getAmenityAvailability(amenityId, selectedDate);
-      const slot = (res.bookedSlots || []).find((s: any) => s.id === reservationId);
-      return slot?.reservationStatus === 'CONFIRMED';
+      const res = await apiService.getMyReservation(reservationId);
+      return res.reservation?.reservationStatus === 'CONFIRMED' || res.reservation?.paymentStatus === 'PAID';
     } catch (err) {
       return false;
     }
@@ -242,7 +241,7 @@ export const AmenidadesScreen: React.FC = () => {
 
           // El resultado del navegador no confirma el pago: se consulta el estado real de la reserva
           if (authResult.type === 'success' || authResult.type === 'dismiss') {
-            const confirmed = await verifyReservationConfirmed(selectedAmenity.id, pendingReservationId);
+            const confirmed = await verifyReservationConfirmed(pendingReservationId);
             if (confirmed) {
               setResultTitle('¡Reserva Confirmada!');
               setResultIcon('🎉');
@@ -250,7 +249,7 @@ export const AmenidadesScreen: React.FC = () => {
             } else {
               setResultTitle('Pago en verificación');
               setResultIcon('⏳');
-              setSuccessMessage('Estamos verificando tu pago; te avisaremos cuando se confirme.');
+              setSuccessMessage('Estamos verificando tu pago. Revisa el estado de tu reserva en unos minutos.');
             }
             setIsSuccessModalOpen(true);
             fetchAmenities();
@@ -260,7 +259,7 @@ export const AmenidadesScreen: React.FC = () => {
           await Linking.openURL(res.urlCompletarPago3Ds);
           setResultTitle('Pago en verificación');
           setResultIcon('⏳');
-          setSuccessMessage('Estamos verificando tu pago; te avisaremos cuando se confirme.');
+          setSuccessMessage('Estamos verificando tu pago. Revisa el estado de tu reserva en unos minutos.');
           setIsSuccessModalOpen(true);
           fetchAmenities();
         }
