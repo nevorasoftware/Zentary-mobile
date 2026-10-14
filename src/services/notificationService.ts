@@ -4,6 +4,7 @@
 
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
+import { localDateISO } from '../utils/dates';
 
 export interface NotificationConfig {
   enabled: boolean;
@@ -177,7 +178,7 @@ class NotificationService {
       return null;
     }
 
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = localDateISO();
 
     // Find pending payment for current month
     const pendingPayment = payments.find((p) => p.status === 'PENDING' || p.status === 'OVERDUE');

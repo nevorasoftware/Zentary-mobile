@@ -16,6 +16,7 @@ import {
 // @ts-ignore
 import * as WebBrowser from 'expo-web-browser';
 import { apiService } from '../services/api';
+import { localDateISO } from '../utils/dates';
 
 try {
   WebBrowser.maybeCompleteAuthSession();
@@ -51,7 +52,7 @@ export const AmenidadesScreen: React.FC = () => {
   // Booking Modal State
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(() => {
-    return new Date().toISOString().split('T')[0];
+    return localDateISO();
   });
   const [startTime, setStartTime] = useState('10:00');
   const [endTime, setEndTime] = useState('12:00');
@@ -114,7 +115,7 @@ export const AmenidadesScreen: React.FC = () => {
 
   const openBookingModal = (amenity: Amenity) => {
     setSelectedAmenity(amenity);
-    const today = new Date().toISOString().split('T')[0];
+    const today = localDateISO();
     setSelectedDate(today);
     setStartTime(amenity.startTime || '10:00');
 
@@ -134,7 +135,7 @@ export const AmenidadesScreen: React.FC = () => {
     for (let i = 0; i < 7; i++) {
       const d = new Date();
       d.setDate(d.getDate() + i);
-      const iso = d.toISOString().split('T')[0];
+      const iso = localDateISO(d);
       const dayName = d.toLocaleDateString('es-ES', { weekday: 'short' });
       const dayNum = d.getDate();
       list.push({ iso, dayName: dayName.toUpperCase(), dayNum });
