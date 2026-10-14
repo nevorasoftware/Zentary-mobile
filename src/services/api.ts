@@ -97,6 +97,9 @@ export const isAuthRejection = (status?: number, code?: string) =>
   (status === 401 && (code === 'NO_TOKEN' || code === 'INVALID_TOKEN')) ||
   (status === 403 && (code === 'USER_DISABLED' || code === 'TENANT_REQUIRED'));
 
+// Tiempo máximo de espera de una petición
+const REQUEST_TIMEOUT_MS = 15000;
+
 class ApiService {
   private token: string | null = null;
   private authErrorHandler: (() => void) | null = null;
@@ -129,13 +132,30 @@ class ApiService {
     }
 
     let response: Response;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     try {
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers,
+        signal: controller.signal,
       });
-    } catch (e) {
+    } catch (e: any) {
+      if (e?.name === 'AbortError') {
+        throw new Error('El servidor tardó demasiado en responder. Intenta de nuevo.');
+      }
       throw new Error('Sin conexión. Revisa tu internet e intenta de nuevo.');
+    } finally {
+      clearTimeout(timeoutId);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const error: any = new Error(
+        `El servidor respondió de forma inesperada (${response.status}). Intenta de nuevo más tarde.`
+      );
+      error.status = response.status;
+      throw error;
     }
 
     const data = await response.json();

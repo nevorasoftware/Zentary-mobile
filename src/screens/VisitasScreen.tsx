@@ -12,6 +12,7 @@ import {
   Clipboard,
   Linking,
   Share,
+  RefreshControl,
 } from 'react-native';
 import { apiService, VisitItem, VisitStatusType } from '../services/api';
 import { localDateISO, localTimeHM } from '../utils/dates';
@@ -30,6 +31,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [loading, setLoading] = useState(true);
   const [isCancelling, setIsCancelling] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   // FastPass Special Modal State ("¿Cuándo te visitan? 🏃‍♀️")
   const [showFastPassModal, setShowFastPassModal] = useState(autoOpenFastPass || false);
@@ -72,15 +74,17 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [selectedVisit, setSelectedVisit] = useState<VisitItem | null>(null);
 
   // Load visits from database on mount & tab change
-  const fetchVisits = async () => {
+  const fetchVisits = async (isRefresh = false) => {
     try {
-      setLoading(true);
+      if (!isRefresh) setLoading(true);
+      setLoadError(false);
       const data = await apiService.getVisits();
       if (data.success && data.visits) {
         setVisits(data.visits);
       }
     } catch (error: any) {
       console.log('Error cargando visitas:', error.message);
+      setLoadError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -379,8 +383,28 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           <Text style={styles.loadingText}>Cargando visitas...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {filteredVisits.length === 0 ? (
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                fetchVisits(true);
+              }}
+              colors={['#1D6BE0']}
+            />
+          }
+        >
+          {loadError ? (
+            <View style={styles.emptyStateCard}>
+              <Text style={styles.emptyTitle}>No se pudieron cargar las visitas</Text>
+              <Text style={styles.emptySubtitle}>Revisa tu conexión e intenta de nuevo.</Text>
+              <TouchableOpacity style={styles.retryBtn} onPress={() => fetchVisits()}>
+                <Text style={styles.retryBtnText}>Reintentar</Text>
+              </TouchableOpacity>
+            </View>
+          ) : filteredVisits.length === 0 ? (
             <View style={styles.emptyStateCard}>
               <View style={styles.illustrationWrap}>
                 <View style={styles.mockWindow}>
@@ -826,6 +850,8 @@ const styles = StyleSheet.create({
   mockWindow: { width: 90, height: 80, borderWidth: 2, borderColor: '#6203FF', borderRadius: 12, alignItems: 'center', paddingTop: 8, backgroundColor: '#141A2E' },
   windowHeader: { width: 70, height: 4, backgroundColor: '#2A0A73', borderRadius: 2, marginBottom: 12 },
   sadFace: { fontSize: 32 },
+  retryBtn: { marginTop: 16, backgroundColor: '#1D6BE0', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  retryBtnText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 14 },
   emptyTitle: { fontSize: 18, fontWeight: '900', color: '#FFFFFF', textAlign: 'center', marginBottom: 8 },
   emptySubtitle: { fontSize: 13, color: '#94A3B8', textAlign: 'center' },
   visitCard: { backgroundColor: '#141A2E', borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 2, borderColor: 'rgba(98, 3, 255, 0.3)', borderBottomWidth: 4, borderBottomColor: '#2A0A73' },
