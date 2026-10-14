@@ -80,10 +80,7 @@ export const PaquetesScreen: React.FC = () => {
     <View style={styles.container}>
       {/* Top Header matching Image 3 */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Text style={styles.backArrow}>‹</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Paquete</Text>
+        <Text style={styles.headerTitle}>Paquetes</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
