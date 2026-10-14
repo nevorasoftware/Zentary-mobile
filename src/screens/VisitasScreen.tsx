@@ -28,6 +28,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [activeTab, setActiveTab] = useState<'EN_CURSO' | 'HISTORIAL' | 'OTRAS'>('EN_CURSO');
   const [visits, setVisits] = useState<VisitItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isCancelling, setIsCancelling] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   // FastPass Special Modal State ("¿Cuándo te visitan? 🏃‍♀️")
@@ -230,6 +231,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           text: 'Sí, Cancelar',
           style: 'destructive',
           onPress: async () => {
+            if (isCancelling) return;
+            setIsCancelling(true);
             try {
               const res = await apiService.cancelVisit(visitId);
               if (res.success) {
@@ -239,6 +242,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               }
             } catch (err: any) {
               Alert.alert('Error', err.message || 'Error al cancelar la invitación.');
+            } finally {
+              setIsCancelling(false);
             }
           },
         },
@@ -767,8 +772,13 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                   <TouchableOpacity
                     style={styles.deleteBtn}
                     onPress={() => handleCancelVisit(selectedVisit.id)}
+                    disabled={isCancelling}
                   >
-                    <Text style={styles.deleteBtnText}>🚫 Cancelar Invitación</Text>
+                    {isCancelling ? (
+                      <ActivityIndicator color="#DC2626" />
+                    ) : (
+                      <Text style={styles.deleteBtnText}>🚫 Cancelar Invitación</Text>
+                    )}
                   </TouchableOpacity>
                 )}
 

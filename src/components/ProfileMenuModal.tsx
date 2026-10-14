@@ -23,6 +23,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
   onLogout,
 }) => {
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
   const initials =
     user.fullName
@@ -37,7 +38,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
     <>
       <Modal visible={visible} transparent animationType="slide">
         <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
-          <View style={styles.sheetContainer}>
+          <View style={styles.sheetContainer} onStartShouldSetResponder={() => true}>
             {/* Top Avatar badge matching Image 4 */}
             <View style={styles.avatarWrapper}>
               {user.avatarUrl ? (
@@ -93,7 +94,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
                 <Text style={styles.chevron}>›</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.menuItem} onPress={onLogout}>
+              <TouchableOpacity style={styles.menuItem} onPress={() => setIsLogoutConfirmOpen(true)}>
                 <View style={styles.menuLeft}>
                   <Text style={styles.menuIcon}>🚪</Text>
                   <Text style={styles.menuText}>Cerrar sesión</Text>
@@ -108,6 +109,29 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             </View>
           </View>
         </TouchableOpacity>
+      </Modal>
+
+      <Modal visible={isLogoutConfirmOpen} transparent animationType="fade">
+        <View style={styles.confirmBackdrop}>
+          <View style={styles.confirmBox}>
+            <Text style={styles.confirmTitle}>Cerrar sesión</Text>
+            <Text style={styles.confirmMessage}>¿Seguro que deseas cerrar tu sesión?</Text>
+            <View style={styles.confirmActions}>
+              <TouchableOpacity style={styles.confirmCancelBtn} onPress={() => setIsLogoutConfirmOpen(false)}>
+                <Text style={styles.confirmCancelText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmLogoutBtn}
+                onPress={() => {
+                  setIsLogoutConfirmOpen(false);
+                  onLogout();
+                }}
+              >
+                <Text style={styles.confirmLogoutText}>Cerrar sesión</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
 
       <NotificationSettingsModal
@@ -222,6 +246,54 @@ const styles = StyleSheet.create({
   footer: {
     marginTop: 25,
     alignItems: 'center',
+  },
+  confirmBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(10, 25, 47, 0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  confirmBox: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 24,
+  },
+  confirmTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  confirmMessage: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 8,
+  },
+  confirmActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 24,
+  },
+  confirmCancelBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  confirmCancelText: {
+    color: '#6B7280',
+    fontWeight: '600',
+  },
+  confirmLogoutBtn: {
+    backgroundColor: '#DC2626',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  confirmLogoutText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
   versionText: {
     fontSize: 13,
