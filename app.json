@@ -3,6 +3,7 @@
     "name": "Zentary",
     "slug": "zentary-app",
     "version": "2.53.0",
+    "scheme": "zentary",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
