@@ -139,7 +139,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
 
       if (res.success && res.urlCompletarPago3Ds) {
         Alert.alert(
-          '🔒 Autenticación Wompi 3DS',
+          '🔒 Verificación de tu banco',
           'Se abrirá la pasarela segura de Wompi para completar la verificación de tu banco.',
           [
             {
@@ -148,7 +148,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 try {
                   await Linking.openURL(res.urlCompletarPago3Ds);
                 } catch (linkErr) {
-                  Alert.alert('Enlace 3DS', `Abre este enlace en tu navegador para completar el pago:\n${res.urlCompletarPago3Ds}`);
+                  Alert.alert('Verificación de tu banco', `Abre este enlace en tu navegador para completar el pago:\n${res.urlCompletarPago3Ds}`);
                 }
                 setSelectedPayment(null);
                 fetchPayments();
@@ -157,7 +157,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
           ]
         );
       } else {
-        Alert.alert('Error de Pago', res.message || 'No se pudo iniciar la transacción Wompi 3DS.');
+        Alert.alert('Error de Pago', res.message || 'No se pudo iniciar el pago con tarjeta.');
       }
     } catch (error: any) {
       Alert.alert('Error de Conexión', error.message || 'Fallo al comunicarse con el servidor de pagos.');
@@ -187,7 +187,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>Saldo Pendiente Total</Text>
           <Text style={styles.balanceAmount}>${totalPendingBalance.toFixed(2)}</Text>
-          <Text style={styles.balanceSubtext}>Zentary Payment Gateway • Wompi 3DS</Text>
+          <Text style={styles.balanceSubtext}>Pagos Zentary • Pago con tarjeta</Text>
         </View>
 
         <View style={styles.sectionHeader}>
@@ -255,14 +255,14 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         <View style={styles.modalOverlay}>
           <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
             <View style={styles.modalCard}>
-              <Text style={styles.modalTitle}>Pago Seguro Wompi 3DS</Text>
+              <Text style={styles.modalTitle}>Pago con tarjeta</Text>
               <Text style={styles.modalSub}>
                 {selectedPayment?.concept} — <Text style={styles.modalAmount}>${selectedPayment?.amount.toFixed(2)}</Text>
               </Text>
 
               <View style={styles.wompiBadgeBox}>
                 <Text style={styles.wompiBadgeText}>
-                  🛡️ Transacción protegida con estándar 3D Secure Wompi El Salvador.
+                  🛡️ Transacción protegida con la verificación de tu banco.
                 </Text>
               </View>
 
@@ -381,7 +381,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                   {processing ? (
                     <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : (
-                    <Text style={styles.saveBtnText}>Pagar con 3DS 🔒</Text>
+                    <Text style={styles.saveBtnText}>Pagar con tarjeta 🔒</Text>
                   )}
                 </TouchableOpacity>
               </View>

@@ -220,22 +220,22 @@ export const AmenidadesScreen: React.FC = () => {
           );
 
           if (authResult.type === 'success' || authResult.type === 'dismiss') {
-            setSuccessMessage(`¡Pago Wompi procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
+            setSuccessMessage(`¡Pago procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
             setIsSuccessModalOpen(true);
             fetchAmenities();
           }
         } catch (webErr) {
           console.warn('WebBrowser error, falling back to Linking:', webErr);
           await Linking.openURL(res.urlCompletarPago3Ds);
-          setSuccessMessage(`¡Pago Wompi iniciado! Revisa tu reservación tras completar la verificación 3DS.`);
+          setSuccessMessage(`¡Pago iniciado! Revisa tu reservación tras completar la verificación de tu banco.`);
           setIsSuccessModalOpen(true);
           fetchAmenities();
         }
       } else {
-        Alert.alert('Error en Pago', res.message || 'No se pudo iniciar el pago Wompi.');
+        Alert.alert('Error en Pago', res.message || 'No se pudo iniciar el pago con tarjeta.');
       }
     } catch (err: any) {
-      Alert.alert('Error Wompi', err.message || 'Fallo en la comunicación con el procesador de pago.');
+      Alert.alert('Error en el pago', err.message || 'Fallo en la comunicación con el procesador de pago.');
     } finally {
       setIsProcessingWompi(false);
     }
@@ -449,7 +449,7 @@ export const AmenidadesScreen: React.FC = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💳 Pago Seguro Wompi 3DS</Text>
+              <Text style={styles.modalTitle}>💳 Pago con tarjeta</Text>
               <TouchableOpacity onPress={() => setIsPaymentModalOpen(false)}>
                 <Text style={styles.closeModalBtn}>✕</Text>
               </TouchableOpacity>
@@ -532,7 +532,7 @@ export const AmenidadesScreen: React.FC = () => {
                 {isProcessingWompi ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.wompiPayBtnText}>PROCESAR PAGO WOMPI 3DS ›</Text>
+                  <Text style={styles.wompiPayBtnText}>PAGAR CON TARJETA ›</Text>
                 )}
               </TouchableOpacity>
             </ScrollView>

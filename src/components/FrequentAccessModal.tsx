@@ -57,7 +57,7 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
                 <Text style={styles.iconEmoji}>📱</Text>
               </View>
               <Text style={styles.benefitText}>
-                Regístra a las personas que no necesitan de tu aprobación para ingresar.
+                Registra a las personas que no necesitan de tu aprobación para ingresar.
               </Text>
             </View>
 

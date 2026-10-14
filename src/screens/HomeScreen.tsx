@@ -126,7 +126,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <Text style={styles.actionEmoji}>💳</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.actionTitle}>Pagos y Mantenimiento Wompi 3DS</Text>
+                <Text style={styles.actionTitle}>Pagos y mantenimiento</Text>
                 <Text style={styles.actionSubtitle}>Paga tu cuota de forma 100% segura online</Text>
               </View>
               <Text style={styles.chevronIcon}>›</Text>
