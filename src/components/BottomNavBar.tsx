@@ -55,7 +55,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
 const styles = StyleSheet.create({
   navContainer: {
     flexDirection: 'row',
-    height: 76,
+    minHeight: 76,
     backgroundColor: '#0A0F1F',
     borderTopWidth: 2,
     borderTopColor: '#2A0A73',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   iconBadge: {
     width: 38,
-    height: 38,
+    minHeight: 38,
     borderRadius: 14,
     backgroundColor: 'rgba(42, 10, 115, 0.5)',
     justifyContent: 'center',

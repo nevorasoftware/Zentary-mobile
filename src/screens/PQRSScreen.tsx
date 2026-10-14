@@ -207,6 +207,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
         <TouchableOpacity
           style={[styles.segmentBtn, activeSegment === 'PQRS' ? styles.segmentActive : styles.segmentInactive]}
           onPress={() => setActiveSegment('PQRS')}
+          hitSlop={{ top: 2, bottom: 2 }}
         >
           <Text style={[styles.segmentText, activeSegment === 'PQRS' && styles.segmentActiveText]}>
             PQRS
@@ -319,6 +320,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                   key={cat}
                   style={[styles.catBadge, category === cat && styles.catBadgeActive]}
                   onPress={() => setCategory(cat)}
+                  hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
                 >
                   <Text style={[styles.catText, category === cat && styles.catTextActive]}>
                     {cat}
@@ -378,7 +380,11 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
           >
             {/* Modal Top Header */}
             <View style={styles.detailHeader}>
-              <TouchableOpacity style={styles.closeDetailBtn} onPress={() => { setShowDetailModal(false); setSelectedPqrs(null); }}>
+              <TouchableOpacity
+                style={styles.closeDetailBtn}
+                onPress={() => { setShowDetailModal(false); setSelectedPqrs(null); }}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
                 <Text style={styles.closeDetailText}>‹ Volver</Text>
               </TouchableOpacity>
               <Text style={styles.detailHeaderTitle} numberOfLines={1}>
@@ -517,7 +523,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0F1F',
   },
   header: {
-    height: 80,
+    minHeight: 80,
     backgroundColor: '#2A0A73',
     borderBottomWidth: 3,
     borderBottomColor: '#6203FF',
@@ -568,7 +574,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#141A2E',
     borderRadius: 14,
     paddingHorizontal: 16,
-    height: 48,
+    minHeight: 48,
     marginBottom: 16,
     borderWidth: 1.5,
     borderColor: '#2A0A73',
@@ -798,7 +804,7 @@ const styles = StyleSheet.create({
 
   // Detail Modal Styles
   detailHeader: {
-    height: 60,
+    minHeight: 60,
     backgroundColor: '#1D6BE0',
     flexDirection: 'row',
     alignItems: 'center',

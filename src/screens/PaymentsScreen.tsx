@@ -404,7 +404,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               </View>
 
               <View style={styles.modalActions}>
-                <TouchableOpacity style={styles.cancelBtn} onPress={() => setSelectedPayment(null)}>
+                <TouchableOpacity style={styles.cancelBtn} onPress={() => setSelectedPayment(null)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
                   <Text style={styles.cancelBtnText}>Cancelar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0F1F',
   },
   header: {
-    height: 80,
+    minHeight: 80,
     backgroundColor: '#2A0A73',
     borderBottomWidth: 3,
     borderBottomColor: '#6203FF',

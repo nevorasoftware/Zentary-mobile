@@ -172,7 +172,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Delivery {selectedPlatform?.name} 🛵</Text>
-              <TouchableOpacity onPress={() => setSelectedPlatform(null)}>
+              <TouchableOpacity onPress={() => setSelectedPlatform(null)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text style={styles.closeX}>✕</Text>
               </TouchableOpacity>
             </View>

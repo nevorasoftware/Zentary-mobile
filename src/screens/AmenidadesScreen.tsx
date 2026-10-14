@@ -387,7 +387,7 @@ export const AmenidadesScreen: React.FC = () => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Reservar {selectedAmenity?.name}</Text>
-              <TouchableOpacity onPress={() => setIsBookingModalOpen(false)}>
+              <TouchableOpacity onPress={() => setIsBookingModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text style={styles.closeModalBtn}>✕</Text>
               </TouchableOpacity>
             </View>
@@ -504,7 +504,7 @@ export const AmenidadesScreen: React.FC = () => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>💳 Pago con tarjeta</Text>
-              <TouchableOpacity onPress={() => setIsPaymentModalOpen(false)}>
+              <TouchableOpacity onPress={() => setIsPaymentModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text style={styles.closeModalBtn}>✕</Text>
               </TouchableOpacity>
             </View>

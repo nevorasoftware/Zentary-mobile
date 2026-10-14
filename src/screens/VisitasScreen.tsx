@@ -335,11 +335,11 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Visitas y accesos</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          <TouchableOpacity style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)}>
+          <TouchableOpacity style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <Text style={styles.guardHeaderBtnText}>🏃‍♀️ FastPass</Text>
           </TouchableOpacity>
           {canUseGuardFunctions && (
-            <TouchableOpacity style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)}>
+            <TouchableOpacity style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text style={styles.guardHeaderBtnText}>Validar código</Text>
             </TouchableOpacity>
           )}
@@ -351,6 +351,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         <TouchableOpacity
           style={[styles.tabItem, activeTab === 'EN_CURSO' && styles.activeTabItem]}
           onPress={() => handleTabChange('EN_CURSO')}
+          hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'EN_CURSO' && styles.activeTabText]}>
             EN CURSO
@@ -360,6 +361,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         <TouchableOpacity
           style={[styles.tabItem, activeTab === 'HISTORIAL' && styles.activeTabItem]}
           onPress={() => handleTabChange('HISTORIAL')}
+          hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'HISTORIAL' && styles.activeTabText]}>
             HISTORIAL
@@ -369,6 +371,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         <TouchableOpacity
           style={[styles.tabItem, activeTab === 'OTRAS' && styles.activeTabItem]}
           onPress={() => handleTabChange('OTRAS')}
+          hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'OTRAS' && styles.activeTabText]}>
             CANCELADAS / OTROS
@@ -480,7 +483,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           <View style={styles.modalCard}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text style={[styles.modalTitle, { fontSize: 20, color: '#1D4ED8' }]}>¿Cuándo te visitan? 🏃‍♀️</Text>
-              <TouchableOpacity onPress={() => setShowFastPassModal(false)}>
+              <TouchableOpacity onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text style={{ fontSize: 18, color: '#64748B', fontWeight: 'bold' }}>✕</Text>
               </TouchableOpacity>
             </View>
@@ -496,6 +499,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                   fastPassDateType === 'HOY' && styles.optionChipActive,
                 ]}
                 onPress={() => setFastPassDateType('HOY')}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
               >
                 <Text style={[styles.optionChipText, fastPassDateType === 'HOY' && styles.optionChipTextActive]}>
                   📅 Hoy
@@ -508,6 +512,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                   fastPassDateType === 'MANANA' && styles.optionChipActive,
                 ]}
                 onPress={() => setFastPassDateType('MANANA')}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
               >
                 <Text style={[styles.optionChipText, fastPassDateType === 'MANANA' && styles.optionChipTextActive]}>
                   ☀️ Mañana
@@ -531,6 +536,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                     fastPassTimeSlot === slot.id && styles.timeSlotChipActive,
                   ]}
                   onPress={() => setFastPassTimeSlot(slot.id as any)}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                 >
                   <Text style={[styles.timeSlotChipText, fastPassTimeSlot === slot.id && styles.timeSlotChipTextActive]}>
                     {slot.label}
@@ -558,7 +564,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowFastPassModal(false)}>
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -631,7 +637,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowAddModal(false)}>
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowAddModal(false)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.saveBtn} onPress={handleCreateVisit} disabled={creating}>
@@ -833,7 +839,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0A0F1F' },
   header: {
-    height: 80,
+    minHeight: 80,
     backgroundColor: '#2A0A73',
     borderBottomWidth: 3,
     borderBottomColor: '#6203FF',

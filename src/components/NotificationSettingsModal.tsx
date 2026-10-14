@@ -37,7 +37,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
         <View style={styles.sheet}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>🔔 Centro de Notificaciones</Text>
-            <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
+            <TouchableOpacity style={styles.closeBtn} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text style={styles.closeText}>✕</Text>
             </TouchableOpacity>
           </View>

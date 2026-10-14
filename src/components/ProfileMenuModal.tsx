@@ -51,7 +51,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             </View>
 
             {/* Close button top right */}
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <TouchableOpacity style={styles.closeButton} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text style={styles.closeIcon}>✕</Text>
             </TouchableOpacity>
 
