@@ -24,6 +24,7 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('Inicio');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
+  const [pendingPqrsId, setPendingPqrsId] = useState<string | null>(null);
   const [autoOpenFastPass, setAutoOpenFastPass] = useState(false);
   const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
 
@@ -86,7 +87,9 @@ export default function App() {
     };
     checkSavedSession();
 
-    const cleanupNotificationListener = setupNotificationListeners((_pqrsId) => {
+    const cleanupNotificationListener = setupNotificationListeners((pqrsId) => {
+      setPendingPqrsId(pqrsId);
+      setIsDeliveryOpen(false);
       setCurrentTab('PQRS');
     });
 
@@ -172,7 +175,7 @@ export default function App() {
       case 'Amenidades':
         return <AmenidadesScreen />;
       case 'PQRS':
-        return <PQRSScreen />;
+        return <PQRSScreen initialPqrsId={pendingPqrsId} onInitialPqrsHandled={() => setPendingPqrsId(null)} />;
       case 'Paquetes':
         return <PaquetesScreen />;
       case 'Pagos':

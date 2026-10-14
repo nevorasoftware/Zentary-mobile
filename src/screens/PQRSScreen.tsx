@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -16,9 +16,18 @@ import {
 } from 'react-native';
 import { apiService, PqrsItem, PqrsDetailItem } from '../services/api';
 
-export const PQRSScreen: React.FC = () => {
+interface PQRSScreenProps {
+  initialPqrsId?: string | null;
+  onInitialPqrsHandled?: () => void;
+}
+
+export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitialPqrsHandled }) => {
   const [activeSegment, setActiveSegment] = useState<'Chat' | 'PQRS'>('PQRS');
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const latestRequestId = useRef(0);
+  const detailScrollRef = useRef<any>(null);
   const [pqrsList, setPqrsList] = useState<PqrsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -38,25 +47,43 @@ export const PQRSScreen: React.FC = () => {
   const [isSendingReply, setIsSendingReply] = useState(false);
 
   const fetchPqrsList = async (query = '', isRefresh = false) => {
+    const requestId = ++latestRequestId.current;
     if (isRefresh) setRefreshing(true);
-    else setIsLoading(true);
+    else setIsSearching(true);
 
     try {
       const res = await apiService.getPqrsList(query);
+      if (requestId !== latestRequestId.current) return;
       if (res.success && res.pqrsList) {
         setPqrsList(res.pqrsList);
       }
     } catch (error: any) {
+      if (requestId !== latestRequestId.current) return;
       console.log('Error fetching PQRS list:', error);
     } finally {
-      setIsLoading(false);
-      setRefreshing(false);
+      if (requestId === latestRequestId.current) {
+        setIsLoading(false);
+        setIsSearching(false);
+        setRefreshing(false);
+      }
     }
   };
 
   useEffect(() => {
-    fetchPqrsList(searchQuery);
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+    return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  useEffect(() => {
+    fetchPqrsList(debouncedQuery);
+  }, [debouncedQuery]);
+
+  useEffect(() => {
+    if (initialPqrsId) {
+      handleOpenDetail(initialPqrsId);
+      if (onInitialPqrsHandled) onInitialPqrsHandled();
+    }
+  }, [initialPqrsId]);
 
   const handleCreateSubmit = async () => {
     if (!subject.trim() || !description.trim()) {
@@ -89,6 +116,7 @@ export const PQRSScreen: React.FC = () => {
   };
 
   const handleOpenDetail = async (pqrsId: string) => {
+    setSelectedPqrs(null);
     setShowDetailModal(true);
     setIsLoadingDetail(true);
     try {
@@ -108,11 +136,11 @@ export const PQRSScreen: React.FC = () => {
 
     setIsSendingReply(true);
     const messageContent = replyText.trim();
-    setReplyText('');
 
     try {
       const res = await apiService.sendPqrsMessage(selectedPqrs.id, messageContent);
       if (res.success && res.message) {
+        setReplyText('');
         setSelectedPqrs((prev) =>
           prev
             ? {
@@ -198,7 +226,7 @@ export const PQRSScreen: React.FC = () => {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={() => fetchPqrsList(searchQuery, true)}
+            onRefresh={() => fetchPqrsList(debouncedQuery, true)}
             colors={['#1D6BE0']}
           />
         }
@@ -213,6 +241,7 @@ export const PQRSScreen: React.FC = () => {
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
+          {isSearching && !isLoading && <ActivityIndicator size="small" color="#1D6BE0" />}
         </View>
 
         {/* Blue "+ Crear nueva PQRS" button */}
@@ -347,7 +376,7 @@ export const PQRSScreen: React.FC = () => {
           >
             {/* Modal Top Header */}
             <View style={styles.detailHeader}>
-              <TouchableOpacity style={styles.closeDetailBtn} onPress={() => setShowDetailModal(false)}>
+              <TouchableOpacity style={styles.closeDetailBtn} onPress={() => { setShowDetailModal(false); setSelectedPqrs(null); }}>
                 <Text style={styles.closeDetailText}>‹ Volver</Text>
               </TouchableOpacity>
               <Text style={styles.detailHeaderTitle} numberOfLines={1}>
@@ -376,7 +405,11 @@ export const PQRSScreen: React.FC = () => {
                 </View>
 
                 {/* Messages Chat List */}
-                <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 20 }}>
+                <ScrollView
+                  ref={detailScrollRef}
+                  onContentSizeChange={() => detailScrollRef.current?.scrollToEnd({ animated: true })}
+                  contentContainerStyle={{ padding: 16, paddingBottom: 20 }}
+                >
                   {selectedPqrs.messages && selectedPqrs.messages.length > 0 ? (
                     selectedPqrs.messages.map((m) => {
                       const isStaff = m.isStaff;
