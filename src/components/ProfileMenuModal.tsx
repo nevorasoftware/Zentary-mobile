@@ -51,8 +51,8 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             </View>
 
             {/* Close button top right */}
-            <TouchableOpacity style={styles.closeButton} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Text style={styles.closeIcon}>✕</Text>
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" style={styles.closeButton} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeIcon}>✕</Text>
             </TouchableOpacity>
 
             {/* Profile Name info */}
@@ -65,41 +65,43 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             {/* Menu Options */}
             <View style={styles.menuOptions}>
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.menuItem}
                 onPress={() => setIsNotifModalOpen(true)}
               >
                 <View style={styles.menuLeft}>
-                  <Text style={styles.menuIcon}>🔔</Text>
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🔔</Text>
                   <Text style={styles.menuText}>Notificaciones y Recordatorios</Text>
                 </View>
-                <Text style={styles.chevron}>›</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.menuItem}
                 onPress={() => setIsNotifModalOpen(true)}
               >
                 <View style={styles.menuLeft}>
-                  <Text style={styles.menuIcon}>⚙️</Text>
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>⚙️</Text>
                   <Text style={styles.menuText}>Configuraciones</Text>
                 </View>
-                <Text style={styles.chevron}>›</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.menuItem}>
+              <TouchableOpacity accessibilityRole="button" style={styles.menuItem}>
                 <View style={styles.menuLeft}>
-                  <Text style={styles.menuIcon}>🎧</Text>
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🎧</Text>
                   <Text style={styles.menuText}>Soporte técnico</Text>
                 </View>
-                <Text style={styles.chevron}>›</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.menuItem} onPress={() => setIsLogoutConfirmOpen(true)}>
+              <TouchableOpacity accessibilityRole="button" style={styles.menuItem} onPress={() => setIsLogoutConfirmOpen(true)}>
                 <View style={styles.menuLeft}>
-                  <Text style={styles.menuIcon}>🚪</Text>
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🚪</Text>
                   <Text style={styles.menuText}>Cerrar sesión</Text>
                 </View>
-                <Text style={styles.chevron}>›</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
             </View>
 
@@ -117,10 +119,11 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             <Text style={styles.confirmTitle}>Cerrar sesión</Text>
             <Text style={styles.confirmMessage}>¿Seguro que deseas cerrar tu sesión?</Text>
             <View style={styles.confirmActions}>
-              <TouchableOpacity style={styles.confirmCancelBtn} onPress={() => setIsLogoutConfirmOpen(false)}>
+              <TouchableOpacity accessibilityRole="button" style={styles.confirmCancelBtn} onPress={() => setIsLogoutConfirmOpen(false)}>
                 <Text style={styles.confirmCancelText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.confirmLogoutBtn}
                 onPress={() => {
                   setIsLogoutConfirmOpen(false);

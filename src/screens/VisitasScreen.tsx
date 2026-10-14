@@ -340,11 +340,11 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Visitas y accesos</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          <TouchableOpacity style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <TouchableOpacity accessibilityRole="button" style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <Text style={styles.guardHeaderBtnText}>🏃‍♀️ FastPass</Text>
           </TouchableOpacity>
           {canUseGuardFunctions && (
-            <TouchableOpacity style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <TouchableOpacity accessibilityRole="button" style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text style={styles.guardHeaderBtnText}>Validar código</Text>
             </TouchableOpacity>
           )}
@@ -354,6 +354,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       {/* Navigation Sub-Tabs */}
       <View style={styles.tabBar}>
         <TouchableOpacity
+          accessibilityRole="tab" accessibilityState={{ selected: activeTab === 'EN_CURSO' }}
           style={[styles.tabItem, activeTab === 'EN_CURSO' && styles.activeTabItem]}
           onPress={() => handleTabChange('EN_CURSO')}
           hitSlop={{ top: 4, bottom: 4 }}
@@ -364,6 +365,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         </TouchableOpacity>
 
         <TouchableOpacity
+          accessibilityRole="tab" accessibilityState={{ selected: activeTab === 'HISTORIAL' }}
           style={[styles.tabItem, activeTab === 'HISTORIAL' && styles.activeTabItem]}
           onPress={() => handleTabChange('HISTORIAL')}
           hitSlop={{ top: 4, bottom: 4 }}
@@ -374,6 +376,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         </TouchableOpacity>
 
         <TouchableOpacity
+          accessibilityRole="tab" accessibilityState={{ selected: activeTab === 'OTRAS' }}
           style={[styles.tabItem, activeTab === 'OTRAS' && styles.activeTabItem]}
           onPress={() => handleTabChange('OTRAS')}
           hitSlop={{ top: 4, bottom: 4 }}
@@ -408,7 +411,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <View style={styles.emptyStateCard}>
               <Text style={styles.emptyTitle}>No se pudieron cargar las visitas</Text>
               <Text style={styles.emptySubtitle}>Revisa tu conexión e intenta de nuevo.</Text>
-              <TouchableOpacity style={styles.retryBtn} onPress={() => fetchVisits()}>
+              <TouchableOpacity accessibilityRole="button" style={styles.retryBtn} onPress={() => fetchVisits()}>
                 <Text style={styles.retryBtnText}>Reintentar</Text>
               </TouchableOpacity>
             </View>
@@ -417,7 +420,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               <View style={styles.illustrationWrap}>
                 <View style={styles.mockWindow}>
                   <View style={styles.windowHeader} />
-                  <Text style={styles.sadFace}>📋</Text>
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.sadFace}>📋</Text>
                 </View>
               </View>
               <Text style={styles.emptyTitle}>
@@ -436,6 +439,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               const badge = getStatusBadge(item.status);
               return (
                 <TouchableOpacity
+                  accessibilityRole="button"
                   key={item.id}
                   style={styles.visitCard}
                   onPress={() => setSelectedVisit(item)}
@@ -478,8 +482,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       )}
 
       {/* Floating Button '+' to Create Visit */}
-      <TouchableOpacity style={styles.fab} onPress={() => setShowAddModal(true)}>
-        <Text style={styles.fabIcon}>+</Text>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="Nueva invitación" style={styles.fab} onPress={() => setShowAddModal(true)}>
+        <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
 
       {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
@@ -489,8 +493,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           <View style={styles.modalCard}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text style={[styles.modalTitle, { fontSize: 20, color: '#1D4ED8' }]}>¿Cuándo te visitan? 🏃‍♀️</Text>
-              <TouchableOpacity onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text style={{ fontSize: 18, color: '#64748B', fontWeight: 'bold' }}>✕</Text>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={{ fontSize: 18, color: '#64748B', fontWeight: 'bold' }}>✕</Text>
               </TouchableOpacity>
             </View>
 
@@ -500,6 +504,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <Text style={styles.label}>1. Selecciona el Día de la Visita</Text>
             <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
               <TouchableOpacity
+                accessibilityRole="button" accessibilityState={{ selected: fastPassDateType === 'HOY' }}
                 style={[
                   styles.optionChip,
                   fastPassDateType === 'HOY' && styles.optionChipActive,
@@ -513,6 +518,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               </TouchableOpacity>
 
               <TouchableOpacity
+                accessibilityRole="button" accessibilityState={{ selected: fastPassDateType === 'MANANA' }}
                 style={[
                   styles.optionChip,
                   fastPassDateType === 'MANANA' && styles.optionChipActive,
@@ -536,6 +542,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 { id: 'NOCHE', label: '🌙 Noche (09:00 PM)' },
               ].map((slot) => (
                 <TouchableOpacity
+                  accessibilityRole="button" accessibilityState={{ selected: fastPassTimeSlot === slot.id }}
                   key={slot.id}
                   style={[
                     styles.timeSlotChip,
@@ -554,6 +561,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             {/* Contact / Phone Selection */}
             <Text style={styles.label}>3. Contacto / Visitante *</Text>
             <TextInput
+              accessibilityLabel="Nombre del visitante"
               style={styles.input}
               placeholder="Nombre del visitante (Ej. Miguel Rodríguez)"
               value={fastPassContactName}
@@ -562,6 +570,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
             <Text style={styles.label}>Número de WhatsApp (Opcional)</Text>
             <TextInput
+              accessibilityLabel="Número de WhatsApp"
               style={styles.input}
               placeholder="Ej. 7000-0000"
               keyboardType="phone-pad"
@@ -572,10 +581,11 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+              <TouchableOpacity accessibilityRole="button" style={styles.cancelBtn} onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                accessibilityRole="button"
                 style={[styles.saveBtn, { backgroundColor: '#16803C' }]}
                 onPress={handleCreateFastPass}
                 disabled={generatingFastPass}
@@ -602,6 +612,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
             <Text style={styles.label}>Nombre completo del visitante *</Text>
             <TextInput
+              accessibilityLabel="Nombre completo del visitante"
               style={styles.input}
               placeholder="Ej. Juan Pérez"
               value={visitorName}
@@ -610,6 +621,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
             <Text style={styles.label}>Número de Teléfono (WhatsApp) *</Text>
             <TextInput
+              accessibilityLabel="Número de teléfono"
               style={styles.input}
               placeholder="Ej. 7000-0000"
               keyboardType="phone-pad"
@@ -621,6 +633,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               <View style={{ flex: 1 }}>
                 <Text style={styles.label}>Fecha de visita</Text>
                 <TextInput
+                  accessibilityLabel="Fecha de visita"
                   style={styles.input}
                   placeholder="AAAA-MM-DD"
                   value={visitDate}
@@ -630,6 +643,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               <View style={{ flex: 1 }}>
                 <Text style={styles.label}>Hora inicio (Desde)</Text>
                 <TextInput
+                  accessibilityLabel="Hora de inicio"
                   style={styles.input}
                   placeholder="HH:MM (Ej. 18:00)"
                   value={validFrom}
@@ -640,6 +654,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
             <Text style={styles.label}>Notas adicionales (Opcional)</Text>
             <TextInput
+              accessibilityLabel="Notas adicionales"
               style={styles.input}
               placeholder="Ej. Visita familiar"
               returnKeyType="done"
@@ -649,10 +664,10 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             />
 
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowAddModal(false)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+              <TouchableOpacity accessibilityRole="button" style={styles.cancelBtn} onPress={() => setShowAddModal(false)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
                 <Text style={styles.cancelBtnText}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.saveBtn} onPress={handleCreateVisit} disabled={creating}>
+              <TouchableOpacity accessibilityRole="button" style={styles.saveBtn} onPress={handleCreateVisit} disabled={creating}>
                 {creating ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
@@ -671,7 +686,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           <View style={styles.modalCard}>
             <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#DCFCE7', justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
-                <Text style={{ fontSize: 32 }}>📲</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={{ fontSize: 32 }}>📲</Text>
               </View>
               <Text style={styles.modalTitle}>¡Invitación Enviada!</Text>
             </View>
@@ -687,6 +702,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             </View>
 
             <TouchableOpacity
+              accessibilityRole="button"
               style={styles.saveBtn}
               onPress={() => setShareData(null)}
             >
@@ -714,6 +730,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <Text style={styles.modalDesc}>Escanea o ingresa el código de token dinámico del visitante.</Text>
 
             <TextInput
+              accessibilityLabel="Código de acceso del visitante"
               style={[styles.input, { fontSize: 18, fontWeight: 'bold', textTransform: 'uppercase' }]}
               placeholder="Ej. ACCESS-8F92A7C1"
               returnKeyType="done"
@@ -722,7 +739,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               onChangeText={setQrInputToken}
             />
 
-            <TouchableOpacity style={styles.saveBtn} onPress={handleScanQR} disabled={validatingQr}>
+            <TouchableOpacity accessibilityRole="button" style={styles.saveBtn} onPress={handleScanQR} disabled={validatingQr}>
               {validatingQr ? (
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
@@ -766,6 +783,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                     </View>
 
                     <TouchableOpacity
+                      accessibilityRole="button"
                       style={styles.confirmEntryBtn}
                       onPress={() => handleConfirmEntry(scanResult.visit.id)}
                       disabled={confirmingEntry}
@@ -782,6 +800,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             )}
 
             <TouchableOpacity
+              accessibilityRole="button"
               style={[styles.cancelBtn, { marginTop: 16, alignItems: 'center' }]}
               onPress={() => {
                 setShowGuardModal(false);
@@ -826,6 +845,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
                 {(selectedVisit.status === 'PENDIENTE_REGISTRO' || selectedVisit.status === 'DATOS_COMPLETADOS') && (
                   <TouchableOpacity
+                    accessibilityRole="button"
                     style={styles.deleteBtn}
                     onPress={() => handleCancelVisit(selectedVisit.id)}
                     disabled={isCancelling}
@@ -839,6 +859,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 )}
 
                 <TouchableOpacity
+                  accessibilityRole="button"
                   style={[styles.cancelBtn, { marginTop: 12, alignItems: 'center' }]}
                   onPress={() => setSelectedVisit(null)}
                 >

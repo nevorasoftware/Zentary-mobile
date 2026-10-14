@@ -120,8 +120,8 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
       {/* Header Bar matching Screenshot 2 design */}
       <View style={styles.header}>
         {onBack && (
-          <TouchableOpacity style={styles.backBtn} onPress={onBack}>
-            <Text style={styles.backArrow}>‹</Text>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" style={styles.backBtn} onPress={onBack}>
+            <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.backArrow}>‹</Text>
           </TouchableOpacity>
         )}
         <Text style={styles.headerTitle}>Delivery</Text>
@@ -134,6 +134,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
         <ScrollView contentContainerStyle={styles.gridContainer} showsVerticalScrollIndicator={false}>
           {DELIVERY_PLATFORMS.map((platform) => (
             <TouchableOpacity
+              accessibilityRole="button"
               key={platform.id}
               style={styles.cardItem}
               onPress={() => handleSelectPlatform(platform)}
@@ -155,7 +156,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
                 ) : platform.id === 'otro' ? (
                   <View style={styles.otroIconBox}>
                     <Text style={styles.otroPlus}>+</Text>
-                    <Text style={styles.otroUser}>👤</Text>
+                    <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.otroUser}>👤</Text>
                   </View>
                 ) : (
                   <Text style={[styles.logoText, { color: platform.textColor }]}>{platform.iconText}</Text>
@@ -175,8 +176,8 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Delivery {selectedPlatform?.name} 🛵</Text>
-              <TouchableOpacity onPress={() => setSelectedPlatform(null)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text style={styles.closeX}>✕</Text>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setSelectedPlatform(null)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeX}>✕</Text>
               </TouchableOpacity>
             </View>
 
@@ -187,6 +188,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
             <View style={styles.formGroup}>
               <Text style={styles.label}>NOMBRE DEL REPARTIDOR / PEDIDO (OPCIONAL)</Text>
               <TextInput
+                accessibilityLabel="Nombre del repartidor o pedido"
                 style={styles.input}
                 placeholder="Ej. Carlos - Pedido #4820"
                 placeholderTextColor="#94A3B8"
@@ -198,6 +200,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
             <View style={styles.formGroup}>
               <Text style={styles.label}>INSTRUCCIONES PARA GARITA (OPCIONAL)</Text>
               <TextInput
+                accessibilityLabel="Instrucciones para garita"
                 style={[styles.input, { height: 70 }]}
                 placeholder="Ej. Dejar paquete en recepción / Torre B Apt 502"
                 placeholderTextColor="#94A3B8"
@@ -208,6 +211,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
             </View>
 
             <TouchableOpacity
+              accessibilityRole="button"
               style={styles.submitBtn}
               onPress={handleCreateDeliveryPass}
               disabled={isSubmitting}
@@ -228,7 +232,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalCard, { alignItems: 'center', paddingVertical: 28 }]}>
             <View style={styles.successBadge}>
-              <Text style={{ fontSize: 32 }}>🛵</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={{ fontSize: 32 }}>🛵</Text>
             </View>
             <Text style={styles.successTitle}>¡Acceso Autorizado!</Text>
             <Text style={styles.successDesc}>
@@ -241,6 +245,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
             </View>
 
             <TouchableOpacity
+              accessibilityRole="button"
               style={styles.closeSuccessBtn}
               onPress={() => setSuccessModal({ open: false, passCode: '', platform: '' })}
             >

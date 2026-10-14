@@ -45,8 +45,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </View>
           </View>
 
-          <TouchableOpacity style={styles.bellBtn} onPress={() => setIsNotifModalOpen(true)}>
-            <Text style={styles.bellIcon}>🔔</Text>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Notificaciones" style={styles.bellBtn} onPress={() => setIsNotifModalOpen(true)}>
+            <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.bellIcon}>🔔</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -63,73 +63,74 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <View style={styles.actionGrid}>
           {/* Fast Pass Highlight */}
           <TouchableOpacity
+            accessibilityRole="button"
             style={[styles.actionCard, styles.fastPassCard]}
             onPress={onNavigateToFastPass || onNavigateToVisitas}
             activeOpacity={0.85}
           >
             <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
-              <Text style={styles.actionEmoji}>🏃‍♀️</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>🏃‍♀️</Text>
             </View>
             <Text style={[styles.actionTitle, { color: '#FFCF36' }]}>Fast Pass</Text>
             <Text style={styles.actionSubtitle}>Invitación rápida QR</Text>
           </TouchableOpacity>
 
           {/* Visitas */}
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToVisitas} activeOpacity={0.85}>
+          <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToVisitas} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#1877F2', borderColor: '#0B3C91' }]}>
-              <Text style={styles.actionEmoji}>👥</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>👥</Text>
             </View>
             <Text style={styles.actionTitle}>Visitas</Text>
             <Text style={styles.actionSubtitle}>Crear pase QR</Text>
           </TouchableOpacity>
 
           {/* Delivery */}
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToDelivery || onNavigateToVisitas} activeOpacity={0.85}>
+          <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToDelivery || onNavigateToVisitas} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#1D6BE0', borderColor: '#1D4ED8' }]}>
-              <Text style={styles.actionEmoji}>🛵</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>🛵</Text>
             </View>
             <Text style={styles.actionTitle}>Delivery</Text>
             <Text style={styles.actionSubtitle}>Notificar entrega</Text>
           </TouchableOpacity>
 
           {/* Amenidades */}
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToAmenidades} activeOpacity={0.85}>
+          <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToAmenidades} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
-              <Text style={styles.actionEmoji}>🏰</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>🏰</Text>
             </View>
             <Text style={styles.actionTitle}>Amenidades</Text>
             <Text style={styles.actionSubtitle}>Reservar áreas</Text>
           </TouchableOpacity>
 
           {/* Paquetes */}
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToPaquetes} activeOpacity={0.85}>
+          <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToPaquetes} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#6203FF', borderColor: '#2A0A73' }]}>
-              <Text style={styles.actionEmoji}>📦</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>📦</Text>
             </View>
             <Text style={styles.actionTitle}>Paquetes</Text>
             <Text style={styles.actionSubtitle}>Ver entregas</Text>
           </TouchableOpacity>
 
           {/* PQRS */}
-          <TouchableOpacity style={styles.actionCard} onPress={onNavigateToPQRS} activeOpacity={0.85}>
+          <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToPQRS} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#1877F2', borderColor: '#0B3C91' }]}>
-              <Text style={styles.actionEmoji}>📬</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>📬</Text>
             </View>
             <Text style={styles.actionTitle}>PQRS</Text>
             <Text style={styles.actionSubtitle}>Reportes y Soporte</Text>
           </TouchableOpacity>
 
           {/* Pagos Wompi */}
-          <TouchableOpacity style={[styles.actionCard, styles.fullWidthCard]} onPress={onNavigateToPagos} activeOpacity={0.85}>
+          <TouchableOpacity accessibilityRole="button" style={[styles.actionCard, styles.fullWidthCard]} onPress={onNavigateToPagos} activeOpacity={0.85}>
             <View style={styles.fullWidthContent}>
               <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
-                <Text style={styles.actionEmoji}>💳</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>💳</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.actionTitle}>Pagos y mantenimiento</Text>
                 <Text style={styles.actionSubtitle}>Paga tu cuota de forma 100% segura online</Text>
               </View>
-              <Text style={styles.chevronIcon}>›</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevronIcon}>›</Text>
             </View>
           </TouchableOpacity>
         </View>

@@ -280,7 +280,7 @@ export const AmenidadesScreen: React.FC = () => {
       {/* Brand Header */}
       <View style={styles.header}>
         <View style={styles.headerTitleRow}>
-          <Text style={styles.headerIcon}>🏰</Text>
+          <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.headerIcon}>🏰</Text>
           <View>
             <Text style={styles.headerTitle}>Amenidades y Espacios Comunes</Text>
             <Text style={styles.headerSubtitle}>Reserva áreas de tu residencial Zentary</Text>
@@ -311,16 +311,16 @@ export const AmenidadesScreen: React.FC = () => {
         >
           {loadError ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyIcon}>⚠️</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.emptyIcon}>⚠️</Text>
               <Text style={styles.emptyTitle}>No se pudieron cargar las amenidades</Text>
               <Text style={styles.emptyText}>Revisa tu conexión e intenta de nuevo.</Text>
-              <TouchableOpacity style={styles.retryBtn} onPress={() => fetchAmenities()}>
+              <TouchableOpacity accessibilityRole="button" style={styles.retryBtn} onPress={() => fetchAmenities()}>
                 <Text style={styles.retryBtnText}>Reintentar</Text>
               </TouchableOpacity>
             </View>
           ) : amenities.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyIcon}>🏛️</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.emptyIcon}>🏛️</Text>
               <Text style={styles.emptyTitle}>No hay amenidades disponibles</Text>
               <Text style={styles.emptyText}>
                 Tu administración aún no ha publicado amenidades para reservar.
@@ -349,27 +349,28 @@ export const AmenidadesScreen: React.FC = () => {
                   <Text style={styles.amenityName}>{item.name}</Text>
 
                   <View style={styles.infoRow}>
-                    <Text style={styles.infoIcon}>⏰</Text>
+                    <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.infoIcon}>⏰</Text>
                     <Text style={styles.infoText}>
                       Horario: <Text style={styles.infoHighlight}>{item.startTime} - {item.endTime}</Text>
                     </Text>
                   </View>
 
                   <View style={styles.infoRow}>
-                    <Text style={styles.infoIcon}>⌛</Text>
+                    <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.infoIcon}>⌛</Text>
                     <Text style={styles.infoText}>
                       Duración máxima: <Text style={styles.infoHighlight}>{item.maxReservationTime} Horas</Text>
                     </Text>
                   </View>
 
                   <View style={styles.infoRow}>
-                    <Text style={styles.infoIcon}>📅</Text>
+                    <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.infoIcon}>📅</Text>
                     <Text style={styles.infoText}>
                       Días: <Text style={styles.infoHighlight}>{item.availableDays}</Text>
                     </Text>
                   </View>
 
                   <TouchableOpacity
+                    accessibilityRole="button"
                     style={styles.reserveBtn}
                     activeOpacity={0.85}
                     onPress={() => openBookingModal(item)}
@@ -389,8 +390,8 @@ export const AmenidadesScreen: React.FC = () => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Reservar {selectedAmenity?.name}</Text>
-              <TouchableOpacity onPress={() => setIsBookingModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text style={styles.closeModalBtn}>✕</Text>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setIsBookingModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeModalBtn}>✕</Text>
               </TouchableOpacity>
             </View>
 
@@ -402,6 +403,7 @@ export const AmenidadesScreen: React.FC = () => {
                   const isSelected = selectedDate === opt.iso;
                   return (
                     <TouchableOpacity
+                      accessibilityRole="button" accessibilityState={{ selected: isSelected }}
                       key={opt.iso}
                       style={[styles.dateChip, isSelected && styles.selectedDateChip]}
                       onPress={() => setSelectedDate(opt.iso)}
@@ -443,6 +445,7 @@ export const AmenidadesScreen: React.FC = () => {
                 <View style={{ flex: 1, marginRight: 8 }}>
                   <Text style={styles.subInputLabel}>Hora Inicio</Text>
                   <TextInput
+                    accessibilityLabel="Hora de inicio"
                     style={styles.timeInput}
                     value={startTime}
                     onChangeText={setStartTime}
@@ -453,6 +456,7 @@ export const AmenidadesScreen: React.FC = () => {
                 <View style={{ flex: 1, marginLeft: 8 }}>
                   <Text style={styles.subInputLabel}>Hora Fin</Text>
                   <TextInput
+                    accessibilityLabel="Hora de fin"
                     style={styles.timeInput}
                     value={endTime}
                     onChangeText={setEndTime}
@@ -465,6 +469,7 @@ export const AmenidadesScreen: React.FC = () => {
               {/* Step 3: Notes */}
               <Text style={styles.inputLabel}>3. Notas Adicionales (Opcional):</Text>
               <TextInput
+                accessibilityLabel="Notas adicionales"
                 style={styles.notesInput}
                 value={notes}
                 onChangeText={setNotes}
@@ -482,6 +487,7 @@ export const AmenidadesScreen: React.FC = () => {
               </View>
 
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.confirmBtn}
                 onPress={handleConfirmReservation}
                 disabled={isSubmitting}
@@ -506,8 +512,8 @@ export const AmenidadesScreen: React.FC = () => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>💳 Pago con tarjeta</Text>
-              <TouchableOpacity onPress={() => setIsPaymentModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text style={styles.closeModalBtn}>✕</Text>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setIsPaymentModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeModalBtn}>✕</Text>
               </TouchableOpacity>
             </View>
 
@@ -521,6 +527,7 @@ export const AmenidadesScreen: React.FC = () => {
 
               <Text style={styles.inputLabel}>Número de Tarjeta (Visa / Mastercard):</Text>
               <TextInput
+                accessibilityLabel="Número de tarjeta"
                 style={styles.textInput}
                 value={cardNumber}
                 onChangeText={setCardNumber}
@@ -532,6 +539,7 @@ export const AmenidadesScreen: React.FC = () => {
 
               <Text style={styles.inputLabel}>Nombre del Titular:</Text>
               <TextInput
+                accessibilityLabel="Nombre del titular"
                 style={styles.textInput}
                 value={cardHolder}
                 onChangeText={setCardHolder}
@@ -543,6 +551,7 @@ export const AmenidadesScreen: React.FC = () => {
                 <View style={{ flex: 1, marginRight: 6 }}>
                   <Text style={styles.subInputLabel}>Mes (MM)</Text>
                   <TextInput
+                    accessibilityLabel="Mes de vencimiento"
                     style={styles.textInput}
                     value={expiryMonth}
                     onChangeText={setExpiryMonth}
@@ -555,6 +564,7 @@ export const AmenidadesScreen: React.FC = () => {
                 <View style={{ flex: 1, marginHorizontal: 6 }}>
                   <Text style={styles.subInputLabel}>Año (AAAA)</Text>
                   <TextInput
+                    accessibilityLabel="Año de vencimiento"
                     style={styles.textInput}
                     value={expiryYear}
                     onChangeText={setExpiryYear}
@@ -567,6 +577,7 @@ export const AmenidadesScreen: React.FC = () => {
                 <View style={{ flex: 1, marginLeft: 6 }}>
                   <Text style={styles.subInputLabel}>CVV</Text>
                   <TextInput
+                    accessibilityLabel="CVV"
                     style={styles.textInput}
                     value={cvv}
                     onChangeText={setCvv}
@@ -580,6 +591,7 @@ export const AmenidadesScreen: React.FC = () => {
               </View>
 
               <TouchableOpacity
+                accessibilityRole="button"
                 style={styles.wompiPayBtn}
                 onPress={handleProcessWompiPayment}
                 disabled={isProcessingWompi}
@@ -604,6 +616,7 @@ export const AmenidadesScreen: React.FC = () => {
             <Text style={styles.successTitle}>{resultTitle}</Text>
             <Text style={styles.successBody}>{successMessage}</Text>
             <TouchableOpacity
+              accessibilityRole="button"
               style={styles.successCloseBtn}
               onPress={() => setIsSuccessModalOpen(false)}
             >

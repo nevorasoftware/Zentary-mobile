@@ -28,20 +28,20 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
       <View style={styles.overlay}>
         <View style={styles.card}>
           {/* Back button top left */}
-          <TouchableOpacity style={styles.backButton} onPress={onClose}>
-            <Text style={styles.backArrow}>‹</Text>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" style={styles.backButton} onPress={onClose}>
+            <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.backArrow}>‹</Text>
           </TouchableOpacity>
 
           {/* Astronaut Box Illustration */}
           <View style={styles.illustrationContainer}>
             <View style={styles.starsRow}>
-              <Text style={styles.star}>★</Text>
-              <Text style={styles.star}>★</Text>
-              <Text style={styles.star}>★</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.star}>★</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.star}>★</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.star}>★</Text>
             </View>
 
             <View style={styles.astronautBox}>
-              <Text style={styles.astronautEmoji}>👩‍🚀</Text>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.astronautEmoji}>👩‍🚀</Text>
               <View style={styles.boxTitleBanner}>
                 <Text style={styles.boxTitle}>Acceso</Text>
                 <Text style={styles.boxSubTitle}>Frecuente</Text>
@@ -54,7 +54,7 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
             {/* Benefit 1 */}
             <View style={styles.benefitRow}>
               <View style={styles.iconCircle}>
-                <Text style={styles.iconEmoji}>📱</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.iconEmoji}>📱</Text>
               </View>
               <Text style={styles.benefitText}>
                 Registra a las personas que no necesitan de tu aprobación para ingresar.
@@ -64,7 +64,7 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
             {/* Benefit 2 */}
             <View style={styles.benefitRow}>
               <View style={styles.iconCircle}>
-                <Text style={styles.iconEmoji}>📅</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.iconEmoji}>📅</Text>
               </View>
               <Text style={styles.benefitText}>
                 Escoge los días y horarios de ingreso.
@@ -74,7 +74,7 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
             {/* Benefit 3 */}
             <View style={styles.benefitRow}>
               <View style={styles.iconCircle}>
-                <Text style={styles.iconEmoji}>🔔</Text>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.iconEmoji}>🔔</Text>
               </View>
               <Text style={styles.benefitText}>
                 Recibe notificación de ingreso al instante.
@@ -83,18 +83,19 @@ export const FrequentAccessModal: React.FC<FrequentAccessModalProps> = ({
           </View>
 
           {/* Entendido Button */}
-          <TouchableOpacity style={styles.understoodButton} onPress={onClose}>
+          <TouchableOpacity accessibilityRole="button" style={styles.understoodButton} onPress={onClose}>
             <Text style={styles.understoodText}>Entendido</Text>
           </TouchableOpacity>
 
           {/* Checkbox option */}
           <TouchableOpacity
+            accessibilityRole="checkbox" accessibilityLabel="Dejar de mostrar beneficios de acceso frecuente" accessibilityState={{ checked: isChecked }}
             style={styles.checkboxContainer}
             onPress={handleToggleCheck}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           >
             <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
-              {isChecked && <Text style={styles.checkmark}>✓</Text>}
+              {isChecked && <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.checkmark}>✓</Text>}
             </View>
             <Text style={styles.checkboxLabel}>
               Dejar de mostrar beneficios de acceso frecuente
