@@ -40,7 +40,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               style={styles.logoImage}
             />
             <View>
-              <Text style={styles.greetingText}>{firstName ? `¡Hola, ${firstName}! 👋` : '¡Hola! 👋'}</Text>
+              <Text accessibilityLabel={firstName ? `¡Hola, ${firstName}!` : "¡Hola!"} style={styles.greetingText}>{firstName ? `¡Hola, ${firstName}! 👋` : '¡Hola! 👋'}</Text>
               {!!unitLabel && <Text style={styles.subGreetingText}>{unitLabel}</Text>}
             </View>
           </View>

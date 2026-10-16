@@ -261,6 +261,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 ]}
               >
                 <Text
+                  accessibilityLabel={item.status === 'PAID' ? 'Pagado' : item.id === verifyingId ? 'Verificando pago…' : item.status === 'OVERDUE' ? 'Vencido' : 'Pendiente'}
                   style={[
                     styles.statusText,
                     item.status === 'PAID' ? styles.statusPaidText : item.status === 'OVERDUE' ? styles.statusOverdueText : styles.statusPendingText,
@@ -278,7 +279,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
 
               {item.status !== 'PAID' && (
                 <TouchableOpacity accessibilityRole="button" style={styles.payBtn} onPress={() => handlePayNow(item)}>
-                  <Text style={styles.payBtnText}>Pagar con Wompi 💳</Text>
+                  <Text accessibilityLabel="Pagar con Wompi" style={styles.payBtnText}>Pagar con Wompi 💳</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -297,7 +298,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               </Text>
 
               <View style={styles.wompiBadgeBox}>
-                <Text style={styles.wompiBadgeText}>
+                <Text accessibilityLabel="Transacción protegida con la verificación de tu banco." style={styles.wompiBadgeText}>
                   🛡️ Transacción protegida con la verificación de tu banco.
                 </Text>
               </View>
@@ -426,7 +427,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                   {processing ? (
                     <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : (
-                    <Text style={styles.saveBtnText}>Pagar con tarjeta 🔒</Text>
+                    <Text accessibilityLabel="Pagar con tarjeta" style={styles.saveBtnText}>Pagar con tarjeta 🔒</Text>
                   )}
                 </TouchableOpacity>
               </View>

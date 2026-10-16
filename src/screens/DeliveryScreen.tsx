@@ -175,7 +175,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Delivery {selectedPlatform?.name} 🛵</Text>
+              <Text accessibilityLabel={`Delivery ${selectedPlatform?.name}`} style={styles.modalTitle}>Delivery {selectedPlatform?.name} 🛵</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setSelectedPlatform(null)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeX}>✕</Text>
               </TouchableOpacity>
@@ -219,7 +219,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
               {isSubmitting ? (
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
-                <Text style={styles.submitBtnText}>Autorizar Ingreso de Delivery ✨</Text>
+                <Text accessibilityLabel="Autorizar Ingreso de Delivery" style={styles.submitBtnText}>Autorizar Ingreso de Delivery ✨</Text>
               )}
             </TouchableOpacity>
           </View>

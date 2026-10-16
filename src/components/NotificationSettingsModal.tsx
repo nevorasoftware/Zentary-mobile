@@ -36,7 +36,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
       <View style={styles.overlay}>
         <View style={styles.sheet}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>🔔 Centro de Notificaciones</Text>
+            <Text accessibilityLabel="Centro de Notificaciones" style={styles.headerTitle}>🔔 Centro de Notificaciones</Text>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" style={styles.closeBtn} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeText}>✕</Text>
             </TouchableOpacity>
@@ -44,7 +44,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
 
           <ScrollView contentContainerStyle={styles.content}>
             <View style={styles.adminBadgeBox}>
-              <Text style={styles.adminBadgeTitle}>🛡️ CONFIGURACIÓN ADMINISTRATIVA</Text>
+              <Text accessibilityLabel="Configuración administrativa" style={styles.adminBadgeTitle}>🛡️ CONFIGURACIÓN ADMINISTRATIVA</Text>
               <Text style={styles.adminBadgeSub}>
                 Los parámetros de recordatorios de pago y anuncios residenciales son gestionados directamente por la Administración de Zentary.
               </Text>
