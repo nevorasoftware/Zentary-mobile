@@ -58,6 +58,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     publicUrl: string;
     whatsappMessage: string;
     visitorName: string;
+    sent: boolean;
   } | null>(null);
 
   // Guard Scanner / Validation State
@@ -149,6 +150,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             publicUrl: res.publicUrl,
             whatsappMessage: res.whatsappMessage,
             visitorName: res.visit.visitorName,
+            sent: (res as any).whatsappResult?.success === true,
           });
         }
 
@@ -190,6 +192,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           publicUrl: res.publicUrl,
           whatsappMessage: res.whatsappMessage,
           visitorName: res.visit.visitorName,
+          sent: (res as any).whatsappResult?.success === true,
         });
 
         // Refresh list from DB
@@ -619,7 +622,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               onChangeText={setVisitorName}
             />
 
-            <Text style={styles.label}>Número de Teléfono (WhatsApp) *</Text>
+            <Text style={styles.label}>Número de Teléfono (WhatsApp) (Opcional)</Text>
             <TextInput
               accessibilityLabel="Número de teléfono"
               style={styles.input}
@@ -688,11 +691,15 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#DCFCE7', justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={{ fontSize: 32 }}>📲</Text>
               </View>
-              <Text style={styles.modalTitle}>¡Invitación Enviada!</Text>
+              <Text style={styles.modalTitle}>{shareData?.sent ? '¡Invitación Enviada!' : 'Comparte la invitación'}</Text>
             </View>
 
             <Text style={{ fontSize: 14, color: '#1E293B', marginBottom: 12, textAlign: 'center', lineHeight: 20 }}>
-              Se ha enviado automáticamente el enlace de registro por WhatsApp al número de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text>.
+              {shareData?.sent ? (
+                <>Se ha enviado automáticamente el enlace de registro por WhatsApp al número de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text>.</>
+              ) : (
+                <>La invitación de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text> se creó, pero no se envió automáticamente por WhatsApp. Compártela o copia el enlace.</>
+              )}
             </Text>
 
             <View style={{ backgroundColor: '#F1F5F9', padding: 12, borderRadius: 12, marginBottom: 20 }}>
@@ -701,12 +708,22 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               </Text>
             </View>
 
+            {!shareData?.sent && (
+              <>
+                <TouchableOpacity accessibilityRole="button" style={[styles.saveBtn, { marginBottom: 8 }]} onPress={handleShareWhatsApp}>
+                  <Text style={styles.saveBtnText}>Compartir</Text>
+                </TouchableOpacity>
+                <TouchableOpacity accessibilityRole="button" style={[styles.cancelBtn, { alignItems: 'center', marginBottom: 8 }]} onPress={handleCopyLink}>
+                  <Text style={styles.cancelBtnText}>Copiar enlace</Text>
+                </TouchableOpacity>
+              </>
+            )}
             <TouchableOpacity
               accessibilityRole="button"
-              style={styles.saveBtn}
+              style={shareData?.sent ? styles.saveBtn : [styles.cancelBtn, { alignItems: 'center' }]}
               onPress={() => setShareData(null)}
             >
-              <Text style={styles.saveBtnText}>Entendido</Text>
+              <Text style={shareData?.sent ? styles.saveBtnText : styles.cancelBtnText}>{shareData?.sent ? 'Entendido' : 'Cerrar'}</Text>
             </TouchableOpacity>
           </View>
         </View>
