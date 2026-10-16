@@ -384,10 +384,13 @@ export const AmenidadesScreen: React.FC = () => {
           ) : (
             amenities.map((item) => (
               <View key={item.id} style={styles.amenityCard}>
-                <Image
-                  source={{ uri: item.imageUrl || 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600' }}
-                  style={styles.amenityImage}
-                />
+                {item.imageUrl ? (
+                  <Image source={{ uri: item.imageUrl }} style={styles.amenityImage} />
+                ) : (
+                  <View style={[styles.amenityImage, styles.amenityImagePlaceholder]}>
+                    <Text style={styles.amenityImagePlaceholderText}>Sin imagen</Text>
+                  </View>
+                )}
 
                 <View style={styles.cardHeaderBadges}>
                   <View style={styles.typeBadge}>
@@ -413,7 +416,7 @@ export const AmenidadesScreen: React.FC = () => {
                   <View style={styles.infoRow}>
                     <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.infoIcon}>⌛</Text>
                     <Text style={styles.infoText}>
-                      Duración máxima: <Text style={styles.infoHighlight}>{item.maxReservationTime} Horas</Text>
+                      Duración máxima: <Text style={styles.infoHighlight}>{item.maxReservationTime} {item.maxReservationTime === 1 ? 'hora' : 'horas'}</Text>
                     </Text>
                   </View>
 
@@ -770,6 +773,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 160,
     resizeMode: 'cover',
+  },
+  amenityImagePlaceholder: {
+    backgroundColor: '#E5E7EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  amenityImagePlaceholderText: {
+    color: '#6B7280',
+    fontSize: 14,
   },
   cardHeaderBadges: {
     position: 'absolute',
