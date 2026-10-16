@@ -71,8 +71,8 @@ export const AmenidadesScreen: React.FC = () => {
   const [pendingReservationId, setPendingReservationId] = useState<string | null>(null);
   const [cardNumber, setCardNumber] = useState('');
   const [cardHolder, setCardHolder] = useState('');
-  const [expiryMonth, setExpiryMonth] = useState('12');
-  const [expiryYear, setExpiryYear] = useState('2028');
+  const [expiryMonth, setExpiryMonth] = useState('');
+  const [expiryYear, setExpiryYear] = useState('');
   const [cvv, setCvv] = useState('');
   const [isProcessingWompi, setIsProcessingWompi] = useState(false);
 
@@ -193,14 +193,34 @@ export const AmenidadesScreen: React.FC = () => {
     }
   };
 
-  // Consulta el estado real de la reserva propia
-  const verifyReservationConfirmed = async (reservationId: string) => {
+  // Consulta el estado real de la reserva propia: 'PAID' | 'FAILED' (cancelada, vencida, rechazada o pago fallido) | 'PENDING'
+  const getReservationPaymentOutcome = async (reservationId: string): Promise<'PAID' | 'FAILED' | 'PENDING'> => {
     try {
       const res = await apiService.getMyReservation(reservationId);
-      return res.reservation?.reservationStatus === 'CONFIRMED' || res.reservation?.paymentStatus === 'PAID';
+      const { reservationStatus, paymentStatus } = res.reservation || ({} as any);
+      if (paymentStatus === 'PAID') return 'PAID';
+      if (
+        ['CANCELLED', 'EXPIRED', 'REJECTED'].includes(reservationStatus) ||
+        ['FAILED', 'CANCELLED'].includes(paymentStatus)
+      ) {
+        return 'FAILED';
+      }
+      return 'PENDING';
     } catch (err) {
-      return false;
+      return 'PENDING';
     }
+  };
+
+  // Avisa que la reserva queda pendiente al cerrar el modal de pago
+  const handleClosePaymentModal = () => {
+    Alert.alert(
+      'Pago pendiente',
+      'Si cierras esta ventana, tu reserva quedará pendiente de pago y el espacio seguirá apartado hasta que se confirme o se cancele. ¿Deseas cerrarla?',
+      [
+        { text: 'Seguir pagando', style: 'cancel' },
+        { text: 'Cerrar', style: 'destructive', onPress: () => setIsPaymentModalOpen(false) },
+      ]
+    );
   };
 
   const handleProcessWompiPayment = async () => {
@@ -212,6 +232,10 @@ export const AmenidadesScreen: React.FC = () => {
     }
     if (!cvv || cvv.length < 3) {
       Alert.alert('Dato Requerido', 'Por favor ingresa el código CVV.');
+      return;
+    }
+    if (!expiryMonth || !expiryYear) {
+      Alert.alert('Dato Requerido', 'Por favor ingresa la fecha de vencimiento de la tarjeta.');
       return;
     }
 
@@ -242,12 +266,17 @@ export const AmenidadesScreen: React.FC = () => {
           );
 
           // El resultado del navegador no confirma el pago: se consulta el estado real de la reserva
-          if (authResult.type === 'success' || authResult.type === 'dismiss') {
-            const confirmed = await verifyReservationConfirmed(pendingReservationId);
-            if (confirmed) {
+          if (authResult.type === 'success' || authResult.type === 'dismiss' || authResult.type === 'cancel' || authResult.type === 'locked') {
+            const outcome = await getReservationPaymentOutcome(pendingReservationId);
+            if (outcome === 'PAID') {
               setResultTitle('¡Reserva Confirmada!');
               setResultIcon('🎉');
               setSuccessMessage(`¡Pago procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
+            } else if (outcome === 'FAILED') {
+              // Solo estados terminales (reserva cancelada/vencida/rechazada o pago fallido)
+              setResultTitle('Reserva no confirmada');
+              setResultIcon('⚠️');
+              setSuccessMessage('Tu reserva fue cancelada o rechazada y no está confirmada. Si se realizó un cargo, la administración lo revisará.');
             } else {
               setResultTitle('Pago en verificación');
               setResultIcon('⏳');
@@ -507,12 +536,12 @@ export const AmenidadesScreen: React.FC = () => {
       </Modal>
 
       {/* WOMPI CARD PAYMENT MODAL */}
-      <Modal visible={isPaymentModalOpen} animationType="slide" transparent onRequestClose={() => setIsPaymentModalOpen(false)}>
+      <Modal visible={isPaymentModalOpen} animationType="slide" transparent onRequestClose={handleClosePaymentModal}>
         <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text accessibilityLabel="Pago con tarjeta" style={styles.modalTitle}>💳 Pago con tarjeta</Text>
-              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setIsPaymentModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={handleClosePaymentModal} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeModalBtn}>✕</Text>
               </TouchableOpacity>
             </View>
