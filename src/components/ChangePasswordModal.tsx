@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { colors } from '../theme';
 import { Eye, EyeOff } from 'lucide-react-native';
 
 interface ChangePasswordModalProps {
@@ -161,8 +162,8 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#D97706',
-    backgroundColor: '#FEF3C7',
+    color: colors.warning,
+    backgroundColor: colors.warningBg,
     alignSelf: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 4,

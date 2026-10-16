@@ -13,7 +13,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
+  SafeAreaView,
 } from 'react-native';
+import { colors } from '../theme';
 import { apiService, PqrsItem, PqrsDetailItem } from '../services/api';
 
 interface PQRSScreenProps {
@@ -418,8 +420,8 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
             {detailError && !isLoadingDetail ? (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyTitle}>No se pudo cargar la conversación</Text>
-                <Text style={styles.emptySubtitle}>Revisa tu conexión e intenta de nuevo.</Text>
+                <Text style={[styles.emptyTitle, { color: colors.textMuted }]}>No se pudo cargar la conversación</Text>
+                <Text style={[styles.emptySubtitle, { color: colors.textMuted }]}>Revisa tu conexión e intenta de nuevo.</Text>
                 <TouchableOpacity accessibilityRole="button" style={styles.retryBtn} onPress={() => detailPqrsId && handleOpenDetail(detailPqrsId)}>
                   <Text style={styles.retryBtnText}>Reintentar</Text>
                 </TouchableOpacity>
@@ -435,7 +437,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                 <View style={styles.detailBanner}>
                   <View style={styles.detailBannerRow}>
                     <View style={styles.categoryTag}>
-                      <Text style={styles.categoryTagText}>{categoryLabels[selectedPqrs.category] || selectedPqrs.category}</Text>
+                      <Text style={[styles.categoryTagText, { color: '#4C1D95' }]}>{categoryLabels[selectedPqrs.category] || selectedPqrs.category}</Text>
                     </View>
                     {renderStatusBadge(selectedPqrs.status)}
                   </View>
@@ -501,7 +503,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                       );
                     })
                   ) : (
-                    <Text style={{ textAlign: 'center', color: '#94A3B8', marginVertical: 20 }}>
+                    <Text style={{ textAlign: 'center', color: colors.textMuted, marginVertical: 20 }}>
                       Sin mensajes aún.
                     </Text>
                   )}
@@ -545,9 +547,9 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 };
 
 const SafeAreaViewStyleWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 44 : 0, backgroundColor: '#0A0F1F' }}>
+  <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     {children}
-  </View>
+  </SafeAreaView>
 );
 
 const styles = StyleSheet.create({
@@ -792,7 +794,7 @@ const styles = StyleSheet.create({
   catText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6B7280',
+    color: colors.textMuted,
   },
   catTextActive: {
     color: '#FFFFFF',
@@ -917,7 +919,7 @@ const styles = StyleSheet.create({
     color: '#0369A1',
   },
   chatUserSender: {
-    color: '#DBEAFE',
+    color: colors.onPrimary,
   },
   chatMessageText: {
     fontSize: 14,
