@@ -136,6 +136,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
         <TouchableOpacity
           accessibilityRole="button" accessibilityLabel="Volver"
           style={styles.backBtn}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           onPress={() => {
             if (step === 3) setStep(2);
             else setStep(1);
@@ -432,6 +433,8 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   switchEmailBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     marginTop: 20,
     padding: 10,
   },

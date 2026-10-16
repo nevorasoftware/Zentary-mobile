@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   adminBadgeTitle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: '#1D4ED8',
     marginBottom: 4,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: '#475569',
     marginBottom: 10,
@@ -149,12 +149,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reminderTypeTag: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: '#B45309',
   },
   statusActiveBadge: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: '#047857',
     backgroundColor: '#D1FAE5',
@@ -194,6 +194,8 @@ const styles = StyleSheet.create({
     color: '#78350F',
   },
   closeActionBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1D6BE0',
     borderRadius: 16,
     paddingVertical: 14,

@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   tabButton: {
+    minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.15 }],
   },
   tabLabel: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#94A3B8',
     fontWeight: '700',
   },

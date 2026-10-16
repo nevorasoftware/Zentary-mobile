@@ -453,7 +453,7 @@ export const AmenidadesScreen: React.FC = () => {
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               {/* Step 1: Select Date */}
               <Text style={styles.inputLabel}>1. Selecciona la Fecha:</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelectorRow}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelectorRow} contentContainerStyle={{ paddingRight: 16 }}>
                 {dateOptions.map((opt) => {
                   const isSelected = selectedDate === opt.iso;
                   return (
@@ -740,7 +740,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
     marginBottom: 12,
   },
-  retryBtn: { marginTop: 16, backgroundColor: '#1D6BE0', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  retryBtn: { minHeight: 44, justifyContent: 'center', marginTop: 16, backgroundColor: '#1D6BE0', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
   retryBtnText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 14 },
   emptyTitle: {
     fontSize: 16,
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
   },
   typeBadgeText: {
     color: '#FFCF36',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
   },
   priceBadge: {
@@ -803,7 +803,7 @@ const styles = StyleSheet.create({
   },
   priceBadgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '900',
   },
   amenityBody: {
@@ -834,6 +834,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   reserveBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     marginTop: 14,
     backgroundColor: '#1A6FE8',
     paddingVertical: 12,
@@ -889,7 +891,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   subInputLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: '#94A3B8',
     marginBottom: 4,
@@ -899,6 +901,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   dateChip: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#0A0F1F',
     borderWidth: 1,
     borderColor: '#2A0A73',
@@ -913,7 +917,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFCF36',
   },
   dateChipDay: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: '#94A3B8',
   },
@@ -934,13 +938,13 @@ const styles = StyleSheet.create({
     borderColor: '#2A0A73',
   },
   occupiedTitle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: '#94A3B8',
     marginBottom: 6,
   },
   noOccupiedText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#10B981',
   },
@@ -954,7 +958,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   occupiedBadgeText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: '#F87171',
   },
@@ -963,6 +967,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   timeInput: {
+    minHeight: 44,
     backgroundColor: '#0A0F1F',
     borderRadius: 12,
     borderWidth: 1,
@@ -1012,6 +1017,8 @@ const styles = StyleSheet.create({
     color: '#FFCF36',
   },
   confirmBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1A6FE8',
     paddingVertical: 14,
     borderRadius: 14,
@@ -1057,6 +1064,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   wompiPayBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1A6FE8',
     paddingVertical: 14,
     borderRadius: 14,
@@ -1092,6 +1101,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   successCloseBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1A6FE8',
     paddingHorizontal: 24,
     paddingVertical: 12,
