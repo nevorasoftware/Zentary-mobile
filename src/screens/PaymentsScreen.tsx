@@ -16,6 +16,7 @@ import {
   Platform,
 } from 'react-native';
 import { apiService } from '../services/api';
+import { formatDateUTC } from '../utils/dates';
 
 interface PaymentItem {
   id: string;
@@ -64,7 +65,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
           id: p.id,
           concept: p.concept,
           amount: typeof p.amount === 'number' ? p.amount : parseFloat(p.amount || '0'),
-          dueDate: p.dueDate ? new Date(p.dueDate).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Pendiente',
+          dueDate: p.dueDate ? formatDateUTC(p.dueDate) : 'Pendiente',
           status: p.status as 'PENDING' | 'PAID' | 'OVERDUE',
           paidAt: p.paidAt,
           paymentMethod: p.paymentMethod,
