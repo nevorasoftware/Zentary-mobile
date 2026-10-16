@@ -144,12 +144,19 @@ class DeviceService {
     if (!legacy || !legacy.token) return true;
 
     const existing = await this.readSecureToken();
-    if (existing) return true;
-
-    const saved = await this.writeSecureToken(legacy.token);
-    if (!saved) return false;
+    if (!existing) {
+      const saved = await this.writeSecureToken(legacy.token);
+      if (!saved) return false;
+    }
 
     if (legacy.user) {
+      if (existing) {
+        // Do not overwrite a v2 file that already exists
+        try {
+          const info = await FileSystem.getInfoAsync(SESSION_FILE);
+          if (info.exists) return true;
+        } catch (e) {}
+      }
       const payload = JSON.stringify({ user: legacy.user, savedAt: Date.now() });
       await this.writeItem('session_combined', payload, SESSION_FILE);
     }
@@ -239,9 +246,10 @@ class DeviceService {
       if (combinedStr) {
         try {
           const parsed = JSON.parse(combinedStr);
-          if (parsed.token && parsed.user) {
-            savedToken = parsed.token;
+          // On native the file only has the user; the token comes from SecureStore
+          if (parsed.user) {
             savedUser = parsed.user;
+            if (parsed.token) savedToken = parsed.token;
           }
         } catch (e) {}
       }
