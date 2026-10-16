@@ -310,6 +310,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   saveBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1D6BE0',
     paddingVertical: 10,
     paddingHorizontal: 20,

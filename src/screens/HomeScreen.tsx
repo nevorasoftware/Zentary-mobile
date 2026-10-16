@@ -240,11 +240,11 @@ const styles = StyleSheet.create({
   },
   reminderBadgeText: {
     color: '#0A0F1F',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '900',
   },
   reminderTime: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#FFCF36',
     fontWeight: '700',
   },
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   },
   proBadgeText: {
     color: '#FFCF36',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
   },
   actionGrid: {
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   },
   announcementTagText: {
     color: '#60A5FA',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '900',
   },
   announcementTitle: {
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   announcementDate: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#94A3B8',
     fontWeight: '600',
   },

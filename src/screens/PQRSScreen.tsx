@@ -624,6 +624,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   createBtn: {
+    minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -675,7 +676,7 @@ const styles = StyleSheet.create({
     borderColor: '#6203FF',
   },
   categoryTagText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: '#FFCF36',
   },
@@ -686,7 +687,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   statusBadgeText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
   },
   pqrsSubject: {
@@ -735,7 +736,7 @@ const styles = StyleSheet.create({
   sadEmoji: {
     fontSize: 34,
   },
-  retryBtn: { marginTop: 16, backgroundColor: '#1D6BE0', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  retryBtn: { minHeight: 44, justifyContent: 'center', marginTop: 16, backgroundColor: '#1D6BE0', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
   retryBtnText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 14 },
   emptyTitle: {
     fontSize: 20,
@@ -809,7 +810,7 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
   textArea: {
-    height: 90,
+    minHeight: 90,
     textAlignVertical: 'top',
   },
   modalActions: {
@@ -819,6 +820,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   cancelBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 16,
   },
@@ -827,6 +830,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   saveBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1D6BE0',
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -911,7 +916,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   chatSenderName: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 4,
   },
@@ -932,7 +937,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   chatTime: {
-    fontSize: 10,
+    fontSize: 12,
     textAlign: 'right',
     marginTop: 4,
   },
@@ -963,6 +968,8 @@ const styles = StyleSheet.create({
     color: '#0F172A',
   },
   sendReplyBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1D6BE0',
     borderRadius: 20,
     paddingVertical: 10,

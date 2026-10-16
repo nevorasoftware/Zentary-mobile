@@ -120,7 +120,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
       {/* Header Bar matching Screenshot 2 design */}
       <View style={styles.header}>
         {onBack && (
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" style={styles.backBtn} onPress={onBack}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" style={styles.backBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} onPress={onBack}>
             <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.backArrow}>‹</Text>
           </TouchableOpacity>
         )}
@@ -201,7 +201,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
               <Text style={styles.label}>INSTRUCCIONES PARA GARITA (OPCIONAL)</Text>
               <TextInput
                 accessibilityLabel="Instrucciones para garita"
-                style={[styles.input, { height: 70 }]}
+                style={[styles.input, { minHeight: 70 }]}
                 placeholder="Ej. Dejar paquete en recepción / Torre B Apt 502"
                 placeholderTextColor="#94A3B8"
                 multiline
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   label: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: '#CBD5E1',
     marginBottom: 6,
@@ -430,6 +430,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   submitBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1D6BE0',
     borderRadius: 14,
     paddingVertical: 14,
@@ -477,7 +479,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   codeLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: '#FFCF36',
     letterSpacing: 1,
@@ -490,6 +492,8 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   closeSuccessBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1D6BE0',
     borderRadius: 14,
     paddingHorizontal: 32,

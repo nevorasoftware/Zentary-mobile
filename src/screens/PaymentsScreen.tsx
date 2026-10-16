@@ -193,7 +193,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
       {/* Header Bar */}
       <View style={styles.header}>
         {onBack && (
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" style={styles.backButton} onPress={onBack}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Volver" style={styles.backButton} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} onPress={onBack}>
             <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.backArrow}>‹</Text>
           </TouchableOpacity>
         )}
@@ -228,7 +228,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         {loadError && (
           <View style={styles.paymentCard}>
             <Text style={styles.conceptTitle}>No se pudieron cargar los cobros.</Text>
-            <TouchableOpacity accessibilityRole="button" onPress={() => fetchPayments()}>
+            <TouchableOpacity accessibilityRole="button" onPress={() => fetchPayments()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text style={styles.dueDate}>Reintentar</Text>
             </TouchableOpacity>
           </View>
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   txnText: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#10B981',
     fontWeight: '700',
     marginTop: 4,
@@ -589,10 +589,12 @@ const styles = StyleSheet.create({
     color: '#10B981',
   },
   statusText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '900',
   },
   payBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1A6FE8',
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -688,6 +690,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   saveBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1A6FE8',
     paddingVertical: 12,
     paddingHorizontal: 22,

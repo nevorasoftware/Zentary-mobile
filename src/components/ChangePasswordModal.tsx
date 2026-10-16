@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   badge: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: colors.warning,
     backgroundColor: colors.warningBg,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#475569',
     marginBottom: 6,
@@ -213,6 +213,8 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   saveBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#1D6BE0',
     borderRadius: 14,
     paddingVertical: 14,

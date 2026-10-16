@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#F3F4F6',
   },
   menuItem: {
+    minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -261,6 +262,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   confirmCancelBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 16,
   },
@@ -269,6 +272,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   confirmLogoutBtn: {
+    minHeight: 44,
+    justifyContent: 'center',
     backgroundColor: '#DC2626',
     borderRadius: 10,
     paddingVertical: 10,
