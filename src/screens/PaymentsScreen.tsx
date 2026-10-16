@@ -553,6 +553,7 @@ const styles = StyleSheet.create({
   },
   paymentFooter: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderTopWidth: 1,
@@ -594,6 +595,7 @@ const styles = StyleSheet.create({
   },
   payBtn: {
     minHeight: 44,
+    flexShrink: 1,
     justifyContent: 'center',
     backgroundColor: '#1A6FE8',
     paddingHorizontal: 16,

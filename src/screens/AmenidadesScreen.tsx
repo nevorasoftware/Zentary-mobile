@@ -453,7 +453,7 @@ export const AmenidadesScreen: React.FC = () => {
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               {/* Step 1: Select Date */}
               <Text style={styles.inputLabel}>1. Selecciona la Fecha:</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelectorRow}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelectorRow} contentContainerStyle={{ paddingRight: 16 }}>
                 {dateOptions.map((opt) => {
                   const isSelected = selectedDate === opt.iso;
                   return (
