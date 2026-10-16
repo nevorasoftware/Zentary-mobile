@@ -11,7 +11,6 @@ import DeliveryScreen from './src/screens/DeliveryScreen';
 import AuthFlowScreen from './src/screens/AuthFlowScreen';
 import BottomNavBar, { TabType } from './src/components/BottomNavBar';
 import ProfileMenuModal from './src/components/ProfileMenuModal';
-import FrequentAccessModal from './src/components/FrequentAccessModal';
 import ChangePasswordModal from './src/components/ChangePasswordModal';
 import { apiService, UserProfile } from './src/services/api';
 import { deviceService } from './src/services/device';
@@ -24,7 +23,6 @@ export default function App() {
   // Requirement: Default start tab set to 'Inicio'
   const [currentTab, setCurrentTab] = useState<TabType>('Inicio');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [isFrequentModalOpen, setIsFrequentModalOpen] = useState(false);
   const [pendingPqrsId, setPendingPqrsId] = useState<string | null>(null);
   const [autoOpenFastPass, setAutoOpenFastPass] = useState(false);
   const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
@@ -263,15 +261,6 @@ export default function App() {
           await deviceService.clearSession();
           setIsProfileMenuOpen(false);
           setIsLoggedIn(false);
-        }}
-      />
-
-      {/* Frequent Access Dialog Modal */}
-      <FrequentAccessModal
-        visible={isFrequentModalOpen}
-        onClose={() => setIsFrequentModalOpen(false)}
-        onDonotShowAgainChange={(checked) => {
-          console.log('Hide frequent access banner:', checked);
         }}
       />
 

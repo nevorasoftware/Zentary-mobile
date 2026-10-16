@@ -69,6 +69,10 @@ export const PaquetesScreen: React.FC = () => {
 
   const handleSaveParcel = () => {
     if (!selectedCarrier) return;
+    if (selectedCarrier.isCustom && !customName.trim()) {
+      alert('Ingresa el nombre de la paquetería o transportista.');
+      return;
+    }
     alert('Función disponible próximamente. El paquete aún no se ha registrado.');
     setSelectedCarrier(null);
     setTrackingNumber('');

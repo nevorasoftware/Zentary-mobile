@@ -76,26 +76,6 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                accessibilityRole="button"
-                style={styles.menuItem}
-                onPress={() => setIsNotifModalOpen(true)}
-              >
-                <View style={styles.menuLeft}>
-                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>⚙️</Text>
-                  <Text style={styles.menuText}>Configuraciones</Text>
-                </View>
-                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity accessibilityRole="button" style={styles.menuItem}>
-                <View style={styles.menuLeft}>
-                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🎧</Text>
-                  <Text style={styles.menuText}>Soporte técnico</Text>
-                </View>
-                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
-              </TouchableOpacity>
-
               <TouchableOpacity accessibilityRole="button" style={styles.menuItem} onPress={() => setIsLogoutConfirmOpen(true)}>
                 <View style={styles.menuLeft}>
                   <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🚪</Text>
