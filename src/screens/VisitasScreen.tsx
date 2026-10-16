@@ -342,16 +342,16 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const getStatusBadge = (status: VisitStatusType) => {
     switch (status) {
       case 'PENDIENTE_REGISTRO':
-        return { text: 'PENDIENTE DATOS', bg: '#FEF3C7', color: '#92400E' };
+        return { text: 'Pendiente datos', bg: '#FEF3C7', color: '#92400E' };
       case 'DATOS_COMPLETADOS':
-        return { text: 'DATOS COMPLETOS (QR)', bg: '#DBEAFE', color: '#1D4ED8' };
+        return { text: 'Datos completos (QR)', bg: '#DBEAFE', color: '#1D4ED8' };
       case 'INGRESADA':
       case 'COMPLETED':
-        return { text: '🟢 INGRESADA', bg: '#DCFCE7', color: '#15803D' };
+        return { text: '🟢 Ingresada', bg: '#DCFCE7', color: '#15803D' };
       case 'CANCELADA':
-        return { text: '❌ CANCELADA', bg: '#FEE2E2', color: '#B91C1C' };
+        return { text: '❌ Cancelada', bg: '#FEE2E2', color: '#B91C1C' };
       case 'VENCIDA':
-        return { text: '⚫ VENCIDA', bg: '#F3F4F6', color: '#4B5563' };
+        return { text: '⚫ Vencida', bg: '#F3F4F6', color: '#4B5563' };
       default:
         return { text: status, bg: '#E5E7EB', color: '#374151' };
     }
@@ -383,7 +383,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'EN_CURSO' && styles.activeTabText]}>
-            EN CURSO
+            En curso
           </Text>
         </TouchableOpacity>
 
@@ -394,7 +394,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'HISTORIAL' && styles.activeTabText]}>
-            HISTORIAL
+            Historial
           </Text>
         </TouchableOpacity>
 
@@ -405,7 +405,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'OTRAS' && styles.activeTabText]}>
-            CANCELADAS / OTROS
+            Canceladas / otros
           </Text>
         </TouchableOpacity>
       </View>
@@ -736,7 +736,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 {creating ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.saveBtnText}>Crear Invitación</Text>
+                  <Text style={styles.saveBtnText}>Crear invitación</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -870,7 +870,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                       {confirmingEntry ? (
                         <ActivityIndicator color="#FFFFFF" />
                       ) : (
-                        <Text accessibilityLabel="Confirmar ingreso" style={styles.confirmEntryBtnText}>✅ CONFIRMAR INGRESO</Text>
+                        <Text accessibilityLabel="Confirmar ingreso" style={styles.confirmEntryBtnText}>✅ Confirmar ingreso</Text>
                       )}
                     </TouchableOpacity>
                   </View>
@@ -967,7 +967,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   headerTitle: { color: '#FFFFFF', fontSize: 20, fontWeight: '900' },
-  guardHeaderBtn: { backgroundColor: 'rgba(24, 119, 242, 0.25)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, borderWidth: 1, borderColor: '#1877F2' },
+  guardHeaderBtn: { backgroundColor: 'rgba(29, 107, 224, 0.25)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, borderWidth: 1, borderColor: colors.primary },
   guardHeaderBtnText: { color: '#FFCF36', fontWeight: '900', fontSize: 12 },
   tabBar: { flexDirection: 'row', backgroundColor: '#141A2E', borderBottomWidth: 2, borderBottomColor: '#2A0A73' },
   tabItem: { flex: 1, paddingVertical: 14, alignItems: 'center', justifyContent: 'center' },
@@ -1001,7 +1001,7 @@ const styles = StyleSheet.create({
     width: 58,
     height: 58,
     borderRadius: 29,
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 6,
@@ -1022,17 +1022,17 @@ const styles = StyleSheet.create({
   saveBtn: { minHeight: 44, justifyContent: 'center', backgroundColor: '#1D6BE0', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, alignItems: 'center', marginTop: 10 },
   saveBtnText: { color: '#FFFFFF', fontWeight: 'bold' },
   linkBox: { backgroundColor: '#F1F5F9', padding: 12, borderRadius: 12, marginBottom: 12 },
-  linkText: { fontSize: 12, color: '#2563EB', fontWeight: '600' },
+  linkText: { fontSize: 12, color: colors.primary, fontWeight: '600' },
   waBtn: { backgroundColor: '#16803C', paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginBottom: 8 },
   waBtnText: { color: '#FFFFFF', fontWeight: 'bold' },
   copyBtn: { backgroundColor: '#E2E8F0', paddingVertical: 12, borderRadius: 12, alignItems: 'center' },
   copyBtnText: { color: '#334155', fontWeight: 'bold' },
   optionChip: { flex: 1, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: '#CBD5E1', backgroundColor: '#F8FAFC', alignItems: 'center' },
-  optionChipActive: { borderColor: '#2563EB', backgroundColor: '#EFF6FF' },
+  optionChipActive: { borderColor: colors.primary, backgroundColor: '#EFF6FF' },
   optionChipText: { fontSize: 13, fontWeight: '600', color: '#64748B' },
   optionChipTextActive: { color: '#1D4ED8', fontWeight: 'bold' },
   timeSlotChip: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: '#E2E8F0', backgroundColor: '#F8FAFC' },
-  timeSlotChipActive: { borderColor: '#2563EB', backgroundColor: '#EFF6FF' },
+  timeSlotChipActive: { borderColor: colors.primary, backgroundColor: '#EFF6FF' },
   timeSlotChipText: { fontSize: 12, fontWeight: '600', color: '#475569' },
   timeSlotChipTextActive: { color: '#1D4ED8', fontWeight: 'bold' },
   errorBanner: { backgroundColor: '#FEE2E2', padding: 14, borderRadius: 12 },

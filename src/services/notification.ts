@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { apiService } from './api';
 import { deviceService } from './device';
+import { colors } from '../theme';
 
 // Configure foreground notification behavior
 Notifications.setNotificationHandler({
@@ -61,7 +62,7 @@ export const registerForPushNotificationsAsync = async (userEmail?: string): Pro
       name: 'Default Channel',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#2B82FB',
+      lightColor: colors.primary,
       sound: 'default',
     });
   }

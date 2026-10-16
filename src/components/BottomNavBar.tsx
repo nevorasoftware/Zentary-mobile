@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { colors } from '../theme';
 
 export type TabType = 'Inicio' | 'Visitas' | 'Amenidades' | 'PQRS' | 'Paquetes' | 'Pagos' | 'Menú';
 
@@ -93,10 +94,10 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   activeIconBadge: {
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     borderColor: '#FFCF36',
     borderWidth: 2,
-    shadowColor: '#1877F2',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.5,
     shadowRadius: 5,

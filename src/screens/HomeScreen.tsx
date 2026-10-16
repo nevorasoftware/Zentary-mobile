@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import NotificationSettingsModal from '../components/NotificationSettingsModal';
 import { UserProfile } from '../services/api';
+import { colors } from '../theme';
 
 interface HomeScreenProps {
   user?: UserProfile;
@@ -77,7 +78,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* Visitas */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToVisitas} activeOpacity={0.85}>
-            <View style={[styles.emojiBadge, { backgroundColor: '#1877F2', borderColor: '#0B3C91' }]}>
+            <View style={[styles.emojiBadge, { backgroundColor: colors.primary, borderColor: '#0B3C91' }]}>
               <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>👥</Text>
             </View>
             <Text style={styles.actionTitle}>Visitas</Text>
@@ -113,7 +114,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* PQRS */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToPQRS} activeOpacity={0.85}>
-            <View style={[styles.emojiBadge, { backgroundColor: '#1877F2', borderColor: '#0B3C91' }]}>
+            <View style={[styles.emojiBadge, { backgroundColor: colors.primary, borderColor: '#0B3C91' }]}>
               <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>📬</Text>
             </View>
             <Text style={styles.actionTitle}>PQRS</Text>
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#2A0A73',
     paddingHorizontal: 20,
-    paddingTop: 36,
+    paddingTop: 16,
     paddingBottom: 24,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
@@ -193,9 +194,9 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 16,
-    backgroundColor: 'rgba(24, 119, 242, 0.25)',
+    backgroundColor: 'rgba(29, 107, 224, 0.25)',
     borderWidth: 1.5,
-    borderColor: '#1877F2',
+    borderColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   reminderActionRow: {
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -323,7 +324,7 @@ const styles = StyleSheet.create({
   fullWidthCard: {
     width: '100%',
     backgroundColor: '#141A2E',
-    borderColor: '#1877F2',
+    borderColor: colors.primary,
     borderBottomColor: '#0B3C91',
   },
   fullWidthContent: {
@@ -365,20 +366,20 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#6203FF',
     borderLeftWidth: 6,
-    borderLeftColor: '#1877F2',
+    borderLeftColor: colors.primary,
     borderBottomWidth: 4,
     borderBottomColor: '#2A0A73',
     marginBottom: 30,
   },
   announcementTag: {
-    backgroundColor: 'rgba(24, 119, 242, 0.2)',
+    backgroundColor: 'rgba(29, 107, 224, 0.2)',
     alignSelf: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#1877F2',
+    borderColor: colors.primary,
   },
   announcementTagText: {
     color: '#60A5FA',

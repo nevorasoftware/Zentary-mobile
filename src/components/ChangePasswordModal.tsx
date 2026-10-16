@@ -56,7 +56,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
         <View style={styles.modalCard}>
-          <Text accessibilityLabel="Primer inicio de sesión" style={styles.badge}>🔐 PRIMER INICIO DE SESIÓN</Text>
+          <Text accessibilityLabel="Primer inicio de sesión" style={styles.badge}>🔐 Primer inicio de sesión</Text>
           <Text style={styles.title}>Actualiza tu Contraseña</Text>
           <Text style={styles.subtitle}>
             Por motivos de seguridad, debes cambiar la contraseña genérica asignada por la administración por una clave personal.
@@ -130,7 +130,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             {isSaving ? (
               <ActivityIndicator color="#FFFFFF" />
             ) : (
-              <Text style={styles.saveBtnText}>Guardar y Continuar a Zentary</Text>
+              <Text style={styles.saveBtnText}>Guardar y continuar a Zentary</Text>
             )}
           </TouchableOpacity>
         </View>

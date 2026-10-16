@@ -5,6 +5,7 @@
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import { localDateISO } from '../utils/dates';
+import { colors } from '../theme';
 
 export interface NotificationConfig {
   enabled: boolean;
@@ -67,7 +68,7 @@ class NotificationService {
           name: 'Recordatorios de Pago Zentary',
           importance: Notifications.AndroidImportance.HIGH,
           vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#2B82FB',
+          lightColor: colors.primary,
           sound: 'default',
         });
       }
@@ -107,7 +108,7 @@ class NotificationService {
             sound: 'default',
             data: data,
             badge: 1,
-            color: '#2B82FB',
+            color: colors.primary,
           },
           trigger: null, // Triggers immediately in status bar
         });

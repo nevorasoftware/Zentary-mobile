@@ -17,6 +17,7 @@ import {
 import { apiService, UserProfile } from '../services/api';
 import { deviceService } from '../services/device';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { colors } from '../theme';
 
 interface AuthFlowScreenProps {
   onLoginSuccess: (user: UserProfile, mustChangePass?: boolean) => void;
@@ -240,7 +241,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                 {loading ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.actionBtnText}>Iniciar Sesión</Text>
+                  <Text style={styles.actionBtnText}>Iniciar sesión</Text>
                 )}
               </TouchableOpacity>
 
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
   empezarBtn: {
     width: 240,
     minHeight: 54,
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     borderRadius: 27,
     justifyContent: 'center',
     alignItems: 'center',
@@ -420,7 +421,7 @@ const styles = StyleSheet.create({
   actionBtn: {
     width: '100%',
     minHeight: 52,
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     borderRadius: 26,
     justifyContent: 'center',
     alignItems: 'center',
@@ -495,7 +496,7 @@ const styles = StyleSheet.create({
   disabledAceptarBtn: {
     width: '100%',
     minHeight: 48,
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',

@@ -44,7 +44,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
 
           <ScrollView contentContainerStyle={styles.content}>
             <View style={styles.adminBadgeBox}>
-              <Text accessibilityLabel="Configuración administrativa" style={styles.adminBadgeTitle}>🛡️ CONFIGURACIÓN ADMINISTRATIVA</Text>
+              <Text accessibilityLabel="Configuración administrativa" style={styles.adminBadgeTitle}>🛡️ Configuración administrativa</Text>
               <Text style={styles.adminBadgeSub}>
                 Los parámetros de recordatorios de pago y anuncios residenciales son gestionados directamente por la Administración de Zentary.
               </Text>

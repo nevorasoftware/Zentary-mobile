@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { apiService } from '../services/api';
 import { formatDateUTC } from '../utils/dates';
+import { colors } from '../theme';
 
 interface PaymentItem {
   id: string;
@@ -210,7 +211,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
               setRefreshing(true);
               fetchPayments(true);
             }}
-            colors={['#2B82FB']}
+            colors={[colors.primary]}
           />
         }
       >
@@ -223,7 +224,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Historial de Cobros</Text>
-          {loading && <ActivityIndicator size="small" color="#2B82FB" />}
+          {loading && <ActivityIndicator size="small" color={colors.primary} />}
         </View>
 
         {loadError && (
@@ -269,12 +270,12 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                   ]}
                 >
                   {item.status === 'PAID'
-                    ? '✓ PAGADO'
+                    ? '✓ Pagado'
                     : item.id === verifyingId
                     ? '⏳ Verificando pago…'
                     : item.status === 'OVERDUE'
-                    ? 'VENCIDO'
-                    : 'PENDIENTE'}
+                    ? 'Vencido'
+                    : 'Pendiente'}
                 </Text>
               </View>
 
@@ -598,7 +599,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     flexShrink: 1,
     justifyContent: 'center',
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 14,
@@ -639,11 +640,11 @@ const styles = StyleSheet.create({
     color: '#FFCF36',
   },
   wompiBadgeBox: {
-    backgroundColor: 'rgba(24, 119, 242, 0.15)',
+    backgroundColor: 'rgba(29, 107, 224, 0.15)',
     padding: 12,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#1877F2',
+    borderColor: colors.primary,
     marginBottom: 16,
   },
   wompiBadgeText: {
@@ -695,7 +696,7 @@ const styles = StyleSheet.create({
   saveBtn: {
     minHeight: 44,
     justifyContent: 'center',
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     paddingVertical: 12,
     paddingHorizontal: 22,
     borderRadius: 14,
