@@ -24,4 +24,12 @@ npm install
 # 3. Start Expo development server
 npm start
 ```
+
+### URL de la API
+
+Por defecto la app usa la API de producción. Para apuntar a otro backend, define `EXPO_PUBLIC_API_URL` (con el sufijo `/api`) al iniciar o compilar; Expo la incluye en el bundle en tiempo de build:
+
+```bash
+EXPO_PUBLIC_API_URL=https://mi-backend.example.com/api npm start
+```
 "# Zentary-mobile" 

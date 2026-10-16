@@ -1,6 +1,6 @@
 // API service client for Zentary Mobile connecting to Express + Prisma Backend
 
-export const API_BASE_URL = 'https://zentary-backend-production.up.railway.app/api';
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://zentary-backend-production.up.railway.app/api';
 
 export interface UserProfile {
   id: string;
