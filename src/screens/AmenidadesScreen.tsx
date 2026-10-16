@@ -427,11 +427,11 @@ export const AmenidadesScreen: React.FC = () => {
                 {checkingSlots ? (
                   <ActivityIndicator size="small" color="#FFCF36" />
                 ) : bookedSlots.length === 0 ? (
-                  <Text style={styles.noOccupiedText}>✓ Sin reservas previas en este día.</Text>
+                  <Text accessibilityLabel="Sin reservas previas en este día." style={styles.noOccupiedText}>✓ Sin reservas previas en este día.</Text>
                 ) : (
                   bookedSlots.map((b) => (
                     <View key={b.id} style={styles.occupiedBadge}>
-                      <Text style={styles.occupiedBadgeText}>
+                      <Text accessibilityLabel={`Ocupado: ${b.startTime} - ${b.endTime}`} style={styles.occupiedBadgeText}>
                         ⚠️ Ocupado: {b.startTime} - {b.endTime}
                       </Text>
                     </View>
@@ -511,7 +511,7 @@ export const AmenidadesScreen: React.FC = () => {
         <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>💳 Pago con tarjeta</Text>
+              <Text accessibilityLabel="Pago con tarjeta" style={styles.modalTitle}>💳 Pago con tarjeta</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setIsPaymentModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeModalBtn}>✕</Text>
               </TouchableOpacity>

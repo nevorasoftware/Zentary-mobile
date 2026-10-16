@@ -37,7 +37,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
   return (
     <>
       <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-        <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar menú" style={styles.backdrop} activeOpacity={1} onPress={onClose}>
           <View style={styles.sheetContainer} onStartShouldSetResponder={() => true}>
             {/* Top Avatar badge matching Image 4 */}
             <View style={styles.avatarWrapper}>
