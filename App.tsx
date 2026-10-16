@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import NetInfo from '@react-native-community/netinfo';
 import { StyleSheet, View, SafeAreaView, StatusBar, ActivityIndicator, Text, Image, Animated, BackHandler } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import VisitasScreen from './src/screens/VisitasScreen';
@@ -27,6 +28,7 @@ export default function App() {
   const [pendingPqrsId, setPendingPqrsId] = useState<string | null>(null);
   const [autoOpenFastPass, setAutoOpenFastPass] = useState(false);
   const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
 
   // First Login Password Change Modal
   const [mustChangePassword, setMustChangePassword] = useState(false);
@@ -60,6 +62,14 @@ export default function App() {
     animationLoop.start();
     return () => animationLoop.stop();
   }, [opacityAnim]);
+
+  // Detect offline mode
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsOffline(state.isConnected === false || state.isInternetReachable === false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Restore session
   useEffect(() => {
@@ -224,6 +234,11 @@ export default function App() {
       <StatusBar barStyle="light-content" backgroundColor="#0A0F1F" />
 
       {/* Main Screen Container */}
+      {isOffline && (
+        <View style={styles.offlineBanner}>
+          <Text style={styles.offlineBannerText}>Sin conexión. Revisa tu internet.</Text>
+        </View>
+      )}
       <View style={styles.screenContainer}>{renderCurrentScreen()}</View>
 
       {/* Persistent Bottom Bar */}
@@ -310,6 +325,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0A0F1F',
+  },
+  offlineBanner: {
+    backgroundColor: '#B45309',
+    paddingVertical: 6,
+    alignItems: 'center',
+  },
+  offlineBannerText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: 'bold',
   },
   screenContainer: {
     flex: 1,

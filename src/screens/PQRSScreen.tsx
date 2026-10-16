@@ -44,6 +44,8 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedPqrs, setSelectedPqrs] = useState<PqrsDetailItem | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [detailError, setDetailError] = useState(false);
+  const [detailPqrsId, setDetailPqrsId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [isSendingReply, setIsSendingReply] = useState(false);
 
@@ -122,6 +124,8 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
     setSelectedPqrs(null);
     setShowDetailModal(true);
     setIsLoadingDetail(true);
+    setDetailError(false);
+    setDetailPqrsId(pqrsId);
     try {
       const res = await apiService.getPqrsDetail(pqrsId);
       if (res.success && res.pqrs) {
@@ -129,6 +133,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
       }
     } catch (error) {
       console.log('Error loading PQRS detail:', error);
+      setDetailError(true);
     } finally {
       setIsLoadingDetail(false);
     }
@@ -411,7 +416,15 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
               <View style={{ width: 60 }} />
             </View>
 
-            {isLoadingDetail || !selectedPqrs ? (
+            {detailError && !isLoadingDetail ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyTitle}>No se pudo cargar la conversación</Text>
+                <Text style={styles.emptySubtitle}>Revisa tu conexión e intenta de nuevo.</Text>
+                <TouchableOpacity accessibilityRole="button" style={styles.retryBtn} onPress={() => detailPqrsId && handleOpenDetail(detailPqrsId)}>
+                  <Text style={styles.retryBtnText}>Reintentar</Text>
+                </TouchableOpacity>
+              </View>
+            ) : isLoadingDetail || !selectedPqrs ? (
               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color="#1D6BE0" />
                 <Text style={{ marginTop: 12, color: '#64748B' }}>Cargando conversación...</Text>
