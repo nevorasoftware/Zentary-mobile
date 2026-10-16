@@ -19,7 +19,8 @@ import {
 // @ts-ignore
 import * as WebBrowser from 'expo-web-browser';
 import { apiService } from '../services/api';
-import { localDateISO } from '../utils/dates';
+import { localDateISO, isValidTimeHM, parseLocalDateTime, formatDateLocal } from '../utils/dates';
+import { DateTimeField } from '../components/DateTimeField';
 
 try {
   WebBrowser.maybeCompleteAuthSession();
@@ -157,6 +158,31 @@ export const AmenidadesScreen: React.FC = () => {
 
   const handleConfirmReservation = async () => {
     if (!selectedAmenity) return;
+
+    if (!isValidTimeHM(startTime) || !isValidTimeHM(endTime)) {
+      Alert.alert('Horario no válido', 'Selecciona una hora de inicio y una hora de fin válidas.');
+      return;
+    }
+    if (parseLocalDateTime(selectedDate, startTime).getTime() < Date.now()) {
+      Alert.alert('Horario no válido', 'La fecha y la hora de inicio no pueden ser anteriores al momento actual.');
+      return;
+    }
+    if (endTime <= startTime) {
+      Alert.alert('Horario no válido', 'La hora de fin debe ser posterior a la hora de inicio.');
+      return;
+    }
+    if (
+      isValidTimeHM(selectedAmenity.startTime) && isValidTimeHM(selectedAmenity.endTime) &&
+      (startTime < selectedAmenity.startTime || endTime > selectedAmenity.endTime)
+    ) {
+      Alert.alert('Horario no válido', `Esta amenidad está disponible de ${selectedAmenity.startTime} a ${selectedAmenity.endTime}.`);
+      return;
+    }
+    const overlap = bookedSlots.find((b) => startTime < b.endTime && endTime > b.startTime);
+    if (overlap) {
+      Alert.alert('Horario ocupado', `El horario se cruza con una reserva existente (${overlap.startTime} - ${overlap.endTime}).`);
+      return;
+    }
 
     try {
       setIsSubmitting(true);
@@ -451,7 +477,7 @@ export const AmenidadesScreen: React.FC = () => {
               {/* Occupied Slots Indicator */}
               <View style={styles.occupiedSection}>
                 <Text style={styles.occupiedTitle}>
-                  Horarios Ocupados el {selectedDate}:
+                  Horarios Ocupados el {formatDateLocal(selectedDate)}:
                 </Text>
                 {checkingSlots ? (
                   <ActivityIndicator size="small" color="#FFCF36" />
@@ -473,24 +499,24 @@ export const AmenidadesScreen: React.FC = () => {
               <View style={styles.timeRow}>
                 <View style={{ flex: 1, marginRight: 8 }}>
                   <Text style={styles.subInputLabel}>Hora Inicio</Text>
-                  <TextInput
+                  <DateTimeField
+                    mode="time"
                     accessibilityLabel="Hora de inicio"
-                    style={styles.timeInput}
                     value={startTime}
-                    onChangeText={setStartTime}
-                    placeholder="10:00"
-                    placeholderTextColor="#64748B"
+                    onChange={setStartTime}
+                    style={styles.timeInput}
+                    textStyle={styles.timeInputText}
                   />
                 </View>
                 <View style={{ flex: 1, marginLeft: 8 }}>
                   <Text style={styles.subInputLabel}>Hora Fin</Text>
-                  <TextInput
+                  <DateTimeField
+                    mode="time"
                     accessibilityLabel="Hora de fin"
-                    style={styles.timeInput}
                     value={endTime}
-                    onChangeText={setEndTime}
-                    placeholder="12:00"
-                    placeholderTextColor="#64748B"
+                    onChange={setEndTime}
+                    style={styles.timeInput}
+                    textStyle={styles.timeInputText}
                   />
                 </View>
               </View>
@@ -946,6 +972,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     paddingHorizontal: 12,
     paddingVertical: 10,
+  },
+  timeInputText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
   },
   notesInput: {
     backgroundColor: '#0A0F1F',

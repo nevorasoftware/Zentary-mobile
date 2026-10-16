@@ -17,13 +17,17 @@ import {
   Platform,
 } from 'react-native';
 import { apiService, VisitItem, VisitStatusType } from '../services/api';
-import { localDateISO, localTimeHM } from '../utils/dates';
+import { localDateISO, localTimeHM, isValidDateISO, isValidTimeHM, parseLocalDateTime } from '../utils/dates';
+import { DateTimeField } from '../components/DateTimeField';
 
 interface VisitasScreenProps {
   onOpenFrequentModal?: () => void;
   autoOpenFastPass?: boolean;
   userRole?: string;
 }
+
+// Estilo del campo de fecha/hora en web (tema claro de los formularios de esta pantalla)
+const webLightInput = { backgroundColor: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', colorScheme: 'light', fontWeight: 400, fontSize: 14, padding: '10px 14px' };
 
 export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModal, autoOpenFastPass, userRole }) => {
   // Las funciones de garita solo son para personal autorizado (no residentes ni rol desconocido)
@@ -38,6 +42,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   // FastPass Special Modal State ("¿Cuándo te visitan? 🏃‍♀️")
   const [showFastPassModal, setShowFastPassModal] = useState(autoOpenFastPass || false);
   const [fastPassDateType, setFastPassDateType] = useState<'HOY' | 'MANANA' | 'OTRO'>('HOY');
+  const [fastPassOtherDate, setFastPassOtherDate] = useState(localDateISO());
   const [fastPassTimeSlot, setFastPassTimeSlot] = useState<'AHORA' | 'MEDIODIA' | 'TARDE' | 'NOCHE'>('AHORA');
   const [fastPassContactName, setFastPassContactName] = useState('');
   const [fastPassPhone, setFastPassPhone] = useState('');
@@ -120,12 +125,18 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       if (fastPassDateType === 'MANANA') {
         now.setDate(now.getDate() + 1);
       }
-      const dateStr = localDateISO(now);
+      const dateStr = fastPassDateType === 'OTRO' ? fastPassOtherDate : localDateISO(now);
+      if (!isValidDateISO(dateStr) || dateStr < localDateISO()) {
+        Alert.alert('Fecha no válida', 'Selecciona una fecha de visita que no sea anterior a hoy.');
+        return;
+      }
 
       let timeStr = localTimeHM();
       if (fastPassTimeSlot === 'MEDIODIA') timeStr = '12:00';
       if (fastPassTimeSlot === 'TARDE') timeStr = '18:00';
       if (fastPassTimeSlot === 'NOCHE') timeStr = '21:00';
+      // Los horarios del día de hoy que ya pasaron se envían con la hora actual
+      if (dateStr === localDateISO() && timeStr < localTimeHM()) timeStr = localTimeHM();
 
       const res = await apiService.createVisit({
         visitorName: fastPassContactName.trim(),
@@ -168,6 +179,14 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     if (creating) return;
     if (!visitorName.trim()) {
       Alert.alert('Campo requerido', 'Por favor ingresa el nombre del visitante.');
+      return;
+    }
+    if (!isValidDateISO(visitDate) || !isValidTimeHM(validFrom)) {
+      Alert.alert('Fecha u hora no válida', 'Selecciona una fecha y una hora de visita válidas.');
+      return;
+    }
+    if (parseLocalDateTime(visitDate, validFrom).getTime() < Date.now() - 60000) {
+      Alert.alert('Fecha u hora no válida', 'La fecha y la hora de la visita no pueden ser anteriores al momento actual.');
       return;
     }
 
@@ -533,7 +552,35 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                   ☀️ Mañana
                 </Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                accessibilityRole="button" accessibilityState={{ selected: fastPassDateType === 'OTRO' }}
+                style={[
+                  styles.optionChip,
+                  fastPassDateType === 'OTRO' && styles.optionChipActive,
+                ]}
+                onPress={() => setFastPassDateType('OTRO')}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              >
+                <Text accessibilityLabel="Otro día" style={[styles.optionChipText, fastPassDateType === 'OTRO' && styles.optionChipTextActive]}>
+                  🗓️ Otro día
+                </Text>
+              </TouchableOpacity>
             </View>
+            {fastPassDateType === 'OTRO' && (
+              <View style={{ marginBottom: 12 }}>
+                <DateTimeField
+                  mode="date"
+                  accessibilityLabel="Fecha de la visita"
+                  value={fastPassOtherDate}
+                  onChange={setFastPassOtherDate}
+                  minDate={localDateISO()}
+                  style={styles.input}
+                  textStyle={styles.dateFieldText}
+                  webStyle={webLightInput}
+                />
+              </View>
+            )}
 
             {/* Time Slot Selection */}
             <Text style={styles.label}>2. Selecciona la Hora Estimada</Text>
@@ -581,6 +628,15 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               onSubmitEditing={handleCreateFastPass}
               value={fastPassPhone}
               onChangeText={setFastPassPhone}
+            />
+
+            <Text style={styles.label}>Notas adicionales (Opcional)</Text>
+            <TextInput
+              accessibilityLabel="Notas del FastPass"
+              style={styles.input}
+              placeholder="Ej. Visita familiar"
+              value={fastPassNotes}
+              onChangeText={setFastPassNotes}
             />
 
             <View style={styles.modalActions}>
@@ -635,22 +691,27 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.label}>Fecha de visita</Text>
-                <TextInput
+                <DateTimeField
+                  mode="date"
                   accessibilityLabel="Fecha de visita"
-                  style={styles.input}
-                  placeholder="AAAA-MM-DD"
                   value={visitDate}
-                  onChangeText={setVisitDate}
+                  onChange={setVisitDate}
+                  minDate={localDateISO()}
+                  style={styles.input}
+                  textStyle={styles.dateFieldText}
+                  webStyle={webLightInput}
                 />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.label}>Hora inicio (Desde)</Text>
-                <TextInput
+                <DateTimeField
+                  mode="time"
                   accessibilityLabel="Hora de inicio"
-                  style={styles.input}
-                  placeholder="HH:MM (Ej. 18:00)"
                   value={validFrom}
-                  onChangeText={setValidFrom}
+                  onChange={setValidFrom}
+                  style={styles.input}
+                  textStyle={styles.dateFieldText}
+                  webStyle={webLightInput}
                 />
               </View>
             </View>
@@ -953,6 +1014,7 @@ const styles = StyleSheet.create({
   modalDesc: { fontSize: 12, color: '#64748B', marginBottom: 16 },
   label: { fontSize: 12, fontWeight: '600', color: '#475569', marginTop: 10, marginBottom: 4 },
   input: { borderWidth: 1, borderColor: '#CBD5E1', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, color: '#0F172A' },
+  dateFieldText: { fontSize: 14, color: '#0F172A' },
   modalActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 10, marginTop: 20 },
   cancelBtn: { paddingVertical: 10, paddingHorizontal: 16 },
   cancelBtnText: { color: '#64748B', fontWeight: '600' },
