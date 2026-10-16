@@ -16,6 +16,7 @@
     "expo": "~50.0.7",
     "expo-device": "~5.9.3",
     "expo-notifications": "~0.27.6",
+    "expo-secure-store": "~12.8.1",
     "expo-status-bar": "~1.11.1",
     "expo-web-browser": "~12.8.2",
     "lucide-react-native": "^0.330.0",
