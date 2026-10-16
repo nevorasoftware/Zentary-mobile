@@ -478,11 +478,11 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                     <Text accessibilityLabel={`Teléfono: ${item.visitorPhone || "Sin registrar"}`} style={styles.infoLineText}>
                       📱 Teléfono: {item.visitorPhone || 'Sin registrar'}
                     </Text>
-                    <Text accessibilityLabel={`Hora autorizada: ${item.validFrom ? new Date(item.validFrom).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "6:00 PM"}`} style={styles.infoLineText}>
+                    <Text accessibilityLabel={`Hora autorizada: ${item.validFrom ? new Date(item.validFrom).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Sin dato"}`} style={styles.infoLineText}>
                       ⏰ Hora autorizada:{' '}
                       {item.validFrom
                         ? new Date(item.validFrom).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                        : '6:00 PM'}
+                        : '—'}
                     </Text>
 
                     {item.hasVehicle && (
@@ -911,7 +911,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 <View style={styles.detailsBox}>
                   <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold' }}>Visitante:</Text> {selectedVisit.visitorName}</Text>
                   <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold' }}>Teléfono:</Text> {selectedVisit.visitorPhone || 'No registrado'}</Text>
-                  <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold' }}>Documento:</Text> {selectedVisit.documentType || 'DUI'}: {selectedVisit.documentNumber || 'Pendiente'}</Text>
+                  <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold' }}>Documento:</Text> {selectedVisit.documentType ? `${selectedVisit.documentType}: ` : ''}{selectedVisit.documentNumber || 'Sin dato'}</Text>
                   
                   {selectedVisit.hasVehicle && (
                     <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold' }}>Vehículo:</Text> {selectedVisit.vehicleModel || ''} - Placa: {selectedVisit.vehiclePlate}</Text>
