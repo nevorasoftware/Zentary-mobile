@@ -266,17 +266,17 @@ export const AmenidadesScreen: React.FC = () => {
           );
 
           // El resultado del navegador no confirma el pago: se consulta el estado real de la reserva
-          if (authResult.type === 'success' || authResult.type === 'dismiss' || authResult.type === 'cancel') {
+          if (authResult.type === 'success' || authResult.type === 'dismiss' || authResult.type === 'cancel' || authResult.type === 'locked') {
             const outcome = await getReservationPaymentOutcome(pendingReservationId);
             if (outcome === 'PAID') {
               setResultTitle('¡Reserva Confirmada!');
               setResultIcon('🎉');
               setSuccessMessage(`¡Pago procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
-            } else if (outcome === 'FAILED' || authResult.type !== 'success') {
-              // Ventana cerrada sin volver del banco, o reserva cancelada/rechazada: el pago no se completó
+            } else if (outcome === 'FAILED') {
+              // Solo estados terminales (reserva cancelada/vencida/rechazada o pago fallido)
               setResultTitle('Pago no completado');
               setResultIcon('⚠️');
-              setSuccessMessage('El pago no se completó y tu reserva no está confirmada. Si se te cobró, se confirmará en unos minutos; de lo contrario, intenta reservar de nuevo.');
+              setSuccessMessage('El pago no se completó y tu reserva no está confirmada. Intenta reservar de nuevo.');
             } else {
               setResultTitle('Pago en verificación');
               setResultIcon('⏳');
