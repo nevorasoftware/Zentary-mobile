@@ -357,8 +357,10 @@ export const AmenidadesScreen: React.FC = () => {
         }
       } else {
         Alert.alert('Error en Pago', res.message || 'No se pudo iniciar el pago con tarjeta.');
+        fetchPendingReservations();
       }
     } catch (err: any) {
+      if (err.status === 409) setIsPaymentModalOpen(false);
       Alert.alert('Error en el pago', err.message || 'Fallo en la comunicación con el procesador de pago.');
       fetchPendingReservations();
     } finally {
