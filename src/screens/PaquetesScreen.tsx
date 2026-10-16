@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { colors } from '../theme';
 
 interface CarrierOption {
   id: string;
@@ -51,7 +52,7 @@ const CARRIERS: CarrierOption[] = [
     id: 'OTRO',
     name: 'Otro',
     bgColor: '#FFFFFF',
-    textColor: '#2563EB',
+    textColor: colors.primary,
     logoText: '👤',
     subText: '+',
     isCustom: true,
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -4,
     right: -6,
-    backgroundColor: '#2563EB',
+    backgroundColor: colors.primary,
     width: 20,
     height: 20,
     borderRadius: 10,

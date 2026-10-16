@@ -21,6 +21,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { apiService } from '../services/api';
 import { localDateISO, isValidTimeHM, parseLocalDateTime, formatDateLocal } from '../utils/dates';
 import { DateTimeField } from '../components/DateTimeField';
+import { colors } from '../theme';
 
 try {
   WebBrowser.maybeCompleteAuthSession();
@@ -828,7 +829,7 @@ const styles = StyleSheet.create({
   pendingInfo: { flex: 1, marginRight: 12 },
   pendingName: { fontSize: 14, fontWeight: '800', color: '#FFFFFF' },
   pendingDetail: { fontSize: 12, color: '#94A3B8', marginTop: 2 },
-  pendingPayBtn: { minHeight: 44, minWidth: 80, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A6FE8', paddingHorizontal: 16, borderRadius: 12 },
+  pendingPayBtn: { minHeight: 44, minWidth: 80, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary, paddingHorizontal: 16, borderRadius: 12 },
   pendingPayBtnText: { color: '#FFFFFF', fontSize: 13, fontWeight: '900' },
   amenityCard: {
     backgroundColor: '#141A2E',
@@ -878,7 +879,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   priceBadge: {
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 12,
@@ -922,7 +923,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     justifyContent: 'center',
     marginTop: 14,
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     paddingVertical: 12,
     borderRadius: 14,
     alignItems: 'center',
@@ -998,7 +999,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedDateChip: {
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     borderColor: '#FFCF36',
   },
   dateChipDay: {
@@ -1104,7 +1105,7 @@ const styles = StyleSheet.create({
   confirmBtn: {
     minHeight: 44,
     justifyContent: 'center',
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: 'center',
@@ -1151,7 +1152,7 @@ const styles = StyleSheet.create({
   wompiPayBtn: {
     minHeight: 44,
     justifyContent: 'center',
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: 'center',
@@ -1188,7 +1189,7 @@ const styles = StyleSheet.create({
   successCloseBtn: {
     minHeight: 44,
     justifyContent: 'center',
-    backgroundColor: '#1A6FE8',
+    backgroundColor: colors.primary,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 14,
