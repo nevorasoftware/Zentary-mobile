@@ -198,7 +198,7 @@ export const AmenidadesScreen: React.FC = () => {
     try {
       const res = await apiService.getMyReservation(reservationId);
       const { reservationStatus, paymentStatus } = res.reservation || ({} as any);
-      if (reservationStatus === 'CONFIRMED' || paymentStatus === 'PAID') return 'PAID';
+      if (paymentStatus === 'PAID') return 'PAID';
       if (
         ['CANCELLED', 'EXPIRED', 'REJECTED'].includes(reservationStatus) ||
         ['FAILED', 'CANCELLED'].includes(paymentStatus)
@@ -274,9 +274,9 @@ export const AmenidadesScreen: React.FC = () => {
               setSuccessMessage(`¡Pago procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
             } else if (outcome === 'FAILED') {
               // Solo estados terminales (reserva cancelada/vencida/rechazada o pago fallido)
-              setResultTitle('Pago no completado');
+              setResultTitle('Reserva no confirmada');
               setResultIcon('⚠️');
-              setSuccessMessage('El pago no se completó y tu reserva no está confirmada. Intenta reservar de nuevo.');
+              setSuccessMessage('Tu reserva fue cancelada o rechazada y no está confirmada. Si se realizó un cargo, la administración lo revisará.');
             } else {
               setResultTitle('Pago en verificación');
               setResultIcon('⏳');
