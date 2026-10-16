@@ -48,6 +48,7 @@ interface PendingReservation {
   endTime: string;
   reservationStatus: string;
   paymentStatus: string;
+  price: number;
   amenity: { id: string; name: string; price: number };
 }
 
@@ -111,7 +112,7 @@ export const AmenidadesScreen: React.FC = () => {
       if (res.success) {
         setPendingReservations(
           (res.reservations || []).filter(
-            (r) => r.reservationStatus === 'PENDING' && r.paymentStatus === 'PENDING' && Number(r.amenity?.price) > 0
+            (r) => r.reservationStatus === 'PENDING' && r.paymentStatus === 'PENDING' && Number(r.price) > 0
           )
         );
       }
@@ -122,7 +123,7 @@ export const AmenidadesScreen: React.FC = () => {
 
   const handleResumePayment = (r: PendingReservation) => {
     const known = amenities.find((a) => a.id === r.amenity.id);
-    setSelectedAmenity(known || ({ ...r.amenity, price: Number(r.amenity.price) } as Amenity));
+    setSelectedAmenity({ ...(known || r.amenity), price: Number(r.price) } as Amenity);
     setPendingReservationId(r.id);
     setIsPaymentModalOpen(true);
   };
