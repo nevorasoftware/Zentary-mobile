@@ -476,7 +476,7 @@ class ApiService {
       anioVencimiento: number;
       nombre: string;
       apellido: string;
-      email: string;
+      email?: string;
       telefono?: string;
     }
   ) {
