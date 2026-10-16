@@ -92,6 +92,8 @@ export interface PqrsDetailItem extends PqrsItem {
   messages: PqrsMessageItem[];
 }
 
+import { translateServerError } from '../utils/serverErrors';
+
 // Rechazos del servidor que indican que la sesión ya no es válida
 export const isAuthRejection = (status?: number, code?: string) =>
   (status === 401 && (code === 'NO_TOKEN' || code === 'INVALID_TOKEN')) ||
@@ -160,7 +162,7 @@ class ApiService {
 
     const data = await response.json();
     if (!response.ok) {
-      const error: any = new Error(data.message || 'Error en la petición al servidor');
+      const error: any = new Error(translateServerError(response.status, data.code, data.message));
       error.status = response.status;
       error.code = data.code;
       if (isAuthRejection(error.status, error.code) && this.authErrorHandler) {
