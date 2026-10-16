@@ -42,3 +42,8 @@ export const formatDateLocal = (dateISO: string): string => {
     .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })
     .replace(',', '');
 };
+
+// Fecha corta de un valor de solo fecha guardado como medianoche UTC (YYYY-MM-DDT00:00:00Z).
+// Se formatea en UTC para que el día no cambie según la zona horaria del dispositivo.
+export const formatDateUTC = (value: string): string =>
+  new Date(value).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
