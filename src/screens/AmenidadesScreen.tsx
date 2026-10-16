@@ -41,6 +41,17 @@ interface Amenity {
   active: boolean;
 }
 
+interface PendingReservation {
+  id: string;
+  reservationDate: string;
+  startTime: string;
+  endTime: string;
+  reservationStatus: string;
+  paymentStatus: string;
+  price: number;
+  amenity: { id: string; name: string; price: number };
+}
+
 interface ReservationSlot {
   id: string;
   startTime: string;
@@ -54,6 +65,7 @@ export const AmenidadesScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [selectedAmenity, setSelectedAmenity] = useState<Amenity | null>(null);
+  const [pendingReservations, setPendingReservations] = useState<PendingReservation[]>([]);
 
   // Booking Modal State
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
@@ -93,7 +105,31 @@ export const AmenidadesScreen: React.FC = () => {
     }
   }, [selectedAmenity, selectedDate, isBookingModalOpen]);
 
+  // Reservas propias pendientes de pago (con monto a cobrar) para poder retomar el pago
+  const fetchPendingReservations = async () => {
+    try {
+      const res = await apiService.getMyReservations('PENDING');
+      if (res.success) {
+        setPendingReservations(
+          (res.reservations || []).filter(
+            (r) => r.reservationStatus === 'PENDING' && r.paymentStatus === 'PENDING' && Number(r.price) > 0
+          )
+        );
+      }
+    } catch (err) {
+      console.error('Error fetching pending reservations:', err);
+    }
+  };
+
+  const handleResumePayment = (r: PendingReservation) => {
+    const known = amenities.find((a) => a.id === r.amenity.id);
+    setSelectedAmenity({ ...(known || r.amenity), price: Number(r.price) } as Amenity);
+    setPendingReservationId(r.id);
+    setIsPaymentModalOpen(true);
+  };
+
   const fetchAmenities = async (isRefresh = false) => {
+    fetchPendingReservations();
     try {
       if (!isRefresh) setLoading(true);
       setLoadError(false);
@@ -201,6 +237,7 @@ export const AmenidadesScreen: React.FC = () => {
           // Open Wompi payment modal
           setPendingReservationId(res.reservation.id);
           setIsPaymentModalOpen(true);
+          fetchPendingReservations();
         } else {
           // Free reservation confirmed directly
           setResultTitle('¡Reserva Confirmada!');
@@ -321,9 +358,12 @@ export const AmenidadesScreen: React.FC = () => {
         }
       } else {
         Alert.alert('Error en Pago', res.message || 'No se pudo iniciar el pago con tarjeta.');
+        fetchPendingReservations();
       }
     } catch (err: any) {
+      if (err.status === 409) setIsPaymentModalOpen(false);
       Alert.alert('Error en el pago', err.message || 'Fallo en la comunicación con el procesador de pago.');
+      fetchPendingReservations();
     } finally {
       setIsProcessingWompi(false);
     }
@@ -381,7 +421,32 @@ export const AmenidadesScreen: React.FC = () => {
               </Text>
             </View>
           ) : (
-            amenities.map((item) => (
+            <>
+            {pendingReservations.length > 0 && (
+              <View style={styles.pendingSection}>
+                <Text style={styles.pendingTitle}>Mis reservas pendientes de pago</Text>
+                {pendingReservations.map((r) => (
+                  <View key={r.id} style={styles.pendingRow}>
+                    <View style={styles.pendingInfo}>
+                      <Text style={styles.pendingName}>{r.amenity.name}</Text>
+                      <Text style={styles.pendingDetail}>
+                        {formatDateLocal(r.reservationDate.slice(0, 10))} · {r.startTime} - {r.endTime}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      accessibilityRole="button"
+                      accessibilityLabel={`Pagar reserva de ${r.amenity.name}`}
+                      style={styles.pendingPayBtn}
+                      activeOpacity={0.85}
+                      onPress={() => handleResumePayment(r)}
+                    >
+                      <Text style={styles.pendingPayBtnText}>Pagar</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
+            {amenities.map((item) => (
               <View key={item.id} style={styles.amenityCard}>
                 {item.imageUrl ? (
                   <Image source={{ uri: item.imageUrl }} style={styles.amenityImage} />
@@ -436,7 +501,8 @@ export const AmenidadesScreen: React.FC = () => {
                   </TouchableOpacity>
                 </View>
               </View>
-            ))
+            ))}
+            </>
           )}
         </ScrollView>
       )}
@@ -756,6 +822,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 30,
   },
+  pendingSection: { marginBottom: 20 },
+  pendingTitle: { fontSize: 14, fontWeight: '800', color: '#FFFFFF', marginBottom: 10 },
+  pendingRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#141A2E', borderRadius: 16, borderWidth: 1.5, borderColor: '#2A0A73', padding: 12, marginBottom: 10 },
+  pendingInfo: { flex: 1, marginRight: 12 },
+  pendingName: { fontSize: 14, fontWeight: '800', color: '#FFFFFF' },
+  pendingDetail: { fontSize: 12, color: '#94A3B8', marginTop: 2 },
+  pendingPayBtn: { minHeight: 44, minWidth: 80, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A6FE8', paddingHorizontal: 16, borderRadius: 12 },
+  pendingPayBtnText: { color: '#FFFFFF', fontSize: 13, fontWeight: '900' },
   amenityCard: {
     backgroundColor: '#141A2E',
     borderRadius: 22,

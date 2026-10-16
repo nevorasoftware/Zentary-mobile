@@ -449,6 +449,23 @@ class ApiService {
     }>(`/amenities/reservations/${id}`);
   }
 
+  async getMyReservations(status?: string) {
+    return this.request<{
+      success: boolean;
+      reservations: {
+        id: string;
+        amenityId: string;
+        reservationDate: string;
+        startTime: string;
+        endTime: string;
+        reservationStatus: string;
+        paymentStatus: string;
+        price: number;
+        amenity: { id: string; name: string; price: number };
+      }[];
+    }>(`/amenities/reservations${status ? `?status=${encodeURIComponent(status)}` : ''}`);
+  }
+
   async createReservation(data: {
     amenityId: string;
     reservationDate: string;
