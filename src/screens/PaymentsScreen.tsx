@@ -270,12 +270,12 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                   ]}
                 >
                   {item.status === 'PAID'
-                    ? '✓ PAGADO'
+                    ? '✓ Pagado'
                     : item.id === verifyingId
                     ? '⏳ Verificando pago…'
                     : item.status === 'OVERDUE'
-                    ? 'VENCIDO'
-                    : 'PENDIENTE'}
+                    ? 'Vencido'
+                    : 'Pendiente'}
                 </Text>
               </View>
 

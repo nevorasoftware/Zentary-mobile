@@ -342,16 +342,16 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const getStatusBadge = (status: VisitStatusType) => {
     switch (status) {
       case 'PENDIENTE_REGISTRO':
-        return { text: 'PENDIENTE DATOS', bg: '#FEF3C7', color: '#92400E' };
+        return { text: 'Pendiente datos', bg: '#FEF3C7', color: '#92400E' };
       case 'DATOS_COMPLETADOS':
-        return { text: 'DATOS COMPLETOS (QR)', bg: '#DBEAFE', color: '#1D4ED8' };
+        return { text: 'Datos completos (QR)', bg: '#DBEAFE', color: '#1D4ED8' };
       case 'INGRESADA':
       case 'COMPLETED':
-        return { text: '🟢 INGRESADA', bg: '#DCFCE7', color: '#15803D' };
+        return { text: '🟢 Ingresada', bg: '#DCFCE7', color: '#15803D' };
       case 'CANCELADA':
-        return { text: '❌ CANCELADA', bg: '#FEE2E2', color: '#B91C1C' };
+        return { text: '❌ Cancelada', bg: '#FEE2E2', color: '#B91C1C' };
       case 'VENCIDA':
-        return { text: '⚫ VENCIDA', bg: '#F3F4F6', color: '#4B5563' };
+        return { text: '⚫ Vencida', bg: '#F3F4F6', color: '#4B5563' };
       default:
         return { text: status, bg: '#E5E7EB', color: '#374151' };
     }
@@ -383,7 +383,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'EN_CURSO' && styles.activeTabText]}>
-            EN CURSO
+            En curso
           </Text>
         </TouchableOpacity>
 
@@ -394,7 +394,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'HISTORIAL' && styles.activeTabText]}>
-            HISTORIAL
+            Historial
           </Text>
         </TouchableOpacity>
 
@@ -405,7 +405,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           hitSlop={{ top: 4, bottom: 4 }}
         >
           <Text style={[styles.tabText, activeTab === 'OTRAS' && styles.activeTabText]}>
-            CANCELADAS / OTROS
+            Canceladas / otros
           </Text>
         </TouchableOpacity>
       </View>
@@ -736,7 +736,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 {creating ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.saveBtnText}>Crear Invitación</Text>
+                  <Text style={styles.saveBtnText}>Crear invitación</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -870,7 +870,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                       {confirmingEntry ? (
                         <ActivityIndicator color="#FFFFFF" />
                       ) : (
-                        <Text accessibilityLabel="Confirmar ingreso" style={styles.confirmEntryBtnText}>✅ CONFIRMAR INGRESO</Text>
+                        <Text accessibilityLabel="Confirmar ingreso" style={styles.confirmEntryBtnText}>✅ Confirmar ingreso</Text>
                       )}
                     </TouchableOpacity>
                   </View>

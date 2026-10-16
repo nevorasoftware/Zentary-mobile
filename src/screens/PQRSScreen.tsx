@@ -179,25 +179,25 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
       case 'OPEN':
         return (
           <View style={[styles.statusBadge, { backgroundColor: '#FEF3C7', borderColor: '#F59E0B' }]}>
-            <Text style={[styles.statusBadgeText, { color: '#B45309' }]}>ABIERTA</Text>
+            <Text style={[styles.statusBadgeText, { color: '#B45309' }]}>Abierta</Text>
           </View>
         );
       case 'IN_PROGRESS':
         return (
           <View style={[styles.statusBadge, { backgroundColor: '#DBEAFE', borderColor: '#3B82F6' }]}>
-            <Text style={[styles.statusBadgeText, { color: '#1E40AF' }]}>EN PROCESO</Text>
+            <Text style={[styles.statusBadgeText, { color: '#1E40AF' }]}>En proceso</Text>
           </View>
         );
       case 'RESOLVED':
         return (
           <View style={[styles.statusBadge, { backgroundColor: '#D1FAE5', borderColor: '#10B981' }]}>
-            <Text style={[styles.statusBadgeText, { color: '#047857' }]}>RESUELTA</Text>
+            <Text style={[styles.statusBadgeText, { color: '#047857' }]}>Resuelta</Text>
           </View>
         );
       case 'CLOSED':
         return (
           <View style={[styles.statusBadge, { backgroundColor: '#F3F4F6', borderColor: '#9CA3AF' }]}>
-            <Text style={[styles.statusBadgeText, { color: '#4B5563' }]}>CERRADA</Text>
+            <Text style={[styles.statusBadgeText, { color: '#4B5563' }]}>Cerrada</Text>
           </View>
         );
       default:

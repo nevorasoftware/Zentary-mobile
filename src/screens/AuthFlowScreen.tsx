@@ -241,7 +241,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                 {loading ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.actionBtnText}>Iniciar Sesión</Text>
+                  <Text style={styles.actionBtnText}>Iniciar sesión</Text>
                 )}
               </TouchableOpacity>
 

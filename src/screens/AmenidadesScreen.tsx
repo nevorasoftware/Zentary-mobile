@@ -463,7 +463,7 @@ export const AmenidadesScreen: React.FC = () => {
                   </View>
                   <View style={[styles.priceBadge, item.price === 0 && styles.freeBadge]}>
                     <Text style={styles.priceBadgeText}>
-                      {item.price === 0 ? '¡GRATIS!' : `$${item.price.toFixed(2)}`}
+                      {item.price === 0 ? '¡Gratis!' : `$${item.price.toFixed(2)}`}
                     </Text>
                   </View>
                 </View>
@@ -498,7 +498,7 @@ export const AmenidadesScreen: React.FC = () => {
                     activeOpacity={0.85}
                     onPress={() => openBookingModal(item)}
                   >
-                    <Text style={styles.reserveBtnText}>RESERVAR ESPACIO ›</Text>
+                    <Text style={styles.reserveBtnText}>Reservar espacio ›</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -621,7 +621,7 @@ export const AmenidadesScreen: React.FC = () => {
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
                   <Text style={styles.confirmBtnText}>
-                    {selectedAmenity?.price === 0 ? 'CONFIRMAR RESERVACIÓN' : 'CONTINUAR AL PAGO (WOMPI)'}
+                    {selectedAmenity?.price === 0 ? 'Confirmar reservación' : 'Continuar al pago (Wompi)'}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -724,7 +724,7 @@ export const AmenidadesScreen: React.FC = () => {
                 {isProcessingWompi ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.wompiPayBtnText}>PAGAR CON TARJETA ›</Text>
+                  <Text style={styles.wompiPayBtnText}>Pagar con tarjeta ›</Text>
                 )}
               </TouchableOpacity>
             </ScrollView>
@@ -744,7 +744,7 @@ export const AmenidadesScreen: React.FC = () => {
               style={styles.successCloseBtn}
               onPress={() => setIsSuccessModalOpen(false)}
             >
-              <Text style={styles.successCloseBtnText}>VOLVER A MIS AMENIDADES</Text>
+              <Text style={styles.successCloseBtnText}>Volver a mis amenidades</Text>
             </TouchableOpacity>
           </View>
         </View>
