@@ -420,8 +420,8 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
             {detailError && !isLoadingDetail ? (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyTitle}>No se pudo cargar la conversación</Text>
-                <Text style={styles.emptySubtitle}>Revisa tu conexión e intenta de nuevo.</Text>
+                <Text style={[styles.emptyTitle, { color: colors.textMuted }]}>No se pudo cargar la conversación</Text>
+                <Text style={[styles.emptySubtitle, { color: colors.textMuted }]}>Revisa tu conexión e intenta de nuevo.</Text>
                 <TouchableOpacity accessibilityRole="button" style={styles.retryBtn} onPress={() => detailPqrsId && handleOpenDetail(detailPqrsId)}>
                   <Text style={styles.retryBtnText}>Reintentar</Text>
                 </TouchableOpacity>
@@ -437,7 +437,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                 <View style={styles.detailBanner}>
                   <View style={styles.detailBannerRow}>
                     <View style={styles.categoryTag}>
-                      <Text style={styles.categoryTagText}>{categoryLabels[selectedPqrs.category] || selectedPqrs.category}</Text>
+                      <Text style={[styles.categoryTagText, { color: '#4C1D95' }]}>{categoryLabels[selectedPqrs.category] || selectedPqrs.category}</Text>
                     </View>
                     {renderStatusBadge(selectedPqrs.status)}
                   </View>
@@ -503,7 +503,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                       );
                     })
                   ) : (
-                    <Text style={{ textAlign: 'center', color: '#94A3B8', marginVertical: 20 }}>
+                    <Text style={{ textAlign: 'center', color: colors.textMuted, marginVertical: 20 }}>
                       Sin mensajes aún.
                     </Text>
                   )}
