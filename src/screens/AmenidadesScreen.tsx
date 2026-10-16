@@ -278,7 +278,6 @@ export const AmenidadesScreen: React.FC = () => {
         anioVencimiento: parseInt(expiryYear, 10),
         nombre: firstName,
         apellido: lastName,
-        email: 'residente@zentary.app',
       });
 
       if (res.success && res.urlCompletarPago3Ds) {
