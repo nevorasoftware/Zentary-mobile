@@ -16,6 +16,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { colors } from '../theme';
 import { apiService, VisitItem, VisitStatusType } from '../services/api';
 import { localDateISO, localTimeHM, isValidDateISO, isValidTimeHM, parseLocalDateTime } from '../utils/dates';
 import { DateTimeField } from '../components/DateTimeField';
@@ -764,7 +765,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             </Text>
 
             <View style={{ backgroundColor: '#F1F5F9', padding: 12, borderRadius: 12, marginBottom: 20 }}>
-              <Text accessibilityLabel="Seguridad de Acceso: El enlace único se entrega directamente al número registrado para evitar que la invitación sea enviada a otra persona." style={{ fontSize: 12, color: '#64748B', textAlign: 'center', lineHeight: 16 }}>
+              <Text accessibilityLabel="Seguridad de Acceso: El enlace único se entrega directamente al número registrado para evitar que la invitación sea enviada a otra persona." style={{ fontSize: 12, color: colors.textMuted, textAlign: 'center', lineHeight: 16 }}>
                 🔒 <Text style={{ fontWeight: 'bold' }}>Seguridad de Acceso:</Text> El enlace único se entrega directamente al número registrado para evitar que la invitación sea enviada a otra persona.
               </Text>
             </View>

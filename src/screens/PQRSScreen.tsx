@@ -13,7 +13,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
+  SafeAreaView,
 } from 'react-native';
+import { colors } from '../theme';
 import { apiService, PqrsItem, PqrsDetailItem } from '../services/api';
 
 interface PQRSScreenProps {
@@ -545,9 +547,9 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 };
 
 const SafeAreaViewStyleWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 44 : 0, backgroundColor: '#0A0F1F' }}>
+  <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     {children}
-  </View>
+  </SafeAreaView>
 );
 
 const styles = StyleSheet.create({
@@ -792,7 +794,7 @@ const styles = StyleSheet.create({
   catText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6B7280',
+    color: colors.textMuted,
   },
   catTextActive: {
     color: '#FFFFFF',
@@ -917,7 +919,7 @@ const styles = StyleSheet.create({
     color: '#0369A1',
   },
   chatUserSender: {
-    color: '#DBEAFE',
+    color: colors.onPrimary,
   },
   chatMessageText: {
     fontSize: 14,
