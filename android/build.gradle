@@ -21,6 +21,18 @@ buildscript {
     }
 }
 
+// Auto-patch expo-modules-core and react-native-screens before compiling Kotlin
+try {
+    def patchScript = new File(rootDir, "../scripts/patch-expo-modules.js")
+    if (patchScript.exists()) {
+        println "Running patch script from Gradle: ${patchScript.absolutePath}"
+        def proc = ["node", patchScript.absolutePath].execute(null, rootDir)
+        proc.waitForProcessOutput(System.out, System.err)
+    }
+} catch (Exception e) {
+    println "Warning: Failed to execute patch script: ${e.message}"
+}
+
 apply plugin: "com.facebook.react.rootproject"
 
 allprojects {
