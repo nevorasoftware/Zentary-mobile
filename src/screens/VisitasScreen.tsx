@@ -155,10 +155,10 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     const name = contact.name || '';
     if (contactPicker?.target === 'fastpass') {
       setFastPassContactName(name);
-      setFastPassPhone(phone);
+      if (phone) setFastPassPhone(phone);
     } else {
       setVisitorName(name);
-      setVisitorPhone(phone);
+      if (phone) setVisitorPhone(phone);
     }
     setContactPicker(null);
   };
@@ -574,7 +574,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </TouchableOpacity>
 
       {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
-      <Modal visible={showFastPassModal} transparent animationType="slide" onRequestClose={() => setShowFastPassModal(false)}>
+      <Modal visible={showFastPassModal && !contactPicker} transparent animationType="slide" onRequestClose={() => setShowFastPassModal(false)}>
         <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
@@ -766,7 +766,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </Modal>
 
       {/* MODAL 1: Create Invitation (Resident) */}
-      <Modal visible={showAddModal} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
+      <Modal visible={showAddModal && !contactPicker} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
         <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
