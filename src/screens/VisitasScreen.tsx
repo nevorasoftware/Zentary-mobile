@@ -30,6 +30,13 @@ interface VisitasScreenProps {
 // Estilo del campo de fecha/hora en web (tema claro de los formularios de esta pantalla)
 const webLightInput = { backgroundColor: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', colorScheme: 'light', fontWeight: 400, fontSize: 14, padding: '10px 14px' };
 
+// Fecha y hora iniciales de una invitación: ahora, redondeado hacia arriba al siguiente múltiplo de 5 minutos
+const initialVisitDateTime = () => {
+  const stepMs = 5 * 60 * 1000;
+  const rounded = new Date(Math.ceil(Date.now() / stepMs) * stepMs);
+  return { date: localDateISO(rounded), time: localTimeHM(rounded) };
+};
+
 export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModal, autoOpenFastPass, userRole }) => {
   // Las funciones de garita solo son para personal autorizado (no residentes ni rol desconocido)
   const canUseGuardFunctions = !!userRole && userRole !== 'RESIDENT';
@@ -55,8 +62,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [creating, setCreating] = useState(false);
   const [visitorName, setVisitorName] = useState('');
   const [visitorPhone, setVisitorPhone] = useState('');
-  const [visitDate, setVisitDate] = useState(localDateISO());
-  const [validFrom, setValidFrom] = useState('09:00');
+  const [visitDate, setVisitDate] = useState(() => initialVisitDateTime().date);
+  const [validFrom, setValidFrom] = useState(() => initialVisitDateTime().time);
   const [notes, setNotes] = useState('');
 
   // WhatsApp Share Dialog State
@@ -206,6 +213,9 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         setVisitorName('');
         setVisitorPhone('');
         setNotes('');
+        const initial = initialVisitDateTime();
+        setVisitDate(initial.date);
+        setValidFrom(initial.time);
         
         // Show Share Modal with generated WhatsApp text & URL
         setShareData({
@@ -505,7 +515,12 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       )}
 
       {/* Floating Button '+' to Create Visit */}
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel="Nueva invitación" style={styles.fab} onPress={() => setShowAddModal(true)}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="Nueva invitación" style={styles.fab} onPress={() => {
+        const initial = initialVisitDateTime();
+        setVisitDate(initial.date);
+        setValidFrom(initial.time);
+        setShowAddModal(true);
+      }}>
         <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
 
