@@ -259,7 +259,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
                 ¿Olvidaste tu contraseña? Contacta a la administración de tu residencial.
               </Text>
 
-              <TouchableOpacity accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY_URL)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <TouchableOpacity accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY_URL).catch(() => Alert.alert('Error', 'No se pudo abrir el enlace.'))} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                 <Text style={[styles.forgotPasswordText, { textDecorationLine: 'underline' }]}>Política de privacidad</Text>
               </TouchableOpacity>
             </>

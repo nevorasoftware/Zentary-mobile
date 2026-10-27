@@ -105,7 +105,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity accessibilityRole="link" style={styles.menuItem} onPress={() => Linking.openURL(PRIVACY_URL)}>
+              <TouchableOpacity accessibilityRole="link" style={styles.menuItem} onPress={() => Linking.openURL(PRIVACY_URL).catch(() => Alert.alert('Error', 'No se pudo abrir el enlace.'))}>
                 <View style={styles.menuLeft}>
                   <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🔒</Text>
                   <Text style={styles.menuText}>Política de privacidad</Text>
