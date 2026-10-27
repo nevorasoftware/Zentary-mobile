@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, Image, Linking, Alert } from 'react-native';
 import Constants from 'expo-constants';
 import NotificationSettingsModal from './NotificationSettingsModal';
+import { apiService } from '../services/api';
+
+export const PRIVACY_URL = 'https://nevorasoftware.com/#/privacidad';
 
 interface ProfileMenuModalProps {
   visible: boolean;
@@ -24,6 +27,32 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 }) => {
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+
+  const handleRequestDeletion = () => {
+    Alert.alert(
+      'Solicitar eliminación de cuenta',
+      'Se enviará una solicitud a la administración de tu residencial para eliminar tu cuenta y tus datos personales. ¿Deseas continuar?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Enviar solicitud',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await apiService.createPqrs({
+                category: 'PETICION',
+                subject: 'Solicitud de eliminación de cuenta',
+                description: 'El usuario solicita eliminar su cuenta y sus datos personales.',
+              });
+              Alert.alert('Solicitud enviada', 'La administración de tu residencial la atenderá.');
+            } catch (err: any) {
+              Alert.alert('Error', err.message || 'No se pudo enviar la solicitud.');
+            }
+          },
+        },
+      ],
+    );
+  };
 
   const initials =
     user.fullName
@@ -72,6 +101,22 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
                 <View style={styles.menuLeft}>
                   <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🔔</Text>
                   <Text style={styles.menuText}>Notificaciones y Recordatorios</Text>
+                </View>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity accessibilityRole="link" style={styles.menuItem} onPress={() => Linking.openURL(PRIVACY_URL)}>
+                <View style={styles.menuLeft}>
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🔒</Text>
+                  <Text style={styles.menuText}>Política de privacidad</Text>
+                </View>
+                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity accessibilityRole="button" style={styles.menuItem} onPress={handleRequestDeletion}>
+                <View style={styles.menuLeft}>
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🗑️</Text>
+                  <Text style={styles.menuText}>Solicitar eliminación de cuenta</Text>
                 </View>
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
