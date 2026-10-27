@@ -60,6 +60,14 @@ interface ReservationSlot {
   reservationStatus: string;
 }
 
+// Minutos desde medianoche de un "HH:MM"
+const toMins = (t: string) => {
+  const [h, m] = t.split(':').map((n) => parseInt(n, 10));
+  return h * 60 + m;
+};
+// Fin normalizado: si es <= inicio, cruza medianoche y termina al día siguiente
+const normEndMins = (start: number, end: number) => (end <= start ? end + 1440 : end);
+
 export const AmenidadesScreen: React.FC = () => {
   const [amenities, setAmenities] = useState<Amenity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -169,7 +177,10 @@ export const AmenidadesScreen: React.FC = () => {
 
     // Default duration: 2 hours or max
     const startHour = parseInt((amenity.startTime || '10:00').split(':')[0], 10);
-    const endHour = Math.min(startHour + Math.min(amenity.maxReservationTime, 2), 22);
+    const crossesMidnight = isValidTimeHM(amenity.startTime) && isValidTimeHM(amenity.endTime) && toMins(amenity.endTime) <= toMins(amenity.startTime);
+    const endHour = crossesMidnight
+      ? (startHour + Math.min(amenity.maxReservationTime, 2)) % 24
+      : Math.min(startHour + Math.min(amenity.maxReservationTime, 2), 22);
     const endHourStr = endHour < 10 ? `0${endHour}:00` : `${endHour}:00`;
     setEndTime(endHourStr);
 
@@ -204,18 +215,22 @@ export const AmenidadesScreen: React.FC = () => {
       Alert.alert('Horario no válido', 'La fecha y la hora de inicio no pueden ser anteriores al momento actual.');
       return;
     }
-    if (endTime <= startTime) {
-      Alert.alert('Horario no válido', 'La hora de fin debe ser posterior a la hora de inicio.');
+    if (endTime === startTime) {
+      Alert.alert('Horario no válido', 'La hora de fin no puede ser igual a la hora de inicio.');
       return;
     }
+    const startMins = toMins(startTime);
+    const endMins = normEndMins(startMins, toMins(endTime));
     if (
       isValidTimeHM(selectedAmenity.startTime) && isValidTimeHM(selectedAmenity.endTime) &&
-      (startTime < selectedAmenity.startTime || endTime > selectedAmenity.endTime)
+      (startMins < toMins(selectedAmenity.startTime) ||
+        endMins > normEndMins(toMins(selectedAmenity.startTime), toMins(selectedAmenity.endTime)))
     ) {
       Alert.alert('Horario no válido', `Esta amenidad está disponible de ${selectedAmenity.startTime} a ${selectedAmenity.endTime}.`);
       return;
     }
-    const overlap = bookedSlots.find((b) => startTime < b.endTime && endTime > b.startTime);
+    const overlap = bookedSlots.find((b) =>
+      startMins < normEndMins(toMins(b.startTime), toMins(b.endTime)) && endMins > toMins(b.startTime));
     if (overlap) {
       Alert.alert('Horario ocupado', `El horario se cruza con una reserva existente (${overlap.startTime} - ${overlap.endTime}).`);
       return;
