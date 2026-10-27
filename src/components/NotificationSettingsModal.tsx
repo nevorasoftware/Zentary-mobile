@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { notificationService, NotificationConfig } from '../services/notificationService';
+import { X } from './icons';
 
 interface NotificationSettingsModalProps {
   visible: boolean;
@@ -38,7 +39,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
           <View style={styles.header}>
             <Text accessibilityLabel="Centro de Notificaciones" style={styles.headerTitle}>🔔 Centro de Notificaciones</Text>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" style={styles.closeBtn} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeText}>✕</Text>
+              <X size={22} color="#64748B" />
             </TouchableOpacity>
           </View>
 
