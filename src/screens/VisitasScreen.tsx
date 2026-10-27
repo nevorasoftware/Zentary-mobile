@@ -32,11 +32,11 @@ interface VisitasScreenProps {
 // Estilo del campo de fecha/hora en web (tema claro de los formularios de esta pantalla)
 const webLightInput = { backgroundColor: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', colorScheme: 'light', fontWeight: 400, fontSize: 14, padding: '10px 14px' };
 
-// Fecha y hora iniciales de una invitación: ahora, redondeado hacia arriba al siguiente múltiplo de 5 minutos
 // "Parqueo: <zona> · hasta <hh:mm>" a partir de la reserva que devuelve el backend
 const parkingLabel = (p?: VisitItem['parking']) =>
   p ? `Parqueo: ${p.zoneName || 'Asignado'}${p.holdUntil ? ` · hasta ${new Date(p.holdUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}` : undefined;
 
+// Fecha y hora iniciales de una invitación: ahora, redondeado hacia arriba al siguiente múltiplo de 5 minutos
 const initialVisitDateTime = () => {
   const stepMs = 5 * 60 * 1000;
   const rounded = new Date(Math.ceil(Date.now() / stepMs) * stepMs);
