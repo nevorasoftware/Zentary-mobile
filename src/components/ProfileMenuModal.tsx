@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet, Image, Linking, Alert 
 import Constants from 'expo-constants';
 import NotificationSettingsModal from './NotificationSettingsModal';
 import { apiService } from '../services/api';
+import { X } from './icons';
 
 export const PRIVACY_URL = 'https://nevorasoftware.com/#/privacidad';
 
@@ -81,7 +82,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 
             {/* Close button top right */}
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" style={styles.closeButton} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeIcon}>✕</Text>
+              <X size={22} color="#6B7280" />
             </TouchableOpacity>
 
             {/* Profile Name info */}

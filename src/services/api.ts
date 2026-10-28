@@ -42,6 +42,7 @@ export interface VisitItem {
   exitDate?: string;
   publicToken?: string;
   notes?: string;
+  parking?: { zoneName?: string | null; holdUntil?: string } | null;
   createdAt: string;
   resident?: {
     fullName: string;
@@ -276,6 +277,8 @@ class ApiService {
       publicToken: string;
       publicUrl: string;
       whatsappMessage: string;
+      parking?: VisitItem['parking'];
+      parkingWarning?: string;
     }>('/visits', {
       method: 'POST',
       body: JSON.stringify(visitData),

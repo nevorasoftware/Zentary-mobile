@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import NotificationSettingsModal from '../components/NotificationSettingsModal';
 import { UserProfile } from '../services/api';
+import { UserPlus, Users, Bike, Building2, Package, Mail, CreditCard } from '../components/icons';
 import { colors } from '../theme';
 
 interface HomeScreenProps {
@@ -70,7 +71,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             activeOpacity={0.85}
           >
             <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>🏃‍♀️</Text>
+              <UserPlus size={26} color="#0A0F1F" strokeWidth={2} />
             </View>
             <Text style={[styles.actionTitle, { color: '#FFCF36' }]}>Fast Pass</Text>
             <Text style={styles.actionSubtitle}>Invitación rápida QR</Text>
@@ -79,7 +80,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Visitas */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToVisitas} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: colors.primary, borderColor: '#0B3C91' }]}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>👥</Text>
+              <Users size={26} color="#FFFFFF" strokeWidth={2} />
             </View>
             <Text style={styles.actionTitle}>Visitas</Text>
             <Text style={styles.actionSubtitle}>Crear pase QR</Text>
@@ -88,7 +89,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Delivery */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToDelivery || onNavigateToVisitas} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#1D6BE0', borderColor: '#1D4ED8' }]}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>🛵</Text>
+              <Bike size={26} color="#FFFFFF" strokeWidth={2} />
             </View>
             <Text style={styles.actionTitle}>Delivery</Text>
             <Text style={styles.actionSubtitle}>Notificar entrega</Text>
@@ -97,7 +98,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Amenidades */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToAmenidades} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>🏰</Text>
+              <Building2 size={26} color="#0A0F1F" strokeWidth={2} />
             </View>
             <Text style={styles.actionTitle}>Amenidades</Text>
             <Text style={styles.actionSubtitle}>Reservar áreas</Text>
@@ -106,7 +107,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Paquetes */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToPaquetes} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: '#6203FF', borderColor: '#2A0A73' }]}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>📦</Text>
+              <Package size={26} color="#FFFFFF" strokeWidth={2} />
             </View>
             <Text style={styles.actionTitle}>Paquetes</Text>
             <Text style={styles.actionSubtitle}>Ver entregas</Text>
@@ -115,7 +116,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* PQRS */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToPQRS} activeOpacity={0.85}>
             <View style={[styles.emojiBadge, { backgroundColor: colors.primary, borderColor: '#0B3C91' }]}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>📬</Text>
+              <Mail size={26} color="#FFFFFF" strokeWidth={2} />
             </View>
             <Text style={styles.actionTitle}>PQRS</Text>
             <Text style={styles.actionSubtitle}>Reportes y Soporte</Text>
@@ -125,7 +126,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <TouchableOpacity accessibilityRole="button" style={[styles.actionCard, styles.fullWidthCard]} onPress={onNavigateToPagos} activeOpacity={0.85}>
             <View style={styles.fullWidthContent}>
               <View style={[styles.emojiBadge, { backgroundColor: '#FFCF36', borderColor: '#F59E0B' }]}>
-                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.actionEmoji}>💳</Text>
+                <CreditCard size={26} color="#0A0F1F" strokeWidth={2} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.actionTitle}>Pagos y mantenimiento</Text>
