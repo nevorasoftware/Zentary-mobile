@@ -32,6 +32,10 @@ interface VisitasScreenProps {
 // Estilo del campo de fecha/hora en web (tema claro de los formularios de esta pantalla)
 const webLightInput = { backgroundColor: '#FFFFFF', color: '#0F172A', border: '1px solid #CBD5E1', colorScheme: 'light', fontWeight: 400, fontSize: 14, padding: '10px 14px' };
 
+// "Parqueo: <zona> · hasta <hh:mm>" a partir de la reserva que devuelve el backend
+const parkingLabel = (p?: VisitItem['parking']) =>
+  p ? `Parqueo: ${p.zoneName || 'Asignado'}${p.holdUntil ? ` · hasta ${new Date(p.holdUntil).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}` : undefined;
+
 // Fecha y hora iniciales de una invitación: ahora, redondeado hacia arriba al siguiente múltiplo de 5 minutos
 const initialVisitDateTime = () => {
   const stepMs = 5 * 60 * 1000;
@@ -78,6 +82,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     whatsappMessage: string;
     visitorName: string;
     sent: boolean;
+    parkingText?: string;
   } | null>(null);
 
   // Guard Scanner / Validation State
@@ -219,6 +224,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             whatsappMessage: res.whatsappMessage,
             visitorName: res.visit.visitorName,
             sent: (res as any).whatsappResult?.success === true,
+            parkingText: res.parkingWarning || parkingLabel(res.parking),
           });
         }
 
@@ -272,6 +278,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           whatsappMessage: res.whatsappMessage,
           visitorName: res.visit.visitorName,
           sent: (res as any).whatsappResult?.success === true,
+          parkingText: res.parkingWarning || parkingLabel(res.parking),
         });
 
         // Refresh list from DB
@@ -547,6 +554,12 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                     {item.hasVehicle && (
                       <Text accessibilityLabel={`Vehículo: ${item.vehicleModel || ""} (${item.vehiclePlate || "Con vehículo"})`} style={styles.infoLineText}>
                         🚗 Vehículo: {item.vehicleModel || ''} ({item.vehiclePlate || 'Con vehículo'})
+                      </Text>
+                    )}
+
+                    {item.parking && (
+                      <Text accessibilityLabel={parkingLabel(item.parking)} style={styles.infoLineText}>
+                        🅿️ {parkingLabel(item.parking)}
                       </Text>
                     )}
 
@@ -871,6 +884,12 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                 <>La invitación de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text> se creó, pero no se envió automáticamente por WhatsApp. Compártela o copia el enlace.</>
               )}
             </Text>
+
+            {!!shareData?.parkingText && (
+              <Text accessibilityLabel={shareData.parkingText} style={{ fontSize: 13, color: '#1E293B', marginBottom: 12, textAlign: 'center', lineHeight: 18 }}>
+                🅿️ {shareData.parkingText}
+              </Text>
+            )}
 
             <View style={{ backgroundColor: '#F1F5F9', padding: 12, borderRadius: 12, marginBottom: 20 }}>
               <Text accessibilityLabel="Seguridad de Acceso: El enlace único se entrega directamente al número registrado para evitar que la invitación sea enviada a otra persona." style={{ fontSize: 12, color: colors.textMuted, textAlign: 'center', lineHeight: 16 }}>
