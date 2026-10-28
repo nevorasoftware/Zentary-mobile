@@ -259,6 +259,7 @@ class ApiService {
   async createVisit(visitData: {
     visitorName: string;
     visitorPhone?: string;
+    visitorEmail?: string;
     visitorDni?: string;
     visitDate?: string;
     validFrom?: string;
@@ -277,6 +278,7 @@ class ApiService {
       publicToken: string;
       publicUrl: string;
       whatsappMessage: string;
+      emailSent?: boolean;
       parking?: VisitItem['parking'];
       parkingWarning?: string;
     }>('/visits', {

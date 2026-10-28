@@ -89,6 +89,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [creating, setCreating] = useState(false);
   const [visitorName, setVisitorName] = useState('');
   const [visitorPhone, setVisitorPhone] = useState('');
+  const [visitorEmail, setVisitorEmail] = useState('');
 
   // Selector de contactos del teléfono (no disponible en web)
   const [contactPicker, setContactPicker] = useState<{ target: 'fastpass' | 'visita'; items: Contacts.Contact[] } | null>(null);
@@ -106,6 +107,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     whatsappMessage: string;
     visitorName: string;
     sent: boolean;
+    emailSent?: boolean;
+    emailTo?: string;
     parkingText?: string;
   } | null>(null);
 
@@ -165,7 +168,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       setLoadingContacts(true);
       setContactPicker({ target, items: [] });
       const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers],
+        fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
         sort: Contacts.SortTypes.FirstName,
       });
       const items = (data || []).filter((c) => !!c.name);
@@ -194,6 +197,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     } else {
       setVisitorName(name);
       if (phone) setVisitorPhone(phone);
+      setVisitorEmail(contact.emails?.[0]?.email?.trim() || '');
     }
     setContactPicker(null);
   }, [contactPicker?.target]);
@@ -301,6 +305,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       const res = await apiService.createVisit({
         visitorName: visitorName.trim(),
         visitorPhone: visitorPhone.trim() || undefined,
+        visitorEmail: visitorEmail.trim() || undefined,
         visitDate,
         validFrom,
         notes: notes.trim() || undefined,
@@ -310,6 +315,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         setShowAddModal(false);
         setVisitorName('');
         setVisitorPhone('');
+        setVisitorEmail('');
         setNotes('');
         const initial = initialVisitDateTime();
         setVisitDate(initial.date);
@@ -321,6 +327,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           whatsappMessage: res.whatsappMessage,
           visitorName: res.visit.visitorName,
           sent: (res as any).whatsappResult?.success === true,
+          emailSent: res.emailSent === true,
+          emailTo: visitorEmail.trim(),
           parkingText: res.parkingWarning || parkingLabel(res.parking),
         });
 
@@ -882,6 +890,18 @@ ${publicUrl}`,
               onChangeText={setVisitorPhone}
             />
 
+            <Text style={styles.label}>Correo del visitante (opcional)</Text>
+            <TextInput
+              accessibilityLabel="Correo del visitante"
+              style={styles.input}
+              placeholder="Ej. juan@correo.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={visitorEmail}
+              onChangeText={setVisitorEmail}
+            />
+
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.label}>Fecha de visita</Text>
@@ -946,14 +966,14 @@ ${publicUrl}`,
               <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#DCFCE7', justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={{ fontSize: 32 }}>📲</Text>
               </View>
-              <Text style={styles.modalTitle}>{shareData?.sent ? '¡Invitación Enviada!' : 'Comparte la invitación'}</Text>
+              <Text style={styles.modalTitle}>{shareData?.sent || shareData?.emailSent ? '¡Invitación Enviada!' : 'Comparte la invitación'}</Text>
             </View>
 
             <Text style={{ fontSize: 14, color: '#1E293B', marginBottom: 12, textAlign: 'center', lineHeight: 20 }}>
-              {shareData?.sent ? (
-                <>Se ha enviado automáticamente el enlace de registro por WhatsApp al número de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text>.</>
+              {shareData?.sent || shareData?.emailSent ? (
+                <>Enviamos el enlace de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text> {shareData?.sent && shareData?.emailSent ? `por WhatsApp y al correo ${shareData?.emailTo}` : shareData?.sent ? 'por WhatsApp' : `al correo ${shareData?.emailTo}`}. Si no le llega, compártelo o copia el enlace.</>
               ) : (
-                <>La invitación de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text> se creó, pero no se envió automáticamente por WhatsApp. Compártela o copia el enlace.</>
+                <>La invitación de <Text style={{ fontWeight: 'bold' }}>{shareData?.visitorName}</Text> se creó, pero no se envió automáticamente. Compártela o copia el enlace.</>
               )}
             </Text>
 
@@ -969,7 +989,7 @@ ${publicUrl}`,
               </Text>
             </View>
 
-            {!shareData?.sent && (
+            {(
               <>
                 <TouchableOpacity accessibilityRole="button" style={[styles.saveBtn, { marginBottom: 8 }]} onPress={handleShareWhatsApp}>
                   <Text style={styles.saveBtnText}>Compartir</Text>
@@ -981,10 +1001,10 @@ ${publicUrl}`,
             )}
             <TouchableOpacity
               accessibilityRole="button"
-              style={shareData?.sent ? styles.saveBtn : [styles.cancelBtn, { alignItems: 'center' }]}
+              style={[styles.cancelBtn, { alignItems: 'center' }]}
               onPress={() => setShareData(null)}
             >
-              <Text style={shareData?.sent ? styles.saveBtnText : styles.cancelBtnText}>{shareData?.sent ? 'Entendido' : 'Cerrar'}</Text>
+              <Text style={styles.cancelBtnText}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
