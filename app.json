@@ -25,7 +25,8 @@
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.SYSTEM_ALERT_WINDOW"
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WRITE_CONTACTS"
       ],
       "allowBackup": false,
       "adaptiveIcon": {
@@ -42,6 +43,14 @@
         "projectId": "e9f29d4d-b323-4379-be90-e64395b71c9d"
       }
     },
-    "owner": "jmgirons-team"
+    "owner": "jmgirons-team",
+    "plugins": [
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Zentary necesita acceder a tus contactos para que puedas elegir al visitante al registrar una visita."
+        }
+      ]
+    ]
   }
 }

@@ -15,7 +15,9 @@ import {
   RefreshControl,
   KeyboardAvoidingView,
   Platform,
+  FlatList,
 } from 'react-native';
+import * as Contacts from 'expo-contacts';
 import { colors } from '../theme';
 import { apiService, VisitItem, VisitStatusType } from '../services/api';
 import { localDateISO, localTimeHM, isValidDateISO, isValidTimeHM, parseLocalDateTime } from '../utils/dates';
@@ -62,6 +64,10 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [creating, setCreating] = useState(false);
   const [visitorName, setVisitorName] = useState('');
   const [visitorPhone, setVisitorPhone] = useState('');
+
+  // Selector de contactos del teléfono (no disponible en web)
+  const [contactPicker, setContactPicker] = useState<{ target: 'fastpass' | 'visita'; items: Contacts.Contact[] } | null>(null);
+  const [contactSearch, setContactSearch] = useState('');
   const [visitDate, setVisitDate] = useState(() => initialVisitDateTime().date);
   const [validFrom, setValidFrom] = useState(() => initialVisitDateTime().time);
   const [notes, setNotes] = useState('');
@@ -117,6 +123,49 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       onOpenFrequentModal();
     }
   };
+
+  // Contactos del teléfono: pide permiso y abre la lista para elegir al visitante
+  const handlePickContact = async (target: 'fastpass' | 'visita') => {
+    try {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Sin acceso a tus contactos no podemos mostrarlos. Puedes escribir el nombre y el teléfono manualmente.');
+        return;
+      }
+      const { data } = await Contacts.getContactsAsync({
+        fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers],
+        sort: Contacts.SortTypes.FirstName,
+      });
+      const items = (data || []).filter((c) => !!c.name);
+      if (items.length === 0) {
+        Alert.alert('Sin contactos', 'No se encontraron contactos en el teléfono. Puedes escribir los datos manualmente.');
+        return;
+      }
+      setContactSearch('');
+      setContactPicker({ target, items });
+    } catch (err: any) {
+      Alert.alert('Error', 'No se pudieron leer los contactos. Puedes escribir los datos manualmente.');
+    }
+  };
+
+  const handleSelectContact = (contact: Contacts.Contact) => {
+    const rawPhone = contact.phoneNumbers?.[0]?.number || '';
+    // Deja solo dígitos y un "+" inicial
+    const phone = rawPhone.trim().replace(/(?!^\+)\D/g, '');
+    const name = contact.name || '';
+    if (contactPicker?.target === 'fastpass') {
+      setFastPassContactName(name);
+      if (phone) setFastPassPhone(phone);
+    } else {
+      setVisitorName(name);
+      if (phone) setVisitorPhone(phone);
+    }
+    setContactPicker(null);
+  };
+
+  const filteredContacts = (contactPicker?.items || []).filter((c) =>
+    (c.name || '').toLowerCase().includes(contactSearch.trim().toLowerCase())
+  );
 
   // FastPass Generation Handler ("¿Cuándo te visitan? 🏃‍♀️")
   const handleCreateFastPass = async () => {
@@ -525,7 +574,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       </TouchableOpacity>
 
       {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
-      <Modal visible={showFastPassModal} transparent animationType="slide" onRequestClose={() => setShowFastPassModal(false)}>
+      <Modal visible={showFastPassModal && !contactPicker} transparent animationType="slide" onRequestClose={() => setShowFastPassModal(false)}>
         <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
@@ -626,6 +675,11 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
             {/* Contact / Phone Selection */}
             <Text style={styles.label}>3. Contacto / Visitante *</Text>
+            {Platform.OS !== 'web' && (
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Elegir de contactos" style={styles.contactBtn} onPress={() => handlePickContact('fastpass')} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+                <Text style={styles.contactBtnText}>📇 Elegir de contactos</Text>
+              </TouchableOpacity>
+            )}
             <TextInput
               accessibilityLabel="Nombre del visitante"
               style={styles.input}
@@ -677,14 +731,53 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         </KeyboardAvoidingView>
       </Modal>
 
+      {/* MODAL: Selector de contactos del teléfono */}
+      <Modal visible={!!contactPicker} transparent animationType="slide" onRequestClose={() => setContactPicker(null)}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalCard, { maxHeight: '80%' }]}>
+            <Text style={styles.modalTitle}>Elegir de contactos</Text>
+            <TextInput
+              accessibilityLabel="Buscar contacto"
+              style={styles.input}
+              placeholder="Buscar por nombre"
+              value={contactSearch}
+              onChangeText={setContactSearch}
+            />
+            <FlatList<Contacts.Contact>
+              style={{ marginTop: 10 }}
+              data={filteredContacts}
+              keyExtractor={(c: Contacts.Contact, i: number) => c.id || String(i)}
+              keyboardShouldPersistTaps="handled"
+              ListEmptyComponent={<Text style={styles.modalDesc}>Sin resultados.</Text>}
+              renderItem={({ item }: { item: Contacts.Contact }) => (
+                <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Elegir a ${item.name}`} style={styles.contactRow} onPress={() => handleSelectContact(item)}>
+                  <Text style={styles.contactRowName}>{item.name}</Text>
+                  <Text style={styles.contactRowPhone}>{item.phoneNumbers?.[0]?.number || 'Sin teléfono'}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity accessibilityRole="button" style={styles.cancelBtn} onPress={() => setContactPicker(null)} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+                <Text style={styles.cancelBtnText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* MODAL 1: Create Invitation (Resident) */}
-      <Modal visible={showAddModal} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
+      <Modal visible={showAddModal && !contactPicker} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
         <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Crear Nueva Invitación</Text>
             <Text style={styles.modalDesc}>El visitante completará sus datos personales desde el enlace enviado.</Text>
 
+            {Platform.OS !== 'web' && (
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Elegir de contactos" style={styles.contactBtn} onPress={() => handlePickContact('visita')} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+                <Text style={styles.contactBtnText}>📇 Elegir de contactos</Text>
+              </TouchableOpacity>
+            )}
             <Text style={styles.label}>Nombre completo del visitante *</Text>
             <TextInput
               accessibilityLabel="Nombre completo del visitante"
@@ -1034,6 +1127,11 @@ const styles = StyleSheet.create({
   modalActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 10, marginTop: 20 },
   cancelBtn: { minHeight: 44, justifyContent: 'center', paddingVertical: 10, paddingHorizontal: 16 },
   cancelBtnText: { color: '#64748B', fontWeight: '600' },
+  contactBtn: { minHeight: 44, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: colors.primary, backgroundColor: '#EFF6FF', borderRadius: 12, paddingVertical: 10, marginBottom: 4 },
+  contactBtnText: { color: '#1D4ED8', fontWeight: 'bold' },
+  contactRow: { minHeight: 44, justifyContent: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
+  contactRowName: { fontSize: 14, fontWeight: '600', color: '#0F172A' },
+  contactRowPhone: { fontSize: 12, color: '#64748B' },
   saveBtn: { minHeight: 44, justifyContent: 'center', backgroundColor: '#1D6BE0', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, alignItems: 'center', marginTop: 10 },
   saveBtnText: { color: '#FFFFFF', fontWeight: 'bold' },
   linkBox: { backgroundColor: '#F1F5F9', padding: 12, borderRadius: 12, marginBottom: 12 },
