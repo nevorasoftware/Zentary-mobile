@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import {
   FlatList,
 } from 'react-native';
 import * as Contacts from 'expo-contacts';
+import { IconComponent, PlusCircle, Contact as ContactIcon, X, CheckCircle, XCircle, Clock } from '../components/icons';
 import { colors } from '../theme';
 import { apiService, VisitItem, VisitStatusType } from '../services/api';
 import { localDateISO, localTimeHM, isValidDateISO, isValidTimeHM, parseLocalDateTime } from '../utils/dates';
@@ -42,6 +43,26 @@ const initialVisitDateTime = () => {
   const rounded = new Date(Math.ceil(Date.now() / stepMs) * stepMs);
   return { date: localDateISO(rounded), time: localTimeHM(rounded) };
 };
+
+const AVATAR_COLORS = ['#1D4ED8', '#7C3AED', '#0F766E', '#B45309', '#BE185D', '#475569'];
+
+// Fila del selector de contactos (memoizada para que la lista siga fluida con muchos contactos)
+const ContactRow = React.memo(({ contact, onSelect }: { contact: Contacts.Contact; onSelect: (c: Contacts.Contact) => void }) => {
+  const name = contact.name || '';
+  const initial = (name.trim().charAt(0) || '?').toUpperCase();
+  const avatarColor = AVATAR_COLORS[initial.charCodeAt(0) % AVATAR_COLORS.length];
+  return (
+    <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Elegir a ${name}`} style={styles.contactRow} onPress={() => onSelect(contact)}>
+      <View accessible={false} style={[styles.contactAvatar, { backgroundColor: avatarColor }]}>
+        <Text style={styles.contactAvatarText}>{initial}</Text>
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.contactRowName} numberOfLines={1}>{name}</Text>
+        <Text style={styles.contactRowPhone} numberOfLines={1}>{contact.phoneNumbers?.[0]?.number || 'Sin teléfono'}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+});
 
 export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModal, autoOpenFastPass, userRole }) => {
   // Las funciones de garita solo son para personal autorizado (no residentes ni rol desconocido)
@@ -72,6 +93,9 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   // Selector de contactos del teléfono (no disponible en web)
   const [contactPicker, setContactPicker] = useState<{ target: 'fastpass' | 'visita'; items: Contacts.Contact[] } | null>(null);
   const [contactSearch, setContactSearch] = useState('');
+  const [loadingContacts, setLoadingContacts] = useState(false);
+  const fastPassNameRef = useRef<any>(null);
+  const visitorNameRef = useRef<any>(null);
   const [visitDate, setVisitDate] = useState(() => initialVisitDateTime().date);
   const [validFrom, setValidFrom] = useState(() => initialVisitDateTime().time);
   const [notes, setNotes] = useState('');
@@ -137,23 +161,29 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         Alert.alert('Permiso denegado', 'Sin acceso a tus contactos no podemos mostrarlos. Puedes escribir el nombre y el teléfono manualmente.');
         return;
       }
+      setContactSearch('');
+      setLoadingContacts(true);
+      setContactPicker({ target, items: [] });
       const { data } = await Contacts.getContactsAsync({
         fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers],
         sort: Contacts.SortTypes.FirstName,
       });
       const items = (data || []).filter((c) => !!c.name);
+      setLoadingContacts(false);
       if (items.length === 0) {
+        setContactPicker(null);
         Alert.alert('Sin contactos', 'No se encontraron contactos en el teléfono. Puedes escribir los datos manualmente.');
         return;
       }
-      setContactSearch('');
       setContactPicker({ target, items });
     } catch (err: any) {
+      setLoadingContacts(false);
+      setContactPicker(null);
       Alert.alert('Error', 'No se pudieron leer los contactos. Puedes escribir los datos manualmente.');
     }
   };
 
-  const handleSelectContact = (contact: Contacts.Contact) => {
+  const handleSelectContact = useCallback((contact: Contacts.Contact) => {
     const rawPhone = contact.phoneNumbers?.[0]?.number || '';
     // Deja solo dígitos y un "+" inicial
     const phone = rawPhone.trim().replace(/(?!^\+)\D/g, '');
@@ -166,11 +196,24 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
       if (phone) setVisitorPhone(phone);
     }
     setContactPicker(null);
+  }, [contactPicker?.target]);
+
+  // Cierra el selector y enfoca el campo de nombre (los modales se reabren al cerrarlo)
+  const handleManualContact = () => {
+    const ref = contactPicker?.target === 'fastpass' ? fastPassNameRef : visitorNameRef;
+    setContactPicker(null);
+    setTimeout(() => ref.current?.focus(), 400);
   };
 
-  const filteredContacts = (contactPicker?.items || []).filter((c) =>
-    (c.name || '').toLowerCase().includes(contactSearch.trim().toLowerCase())
-  );
+  // Busca por nombre o por teléfono (solo dígitos)
+  const filteredContacts = useMemo(() => {
+    const q = contactSearch.trim().toLowerCase();
+    const digits = q.replace(/\D/g, '');
+    return (contactPicker?.items || []).filter((c) =>
+      (c.name || '').toLowerCase().includes(q) ||
+      (!!digits && (c.phoneNumbers || []).some((p) => (p.number || '').replace(/\D/g, '').includes(digits)))
+    );
+  }, [contactPicker?.items, contactSearch]);
 
   // FastPass Generation Handler ("¿Cuándo te visitan? 🏃‍♀️")
   const handleCreateFastPass = async () => {
@@ -405,7 +448,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     }
   });
 
-  const getStatusBadge = (status: VisitStatusType) => {
+  const getStatusBadge = (status: VisitStatusType): { text: string; bg: string; color: string; Icon?: IconComponent } => {
     switch (status) {
       case 'PENDIENTE_REGISTRO':
         return { text: 'Pendiente datos', bg: '#FEF3C7', color: '#92400E' };
@@ -413,11 +456,11 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         return { text: 'Datos completos (QR)', bg: '#DBEAFE', color: '#1D4ED8' };
       case 'INGRESADA':
       case 'COMPLETED':
-        return { text: '🟢 Ingresada', bg: '#DCFCE7', color: '#15803D' };
+        return { text: 'Ingresada', Icon: CheckCircle, bg: '#DCFCE7', color: '#15803D' };
       case 'CANCELADA':
-        return { text: '❌ Cancelada', bg: '#FEE2E2', color: '#B91C1C' };
+        return { text: 'Cancelada', Icon: XCircle, bg: '#FEE2E2', color: '#B91C1C' };
       case 'VENCIDA':
-        return { text: '⚫ Vencida', bg: '#F3F4F6', color: '#4B5563' };
+        return { text: 'Vencida', Icon: Clock, bg: '#F3F4F6', color: '#4B5563' };
       default:
         return { text: status, bg: '#E5E7EB', color: '#374151' };
     }
@@ -536,7 +579,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                   <View style={styles.cardHeaderRow}>
                     <Text style={styles.visitorNameText}>{item.visitorName}</Text>
                     <View style={[styles.badgeContainer, { backgroundColor: badge.bg }]}>
-                      <Text accessibilityLabel={badge.text.replace(/^[^\p{L}]+/u, "")} style={[styles.badgeText, { color: badge.color }]}>{badge.text}</Text>
+                      {badge.Icon && <badge.Icon size={12} color={badge.color} style={{ marginRight: 4 }} />}
+                      <Text accessibilityLabel={badge.text} style={[styles.badgeText, { color: badge.color }]}>{badge.text}</Text>
                     </View>
                   </View>
 
@@ -565,7 +609,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
                     {item.entryDate && (
                       <Text accessibilityLabel={`Ingreso confirmado: ${new Date(item.entryDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`} style={styles.entryTimeText}>
-                        ✅ Ingreso confirmado: {new Date(item.entryDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        Ingreso confirmado: {new Date(item.entryDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </Text>
                     )}
                   </View>
@@ -583,7 +627,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
         setValidFrom(initial.time);
         setShowAddModal(true);
       }}>
-        <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.fabIcon}>+</Text>
+        <PlusCircle size={32} color="#FFFFFF" />
       </TouchableOpacity>
 
       {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
@@ -593,8 +637,8 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
           <View style={styles.modalCard}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text accessibilityLabel="¿Cuándo te visitan?" style={[styles.modalTitle, { fontSize: 20, color: '#1D4ED8' }]}>¿Cuándo te visitan? 🏃‍♀️</Text>
-              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text accessibilityElementsHidden importantForAccessibility="no" style={{ fontSize: 18, color: '#64748B', fontWeight: 'bold' }}>✕</Text>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" style={{ minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => setShowFastPassModal(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                <X size={22} color="#64748B" />
               </TouchableOpacity>
             </View>
 
@@ -690,12 +734,16 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <Text style={styles.label}>3. Contacto / Visitante *</Text>
             {Platform.OS !== 'web' && (
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Elegir de contactos" style={styles.contactBtn} onPress={() => handlePickContact('fastpass')} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-                <Text style={styles.contactBtnText}>📇 Elegir de contactos</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <ContactIcon size={18} color="#1D4ED8" />
+                  <Text style={[styles.contactBtnText, { marginLeft: 8 }]}>Elegir de contactos</Text>
+                </View>
               </TouchableOpacity>
             )}
             <TextInput
               accessibilityLabel="Nombre del visitante"
               style={styles.input}
+              ref={fastPassNameRef}
               placeholder="Nombre del visitante (Ej. Miguel Rodríguez)"
               value={fastPassContactName}
               onChangeText={setFastPassContactName}
@@ -752,7 +800,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
             <TextInput
               accessibilityLabel="Buscar contacto"
               style={styles.input}
-              placeholder="Buscar por nombre"
+              placeholder="Buscar por nombre o teléfono"
               value={contactSearch}
               onChangeText={setContactSearch}
             />
@@ -761,12 +809,17 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
               data={filteredContacts}
               keyExtractor={(c: Contacts.Contact, i: number) => c.id || String(i)}
               keyboardShouldPersistTaps="handled"
-              ListEmptyComponent={<Text style={styles.modalDesc}>Sin resultados.</Text>}
-              renderItem={({ item }: { item: Contacts.Contact }) => (
-                <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Elegir a ${item.name}`} style={styles.contactRow} onPress={() => handleSelectContact(item)}>
-                  <Text style={styles.contactRowName}>{item.name}</Text>
-                  <Text style={styles.contactRowPhone}>{item.phoneNumbers?.[0]?.number || 'Sin teléfono'}</Text>
+              initialNumToRender={12}
+              maxToRenderPerBatch={12}
+              windowSize={7}
+              ListHeaderComponent={
+                <TouchableOpacity accessibilityRole="button" accessibilityLabel="Escribir nombre y teléfono manualmente" style={styles.contactRow} onPress={handleManualContact}>
+                  <Text style={styles.contactManualText}>Escribir nombre y teléfono manualmente</Text>
                 </TouchableOpacity>
+              }
+              ListEmptyComponent={<Text style={styles.modalDesc}>{loadingContacts ? 'Cargando contactos…' : 'Sin resultados.'}</Text>}
+              renderItem={({ item }: { item: Contacts.Contact }) => (
+                <ContactRow contact={item} onSelect={handleSelectContact} />
               )}
             />
             <View style={styles.modalActions}>
@@ -788,13 +841,17 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
 
             {Platform.OS !== 'web' && (
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Elegir de contactos" style={styles.contactBtn} onPress={() => handlePickContact('visita')} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-                <Text style={styles.contactBtnText}>📇 Elegir de contactos</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <ContactIcon size={18} color="#1D4ED8" />
+                  <Text style={[styles.contactBtnText, { marginLeft: 8 }]}>Elegir de contactos</Text>
+                </View>
               </TouchableOpacity>
             )}
             <Text style={styles.label}>Nombre completo del visitante *</Text>
             <TextInput
               accessibilityLabel="Nombre completo del visitante"
               style={styles.input}
+              ref={visitorNameRef}
               placeholder="Ej. Juan Pérez"
               value={visitorName}
               onChangeText={setVisitorName}
@@ -1116,7 +1173,7 @@ const styles = StyleSheet.create({
   visitCard: { backgroundColor: '#141A2E', borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 2, borderColor: 'rgba(98, 3, 255, 0.3)', borderBottomWidth: 4, borderBottomColor: '#2A0A73' },
   cardHeaderRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   visitorNameText: { fontSize: 16, fontWeight: '900', color: '#FFFFFF' },
-  badgeContainer: { flexShrink: 1, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
+  badgeContainer: { flexShrink: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   badgeText: { fontSize: 12, fontWeight: '900' },
   cardBodyInfo: { gap: 4 },
   infoLineText: { fontSize: 13, color: '#CBD5E1' },
@@ -1148,7 +1205,10 @@ const styles = StyleSheet.create({
   cancelBtnText: { color: '#64748B', fontWeight: '600' },
   contactBtn: { minHeight: 44, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: colors.primary, backgroundColor: '#EFF6FF', borderRadius: 12, paddingVertical: 10, marginBottom: 4 },
   contactBtnText: { color: '#1D4ED8', fontWeight: 'bold' },
-  contactRow: { minHeight: 44, justifyContent: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
+  contactAvatar: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  contactAvatarText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
+  contactManualText: { fontSize: 14, fontWeight: '600', color: '#1D4ED8' },
+  contactRow: { minHeight: 44, flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#E2E8F0' },
   contactRowName: { fontSize: 14, fontWeight: '600', color: '#0F172A' },
   contactRowPhone: { fontSize: 12, color: '#64748B' },
   saveBtn: { minHeight: 44, justifyContent: 'center', backgroundColor: '#1D6BE0', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, alignItems: 'center', marginTop: 10 },

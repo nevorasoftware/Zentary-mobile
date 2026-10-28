@@ -13,11 +13,13 @@ import {
   ScrollView,
   Image,
   BackHandler,
+  Linking,
 } from 'react-native';
 import { apiService, UserProfile } from '../services/api';
 import { deviceService } from '../services/device';
 import { Eye, EyeOff } from 'lucide-react-native';
 import { colors } from '../theme';
+import { PRIVACY_URL } from '../components/ProfileMenuModal';
 
 interface AuthFlowScreenProps {
   onLoginSuccess: (user: UserProfile, mustChangePass?: boolean) => void;
@@ -256,6 +258,10 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
               <Text style={styles.forgotPasswordText}>
                 ¿Olvidaste tu contraseña? Contacta a la administración de tu residencial.
               </Text>
+
+              <TouchableOpacity accessibilityRole="link" onPress={() => Linking.openURL(PRIVACY_URL).catch(() => Alert.alert('Error', 'No se pudo abrir el enlace.'))} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <Text style={[styles.forgotPasswordText, { textDecorationLine: 'underline' }]}>Política de privacidad</Text>
+              </TouchableOpacity>
             </>
           )}
         </View>

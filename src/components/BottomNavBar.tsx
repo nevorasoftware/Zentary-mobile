@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Home, CalendarDays, Building2, MessageSquare, Menu, IconComponent } from './icons';
 import { colors } from '../theme';
 
 export type TabType = 'Inicio' | 'Visitas' | 'Amenidades' | 'PQRS' | 'Paquetes' | 'Pagos' | 'Menú';
@@ -15,12 +16,12 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   onTabChange,
   onOpenMenu,
 }) => {
-  const tabs: { id: TabType; label: string; icon: string }[] = [
-    { id: 'Inicio', label: 'Inicio', icon: '🏠' },
-    { id: 'Visitas', label: 'Visitas', icon: '⚡' },
-    { id: 'Amenidades', label: 'Amenidades', icon: '🏰' },
-    { id: 'PQRS', label: 'PQRS', icon: '💬' },
-    { id: 'Menú', label: 'Menú', icon: '👑' },
+  const tabs: { id: TabType; label: string; icon: IconComponent }[] = [
+    { id: 'Inicio', label: 'Inicio', icon: Home },
+    { id: 'Visitas', label: 'Visitas', icon: CalendarDays },
+    { id: 'Amenidades', label: 'Amenidades', icon: Building2 },
+    { id: 'PQRS', label: 'PQRS', icon: MessageSquare },
+    { id: 'Menú', label: 'Menú', icon: Menu },
   ];
 
   const handlePress = (tabId: TabType) => {
@@ -44,7 +45,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             onPress={() => handlePress(tab.id)}
           >
             <View style={[styles.iconBadge, isActive && styles.activeIconBadge]}>
-              <Text accessibilityElementsHidden importantForAccessibility="no" style={[styles.tabIcon, isActive && styles.activeIcon]}>{tab.icon}</Text>
+              <tab.icon size={20} color={isActive ? '#FFFFFF' : '#94A3B8'} strokeWidth={isActive ? 2.5 : 2} />
             </View>
             <Text style={[styles.tabLabel, isActive && styles.activeLabel]}>{tab.label}</Text>
           </TouchableOpacity>

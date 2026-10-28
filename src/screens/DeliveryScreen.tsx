@@ -13,6 +13,7 @@ import {
   Platform,
 } from 'react-native';
 import { apiService } from '../services/api';
+import { X } from '../components/icons';
 
 interface DeliveryScreenProps {
   onBack?: () => void;
@@ -177,7 +178,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
             <View style={styles.modalHeader}>
               <Text accessibilityLabel={`Delivery ${selectedPlatform?.name}`} style={styles.modalTitle}>Delivery {selectedPlatform?.name} 🛵</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setSelectedPlatform(null)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeX}>✕</Text>
+                <X size={22} color="#94A3B8" />
               </TouchableOpacity>
             </View>
 
