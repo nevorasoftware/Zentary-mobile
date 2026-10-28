@@ -22,6 +22,7 @@ import { apiService } from '../services/api';
 import { localDateISO, isValidTimeHM, parseLocalDateTime, formatDateLocal } from '../utils/dates';
 import { DateTimeField } from '../components/DateTimeField';
 import { colors } from '../theme';
+import { X } from '../components/icons';
 
 try {
   WebBrowser.maybeCompleteAuthSession();
@@ -530,7 +531,7 @@ export const AmenidadesScreen: React.FC = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Reservar {selectedAmenity?.name}</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setIsBookingModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeModalBtn}>✕</Text>
+                <X size={22} color="#94A3B8" />
               </TouchableOpacity>
             </View>
 
@@ -652,7 +653,7 @@ export const AmenidadesScreen: React.FC = () => {
             <View style={styles.modalHeader}>
               <Text accessibilityLabel="Pago con tarjeta" style={styles.modalTitle}>💳 Pago con tarjeta</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={handleClosePaymentModal} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.closeModalBtn}>✕</Text>
+                <X size={22} color="#94A3B8" />
               </TouchableOpacity>
             </View>
 
