@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import { StyleSheet, View, SafeAreaView, StatusBar, ActivityIndicator, Text, Image, Animated, BackHandler } from 'react-native';
+import { StyleSheet, Platform, View, SafeAreaView, StatusBar, ActivityIndicator, Text, Image, Animated, BackHandler } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import VisitasScreen from './src/screens/VisitasScreen';
 import PQRSScreen from './src/screens/PQRSScreen';
@@ -309,10 +309,14 @@ const styles = StyleSheet.create({
   },
   authSafeArea: {
     flex: 1,
+    // Android 15+ dibuja la app bajo la barra de estado (edge-to-edge)
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     backgroundColor: '#0A0F1F',
   },
   container: {
     flex: 1,
+    // Android 15+ dibuja la app bajo la barra de estado (edge-to-edge)
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     backgroundColor: '#0A0F1F',
   },
   offlineBanner: {

@@ -20,7 +20,7 @@ import {
 import * as Contacts from 'expo-contacts';
 import { IconComponent, PlusCircle, Contact as ContactIcon, X, CheckCircle, XCircle, Clock } from '../components/icons';
 import { colors } from '../theme';
-import { apiService, VisitItem, VisitStatusType } from '../services/api';
+import { apiService, API_BASE_URL, VisitItem, VisitStatusType } from '../services/api';
 import { localDateISO, localTimeHM, isValidDateISO, isValidTimeHM, parseLocalDateTime } from '../utils/dates';
 import { DateTimeField } from '../components/DateTimeField';
 
@@ -350,6 +350,21 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     } catch (e) {
       Alert.alert('Compartir', shareData.whatsappMessage);
     }
+  };
+
+  // Reabre "Comparte la invitación" para una visita ya creada (p. ej. si el WhatsApp no le llegó)
+  const handleReshareVisit = (v: VisitItem) => {
+    const publicUrl = `${API_BASE_URL.replace(/\/api\/?$/, '')}/visit/${v.publicToken}`;
+    setSelectedVisit(null);
+    setShareData({
+      publicUrl,
+      whatsappMessage: `Te envío tu FastPass digital para ingresar.
+
+*Muéstrale al oficial de garita el código QR en este enlace:*
+${publicUrl}`,
+      visitorName: v.visitorName,
+      sent: false,
+    });
   };
 
   // Copy URL to Clipboard
@@ -1105,6 +1120,16 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
                     <Text style={styles.detailRow}><Text style={{ fontWeight: 'bold', color: '#15803D' }}>Hora de ingreso:</Text> {new Date(selectedVisit.entryDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                   )}
                 </View>
+
+                {(selectedVisit.status === 'PENDIENTE_REGISTRO' || selectedVisit.status === 'DATOS_COMPLETADOS') && !!selectedVisit.publicToken && (
+                  <TouchableOpacity
+                    accessibilityRole="button"
+                    style={[styles.saveBtn, { marginBottom: 12 }]}
+                    onPress={() => handleReshareVisit(selectedVisit)}
+                  >
+                    <Text style={styles.saveBtnText}>Compartir o copiar enlace</Text>
+                  </TouchableOpacity>
+                )}
 
                 {(selectedVisit.status === 'PENDIENTE_REGISTRO' || selectedVisit.status === 'DATOS_COMPLETADOS') && (
                   <TouchableOpacity
