@@ -18,6 +18,7 @@ import {
   FlatList,
 } from 'react-native';
 import * as Contacts from 'expo-contacts';
+import { pickPhoneContact } from '../../modules/contact-picker';
 import { IconComponent, PlusCircle, Contact as ContactIcon, X, CheckCircle, XCircle, Clock } from '../components/icons';
 import { colors } from '../theme';
 import { apiService, API_BASE_URL, VisitItem, VisitStatusType } from '../services/api';
@@ -156,8 +157,32 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     }
   };
 
-  // Contactos del teléfono: pide permiso y abre la lista para elegir al visitante
+  // Copia al formulario el contacto elegido
+  const applyContact = useCallback((target: 'fastpass' | 'visita', name: string, rawPhone: string, email: string) => {
+    // Deja solo dígitos y un "+" inicial
+    const phone = rawPhone.trim().replace(/(?!^\+)\D/g, '');
+    if (target === 'fastpass') {
+      setFastPassContactName(name);
+      if (phone) setFastPassPhone(phone);
+    } else {
+      setVisitorName(name);
+      if (phone) setVisitorPhone(phone);
+      setVisitorEmail(email);
+    }
+  }, []);
+
+  // Contactos del teléfono. Android: selector del sistema, sin permiso y sin acceso a la agenda.
+  // iOS: pide permiso y abre la lista para elegir al visitante
   const handlePickContact = async (target: 'fastpass' | 'visita') => {
+    if (Platform.OS === 'android') {
+      try {
+        const picked = await pickPhoneContact();
+        if (picked) applyContact(target, picked.name, picked.phone, '');
+      } catch (err: any) {
+        Alert.alert('Error', 'No se pudo abrir el selector de contactos. Puedes escribir los datos manualmente.');
+      }
+      return;
+    }
     try {
       const { status } = await Contacts.requestPermissionsAsync();
       if (status !== 'granted') {
@@ -187,20 +212,14 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   };
 
   const handleSelectContact = useCallback((contact: Contacts.Contact) => {
-    const rawPhone = contact.phoneNumbers?.[0]?.number || '';
-    // Deja solo dígitos y un "+" inicial
-    const phone = rawPhone.trim().replace(/(?!^\+)\D/g, '');
-    const name = contact.name || '';
-    if (contactPicker?.target === 'fastpass') {
-      setFastPassContactName(name);
-      if (phone) setFastPassPhone(phone);
-    } else {
-      setVisitorName(name);
-      if (phone) setVisitorPhone(phone);
-      setVisitorEmail(contact.emails?.[0]?.email?.trim() || '');
-    }
+    applyContact(
+      contactPicker?.target === 'fastpass' ? 'fastpass' : 'visita',
+      contact.name || '',
+      contact.phoneNumbers?.[0]?.number || '',
+      contact.emails?.[0]?.email?.trim() || '',
+    );
     setContactPicker(null);
-  }, [contactPicker?.target]);
+  }, [contactPicker?.target, applyContact]);
 
   // Cierra el selector y enfoca el campo de nombre (los modales se reabren al cerrarlo)
   const handleManualContact = () => {
