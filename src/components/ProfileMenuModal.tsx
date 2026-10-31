@@ -208,6 +208,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
 
       <Modal visible={isDeleteOpen} transparent animationType="fade" onRequestClose={closeDeleteModal}>
         <KeyboardAvoidingView style={styles.confirmBackdrop} behavior="padding">
+          <ScrollView style={styles.deleteScroll} contentContainerStyle={[styles.deleteScrollContent, { paddingTop: insets.top, paddingBottom: insets.bottom }]} keyboardShouldPersistTaps="handled">
           <View style={styles.confirmBox}>
             <Text style={styles.confirmTitle}>Eliminar cuenta</Text>
             <Text style={styles.confirmMessage}>
@@ -219,13 +220,13 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             {paidReservations.length > 0 && (
               <>
                 <Text style={styles.deleteWarning}>Estas reservas pagadas se cancelarán sin reembolso automático:</Text>
-                <ScrollView style={styles.deleteReservations}>
+                <View style={styles.deleteReservations}>
                   {paidReservations.map((r) => (
                     <Text key={r.id} style={styles.deleteReservationText}>
                       {r.amenityName} · {String(r.reservationDate).slice(0, 10)} · {r.startTime}-{r.endTime} · ${Number(r.price).toFixed(2)}
                     </Text>
                   ))}
-                </ScrollView>
+                </View>
                 <TouchableOpacity
                   accessibilityRole="checkbox"
                   accessibilityState={{ checked: acceptedReservations }}
@@ -257,6 +258,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
               </TouchableOpacity>
             </View>
           </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -404,8 +406,14 @@ const styles = StyleSheet.create({
     color: '#B91C1C',
     marginTop: 12,
   },
+  deleteScroll: {
+    width: '100%',
+  },
+  deleteScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
   deleteReservations: {
-    maxHeight: 120,
     marginTop: 6,
   },
   deleteReservationText: {
