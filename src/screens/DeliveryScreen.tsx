@@ -172,7 +172,7 @@ export const DeliveryScreen: React.FC<DeliveryScreenProps> = ({ onBack }) => {
 
       {/* Modal Form to register Delivery */}
       <Modal visible={!!selectedPlatform} transparent animationType="slide" onRequestClose={() => setSelectedPlatform(null)}>
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>

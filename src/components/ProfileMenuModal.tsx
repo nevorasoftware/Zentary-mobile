@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, Image, Linking, Alert } from 'react-native';
 import Constants from 'expo-constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import NotificationSettingsModal from './NotificationSettingsModal';
 import { apiService } from '../services/api';
 import { X } from './icons';
@@ -26,6 +27,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
   onClose,
   onLogout,
 }) => {
+  const insets = useSafeAreaInsets();
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
@@ -68,7 +70,7 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
     <>
       <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar menú" style={styles.backdrop} activeOpacity={1} onPress={onClose}>
-          <View style={styles.sheetContainer} onStartShouldSetResponder={() => true}>
+          <View style={[styles.sheetContainer, { paddingBottom: 30 + insets.bottom }]} onStartShouldSetResponder={() => true}>
             {/* Top Avatar badge matching Image 4 */}
             <View style={styles.avatarWrapper}>
               {user.avatarUrl ? (

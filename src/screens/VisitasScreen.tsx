@@ -48,7 +48,7 @@ const initialVisitDateTime = () => {
 const AVATAR_COLORS = ['#1D4ED8', '#7C3AED', '#0F766E', '#B45309', '#BE185D', '#475569'];
 
 // Fila del selector de contactos (memoizada para que la lista siga fluida con muchos contactos)
-const ContactRow = React.memo(({ contact, onSelect }: { contact: Contacts.Contact; onSelect: (c: Contacts.Contact) => void }) => {
+const ContactRow = React.memo(({ contact, onSelect }: { contact: Contacts.ExistingContact; onSelect: (c: Contacts.ExistingContact) => void }) => {
   const name = contact.name || '';
   const initial = (name.trim().charAt(0) || '?').toUpperCase();
   const avatarColor = AVATAR_COLORS[initial.charCodeAt(0) % AVATAR_COLORS.length];
@@ -93,7 +93,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
   const [visitorEmail, setVisitorEmail] = useState('');
 
   // Selector de contactos del teléfono (no disponible en web)
-  const [contactPicker, setContactPicker] = useState<{ target: 'fastpass' | 'visita'; items: Contacts.Contact[] } | null>(null);
+  const [contactPicker, setContactPicker] = useState<{ target: 'fastpass' | 'visita'; items: Contacts.ExistingContact[] } | null>(null);
   const [contactSearch, setContactSearch] = useState('');
   const [loadingContacts, setLoadingContacts] = useState(false);
   const fastPassNameRef = useRef<any>(null);
@@ -211,7 +211,7 @@ export const VisitasScreen: React.FC<VisitasScreenProps> = ({ onOpenFrequentModa
     }
   };
 
-  const handleSelectContact = useCallback((contact: Contacts.Contact) => {
+  const handleSelectContact = useCallback((contact: Contacts.ExistingContact) => {
     applyContact(
       contactPicker?.target === 'fastpass' ? 'fastpass' : 'visita',
       contact.name || '',
@@ -674,7 +674,7 @@ ${publicUrl}`,
 
       {/* MODAL 0: FastPass Modal ("¿Cuándo te visitan? 🏃‍♀️") */}
       <Modal visible={showFastPassModal && !contactPicker} transparent animationType="slide" onRequestClose={() => setShowFastPassModal(false)}>
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
@@ -846,10 +846,10 @@ ${publicUrl}`,
               value={contactSearch}
               onChangeText={setContactSearch}
             />
-            <FlatList<Contacts.Contact>
+            <FlatList<Contacts.ExistingContact>
               style={{ marginTop: 10 }}
               data={filteredContacts}
-              keyExtractor={(c: Contacts.Contact, i: number) => c.id || String(i)}
+              keyExtractor={(c: Contacts.ExistingContact, i: number) => c.id || String(i)}
               keyboardShouldPersistTaps="handled"
               initialNumToRender={12}
               maxToRenderPerBatch={12}
@@ -860,7 +860,7 @@ ${publicUrl}`,
                 </TouchableOpacity>
               }
               ListEmptyComponent={<Text style={styles.modalDesc}>{loadingContacts ? 'Cargando contactos…' : 'Sin resultados.'}</Text>}
-              renderItem={({ item }: { item: Contacts.Contact }) => (
+              renderItem={({ item }: { item: Contacts.ExistingContact }) => (
                 <ContactRow contact={item} onSelect={handleSelectContact} />
               )}
             />
@@ -875,7 +875,7 @@ ${publicUrl}`,
 
       {/* MODAL 1: Create Invitation (Resident) */}
       <Modal visible={showAddModal && !contactPicker} transparent animationType="slide" onRequestClose={() => setShowAddModal(false)}>
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Crear Nueva Invitación</Text>
@@ -1040,7 +1040,7 @@ ${publicUrl}`,
           setQrInputToken('');
         }}
       >
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={[styles.modalCard, { maxHeight: '90%' }]}>
             <Text style={styles.modalTitle}>Validar Visitante (Caseta de Seguridad)</Text>

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { notificationService, NotificationConfig } from '../services/notificationService';
 import { X } from './icons';
 
@@ -19,6 +20,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
   visible,
   onClose,
 }) => {
+  const insets = useSafeAreaInsets();
   const [config, setConfig] = useState<NotificationConfig>({
     enabled: true,
     frequency: 'DAILY',
@@ -35,7 +37,7 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <View style={styles.sheet}>
+        <View style={[styles.sheet, { paddingBottom: 24 + insets.bottom }]}>
           <View style={styles.header}>
             <Text accessibilityLabel="Centro de Notificaciones" style={styles.headerTitle}>🔔 Centro de Notificaciones</Text>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" style={styles.closeBtn} onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>

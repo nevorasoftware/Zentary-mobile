@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Home, CalendarDays, Building2, MessageSquare, Menu, IconComponent } from './icons';
 import { colors } from '../theme';
 
@@ -16,6 +17,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   onTabChange,
   onOpenMenu,
 }) => {
+  const insets = useSafeAreaInsets();
   const tabs: { id: TabType; label: string; icon: IconComponent }[] = [
     { id: 'Inicio', label: 'Inicio', icon: Home },
     { id: 'Visitas', label: 'Visitas', icon: CalendarDays },
@@ -33,7 +35,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   };
 
   return (
-    <View style={styles.navContainer}>
+    <View style={[styles.navContainer, { paddingBottom: 8 + insets.bottom }]}>
       {tabs.map((tab) => {
         const isActive = currentTab === tab.id;
         return (

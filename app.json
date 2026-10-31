@@ -3,7 +3,10 @@
     "name": "Zentary",
     "slug": "zentary-app",
     "version": "2.53.0",
-    "scheme": "zentary",
+    "scheme": [
+      "zentary",
+      "com.zentary.app"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -52,6 +55,7 @@
           "contactsPermission": "Zentary necesita acceder a tus contactos para que puedas elegir al visitante al registrar una visita."
         }
       ]
-    ]
+    ],
+    "newArchEnabled": false
   }
 }

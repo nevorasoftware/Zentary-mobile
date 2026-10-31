@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import NetInfo from '@react-native-community/netinfo';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, Platform, View, SafeAreaView, StatusBar, ActivityIndicator, Text, Image, Animated, BackHandler } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import VisitasScreen from './src/screens/VisitasScreen';
@@ -17,6 +18,15 @@ import { deviceService } from './src/services/device';
 import { registerForPushNotificationsAsync, setupNotificationListeners } from './src/services/notification';
 
 export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AppContent />
+    </SafeAreaProvider>
+  );
+}
+
+function AppContent() {
+  const insets = useSafeAreaInsets();
   const [isRestoringSession, setIsRestoringSession] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -158,7 +168,7 @@ export default function App() {
   // If user is not logged in, render the Onboarding & Authentication Flow
   if (!isLoggedIn) {
     return (
-      <SafeAreaView style={styles.authSafeArea}>
+      <SafeAreaView style={[styles.authSafeArea, { paddingBottom: insets.bottom }]}>
         <StatusBar barStyle="light-content" backgroundColor="#0A0F1F" />
         <AuthFlowScreen onLoginSuccess={handleLoginSuccess} />
       </SafeAreaView>
