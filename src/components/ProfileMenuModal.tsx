@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, Image, Linking, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, Image, Linking, Alert, ActivityIndicator, KeyboardAvoidingView, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import NotificationSettingsModal from './NotificationSettingsModal';
-import { apiService } from '../services/api';
+import { apiService, PaidReservationItem } from '../services/api';
 import { X } from './icons';
 
-export const PRIVACY_URL = 'https://nevorasoftware.com/#/privacidad';
+export const PRIVACY_URL = 'https://nevorasoftware.com/zentary/privacidad.html';
 
 interface ProfileMenuModalProps {
   visible: boolean;
@@ -30,31 +30,72 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
   const insets = useSafeAreaInsets();
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoadingDeleteSummary, setIsLoadingDeleteSummary] = useState(false);
+  const [pendingCharges, setPendingCharges] = useState(0);
+  const [paidReservations, setPaidReservations] = useState<PaidReservationItem[]>([]);
+  const [acceptedReservations, setAcceptedReservations] = useState(false);
 
-  const handleRequestDeletion = () => {
-    Alert.alert(
-      'Solicitar eliminación de cuenta',
-      'Se enviará una solicitud a la administración de tu residencial para eliminar tu cuenta y tus datos personales. ¿Deseas continuar?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Enviar solicitud',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await apiService.createPqrs({
-                category: 'PETICION',
-                subject: 'Solicitud de eliminación de cuenta',
-                description: 'El usuario solicita eliminar su cuenta y sus datos personales.',
-              });
-              Alert.alert('Solicitud enviada', 'La administración de tu residencial la atenderá.');
-            } catch (err: any) {
-              Alert.alert('Error', err.message || 'No se pudo enviar la solicitud.');
-            }
-          },
-        },
-      ],
-    );
+  const closeDeleteModal = () => {
+    setIsDeleteOpen(false);
+    setDeletePassword('');
+    setAcceptedReservations(false);
+  };
+
+  // Consulta qué se perdería antes de mostrar la confirmación
+  const handleOpenDelete = async () => {
+    if (isLoadingDeleteSummary) return;
+    try {
+      setIsLoadingDeleteSummary(true);
+      const summary = await apiService.getDeleteAccountSummary();
+      if (!summary.canDelete) {
+        Alert.alert('Eliminar cuenta', 'Las cuentas de administración no se eliminan desde la app. Contacta a soporte.');
+        return;
+      }
+      setPendingCharges(summary.pendingCharges);
+      setPaidReservations(summary.paidReservations);
+      setAcceptedReservations(false);
+      setIsDeleteOpen(true);
+    } catch (err: any) {
+      Alert.alert('Error', err.message || 'No se pudo consultar tu cuenta. Intenta de nuevo.');
+    } finally {
+      setIsLoadingDeleteSummary(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (isDeleting) return;
+    if (!deletePassword) {
+      Alert.alert('Campo requerido', 'Ingresa tu contraseña para confirmar.');
+      return;
+    }
+    if (paidReservations.length > 0 && !acceptedReservations) {
+      Alert.alert('Confirmación requerida', 'Acepta la cancelación de tus reservas pagadas para continuar.');
+      return;
+    }
+    try {
+      setIsDeleting(true);
+      const res = await apiService.deleteAccount(deletePassword, acceptedReservations);
+      closeDeleteModal();
+      Alert.alert(
+        'Cuenta eliminada',
+        res.pendingCharges > 0
+          ? 'Tu cuenta fue eliminada. El saldo pendiente sigue asociado a la vivienda y lo gestiona la administración.'
+          : 'Tu cuenta fue eliminada.',
+      );
+      onLogout();
+    } catch (err: any) {
+      // Pagó otra reserva después del resumen: hay que mostrarla y aceptar de nuevo
+      if (err.code === 'PAID_RESERVATIONS_CONFIRMATION_REQUIRED') {
+        setPaidReservations(err.data?.paidReservations || []);
+        setAcceptedReservations(false);
+      }
+      Alert.alert('Error', err.message || 'No se pudo eliminar la cuenta.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const initials =
@@ -116,10 +157,10 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity accessibilityRole="button" style={styles.menuItem} onPress={handleRequestDeletion}>
+              <TouchableOpacity accessibilityRole="button" style={styles.menuItem} disabled={isLoadingDeleteSummary} onPress={handleOpenDelete}>
                 <View style={styles.menuLeft}>
                   <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.menuIcon}>🗑️</Text>
-                  <Text style={styles.menuText}>Solicitar eliminación de cuenta</Text>
+                  <Text style={styles.menuText}>Eliminar cuenta</Text>
                 </View>
                 <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevron}>›</Text>
               </TouchableOpacity>
@@ -163,6 +204,60 @@ export const ProfileMenuModal: React.FC<ProfileMenuModalProps> = ({
             </View>
           </View>
         </View>
+      </Modal>
+
+      <Modal visible={isDeleteOpen} transparent animationType="fade" onRequestClose={closeDeleteModal}>
+        <KeyboardAvoidingView style={styles.confirmBackdrop} behavior="padding">
+          <View style={styles.confirmBox}>
+            <Text style={styles.confirmTitle}>Eliminar cuenta</Text>
+            <Text style={styles.confirmMessage}>
+              Esta acción es inmediata e irreversible. Las reservas futuras pagadas se cancelan sin reembolso automático. La residencial conserva los registros contables y de seguridad que requiere, como cobros, recibos, reservas y bitácora de garita, que pueden incluir datos personales. Si tienes saldo pendiente, también conserva tus datos de contacto como titular de la vivienda. Ingresa tu contraseña para confirmar.
+            </Text>
+            {pendingCharges > 0 && (
+              <Text style={styles.deleteWarning}>Tienes saldo pendiente: seguirá asociado a la vivienda y lo gestiona la administración.</Text>
+            )}
+            {paidReservations.length > 0 && (
+              <>
+                <Text style={styles.deleteWarning}>Estas reservas pagadas se cancelarán sin reembolso automático:</Text>
+                <ScrollView style={styles.deleteReservations}>
+                  {paidReservations.map((r) => (
+                    <Text key={r.id} style={styles.deleteReservationText}>
+                      {r.amenityName} · {String(r.reservationDate).slice(0, 10)} · {r.startTime}-{r.endTime} · ${Number(r.price).toFixed(2)}
+                    </Text>
+                  ))}
+                </ScrollView>
+                <TouchableOpacity
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: acceptedReservations }}
+                  style={styles.deleteAcceptRow}
+                  onPress={() => setAcceptedReservations(!acceptedReservations)}
+                >
+                  <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.deleteAcceptBox}>{acceptedReservations ? '☑' : '☐'}</Text>
+                  <Text style={styles.deleteAcceptText}>Acepto que se cancelen sin reembolso automático</Text>
+                </TouchableOpacity>
+              </>
+            )}
+            <TextInput
+              accessibilityLabel="Contraseña actual"
+              style={styles.deleteInput}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholder="Contraseña actual"
+              placeholderTextColor="#6B7280"
+              value={deletePassword}
+              onChangeText={setDeletePassword}
+            />
+            <View style={styles.confirmActions}>
+              <TouchableOpacity accessibilityRole="button" style={styles.confirmCancelBtn} disabled={isDeleting} onPress={closeDeleteModal}>
+                <Text style={styles.confirmCancelText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity accessibilityRole="button" style={styles.confirmLogoutBtn} disabled={isDeleting} onPress={handleDeleteAccount}>
+                {isDeleting ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.confirmLogoutText}>Eliminar definitivamente</Text>}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       <NotificationSettingsModal
@@ -302,6 +397,46 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     marginTop: 8,
+  },
+  deleteWarning: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#B91C1C',
+    marginTop: 12,
+  },
+  deleteReservations: {
+    maxHeight: 120,
+    marginTop: 6,
+  },
+  deleteReservationText: {
+    fontSize: 13,
+    color: '#374151',
+    paddingVertical: 3,
+  },
+  deleteAcceptRow: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 6,
+  },
+  deleteAcceptBox: {
+    fontSize: 20,
+    color: '#1F2937',
+  },
+  deleteAcceptText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#1F2937',
+  },
+  deleteInput: {
+    minHeight: 44,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    marginTop: 16,
+    color: '#1F2937',
   },
   confirmActions: {
     flexDirection: 'row',

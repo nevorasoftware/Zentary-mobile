@@ -93,6 +93,22 @@ export interface PqrsDetailItem extends PqrsItem {
   messages: PqrsMessageItem[];
 }
 
+export interface PaidReservationItem {
+  id: string;
+  amenityName: string;
+  reservationDate: string;
+  startTime: string;
+  endTime: string;
+  price: number;
+}
+
+export interface DeleteAccountSummary {
+  success: boolean;
+  canDelete: boolean;
+  pendingCharges: number;
+  paidReservations: PaidReservationItem[];
+}
+
 import { translateServerError } from '../utils/serverErrors';
 
 // Rechazos del servidor que indican que la sesión ya no es válida
@@ -166,6 +182,7 @@ class ApiService {
       const error: any = new Error(translateServerError(response.status, data.code, data.message));
       error.status = response.status;
       error.code = data.code;
+      error.data = data;
       if (isAuthRejection(error.status, error.code) && this.authErrorHandler) {
         this.authErrorHandler();
       }
@@ -218,6 +235,17 @@ class ApiService {
       this.token = data.token;
     }
     return data;
+  }
+
+  async getDeleteAccountSummary() {
+    return this.request<DeleteAccountSummary>('/auth/delete-account/summary');
+  }
+
+  async deleteAccount(password: string, confirmPaidReservations: boolean) {
+    return this.request<{ success: boolean; code: string; message: string; pendingCharges: number }>('/auth/delete-account', {
+      method: 'POST',
+      body: JSON.stringify(confirmPaidReservations ? { password, confirmPaidReservations: true } : { password }),
+    });
   }
 
   async renewSession(deviceId?: string) {
