@@ -338,6 +338,29 @@ class ApiService {
     });
   }
 
+  async getActiveInside() {
+    return this.request<{
+      success: boolean;
+      activeVisits: Array<{
+        id: string;
+        visitorName: string;
+        visitorDni?: string;
+        vehiclePlate?: string;
+        entryDate: string;
+        houseUnit: string;
+        residentName?: string;
+        isExceeded: boolean;
+      }>;
+    }>('/visits/active-inside');
+  }
+
+  async registerExit(visitId: string) {
+    return this.request<{ success: boolean; message?: string; durationFormatted?: string }>(`/visits/${visitId}/exit`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+  }
+
   async getVisitorDocument(visitId: string) {
     return this.request<{
       success: boolean;

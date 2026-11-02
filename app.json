@@ -50,6 +50,12 @@
         {
           "contactsPermission": "Zentary necesita acceder a tus contactos para que puedas elegir al visitante al registrar una visita."
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Zentary necesita la cámara para escanear el código QR de los visitantes."
+        }
       ]
     ]
   }
