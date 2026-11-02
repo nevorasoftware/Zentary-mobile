@@ -15,6 +15,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import * as Notifications from 'expo-notifications';
 import { apiService } from '../services/api';
 import { formatDateUTC } from '../utils/dates';
 import { colors } from '../theme';
@@ -101,9 +102,15 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
       fetchPayments();
     });
 
+    // Refresca al llegar un push de pagos con la app abierta
+    const notificationListener = Notifications.addNotificationReceivedListener((n) => {
+      if (String(n.request.content.data?.type || '').startsWith('PAYMENT')) fetchPayments();
+    });
+
     return () => {
       subscription.remove();
       urlListener.remove();
+      notificationListener.remove();
     };
   }, []);
 
