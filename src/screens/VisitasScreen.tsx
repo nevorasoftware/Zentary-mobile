@@ -495,9 +495,12 @@ ${publicUrl}`,
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Visitas y accesos</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
+          {/* Acceso a la ventana de Fast Pass oculto temporalmente */}
+          {false && (
           <TouchableOpacity accessibilityRole="button" style={[styles.guardHeaderBtn, { backgroundColor: '#1D4ED8' }]} onPress={() => setShowFastPassModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <Text accessibilityLabel="FastPass" style={styles.guardHeaderBtnText}>🏃‍♀️ FastPass</Text>
           </TouchableOpacity>
+          )}
           {canUseGuardFunctions && (
             <TouchableOpacity accessibilityRole="button" style={styles.guardHeaderBtn} onPress={() => setShowGuardModal(true)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text style={styles.guardHeaderBtnText}>Validar código</Text>
