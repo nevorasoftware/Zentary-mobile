@@ -54,7 +54,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Zentary necesita la cámara para escanear el código QR de los visitantes."
+          "cameraPermission": "Zentary necesita la cámara para escanear el código QR de los visitantes.",
+          "recordAudioAndroid": false
         }
       ]
     ]
