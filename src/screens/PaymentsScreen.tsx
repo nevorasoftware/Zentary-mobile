@@ -398,7 +398,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                     placeholderTextColor="#94A3B8"
                     keyboardType="numeric"
                     secureTextEntry
-                    maxLength={4}
+                    maxLength={3}
                     value={cvv}
                     onChangeText={setCvv}
                   />
