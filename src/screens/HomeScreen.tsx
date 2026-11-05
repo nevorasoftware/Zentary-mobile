@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import NotificationSettingsModal from '../components/NotificationSettingsModal';
 import { UserProfile } from '../services/api';
-import { UserPlus, Users, Bike, Building2, Package, Mail, CreditCard } from '../components/icons';
+import { UserPlus, Users, Bike, Building2, Package, Mail, CreditCard, FileText } from '../components/icons';
 import { colors } from '../theme';
 
 interface HomeScreenProps {
@@ -13,6 +13,7 @@ interface HomeScreenProps {
   onNavigateToPQRS: () => void;
   onNavigateToPagos: () => void;
   onNavigateToAmenidades?: () => void;
+  onNavigateToDocumentos?: () => void;
   onNavigateToDelivery?: () => void;
 }
 
@@ -24,6 +25,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToPQRS,
   onNavigateToPagos,
   onNavigateToAmenidades,
+  onNavigateToDocumentos,
   onNavigateToDelivery,
 }) => {
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
@@ -133,6 +135,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <View style={{ flex: 1 }}>
                 <Text style={styles.actionTitle}>Pagos y mantenimiento</Text>
                 <Text style={styles.actionSubtitle}>Paga tu cuota de forma 100% segura online</Text>
+              </View>
+              <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevronIcon}>›</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Documentos */}
+          <TouchableOpacity accessibilityRole="button" style={[styles.actionCard, styles.fullWidthCard]} onPress={onNavigateToDocumentos} activeOpacity={0.85}>
+            <View style={styles.fullWidthContent}>
+              <View style={[styles.emojiBadge, { backgroundColor: '#6203FF', borderColor: '#2A0A73' }]}>
+                <FileText size={26} color="#FFFFFF" strokeWidth={2} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.actionTitle}>Documentos</Text>
+                <Text style={styles.actionSubtitle}>Normas y documentos de tu residencial</Text>
               </View>
               <Text accessibilityElementsHidden importantForAccessibility="no" style={styles.chevronIcon}>›</Text>
             </View>

@@ -8,6 +8,7 @@ import PQRSScreen from './src/screens/PQRSScreen';
 import PaquetesScreen from './src/screens/PaquetesScreen';
 import PaymentsScreen from './src/screens/PaymentsScreen';
 import AmenidadesScreen from './src/screens/AmenidadesScreen';
+import DocumentosScreen from './src/screens/DocumentosScreen';
 import GaritaScreen from './src/screens/GaritaScreen';
 import DeliveryScreen from './src/screens/DeliveryScreen';
 import AuthFlowScreen from './src/screens/AuthFlowScreen';
@@ -200,6 +201,7 @@ function AppContent() {
             onNavigateToPQRS={() => setCurrentTab('PQRS')}
             onNavigateToPagos={() => setCurrentTab('Pagos')}
             onNavigateToAmenidades={() => setCurrentTab('Amenidades')}
+            onNavigateToDocumentos={() => setCurrentTab('Documentos')}
             onNavigateToDelivery={() => setIsDeliveryOpen(true)}
           />
         );
@@ -218,6 +220,8 @@ function AppContent() {
         return <PaquetesScreen />;
       case 'Pagos':
         return <PaymentsScreen />;
+      case 'Documentos':
+        return <DocumentosScreen />;
       default:
         return (
           <HomeScreen
@@ -234,6 +238,7 @@ function AppContent() {
             onNavigateToPQRS={() => setCurrentTab('PQRS')}
             onNavigateToPagos={() => setCurrentTab('Pagos')}
             onNavigateToAmenidades={() => setCurrentTab('Amenidades')}
+            onNavigateToDocumentos={() => setCurrentTab('Documentos')}
             onNavigateToDelivery={() => setIsDeliveryOpen(true)}
           />
         );
@@ -255,7 +260,7 @@ function AppContent() {
       {/* Persistent Bottom Bar */}
       {currentUser.role !== 'GUARD' && (
         <BottomNavBar
-          currentTab={isDeliveryOpen || currentTab === 'Pagos' || currentTab === 'Paquetes' ? 'Inicio' : currentTab}
+          currentTab={isDeliveryOpen || currentTab === 'Pagos' || currentTab === 'Paquetes' || currentTab === 'Documentos' ? 'Inicio' : currentTab}
           onTabChange={handleTabChange}
           onOpenMenu={() => setIsProfileMenuOpen(true)}
         />

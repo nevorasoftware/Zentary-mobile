@@ -16,6 +16,7 @@ export const Users = c(L.Users);
 export const Bike = c(L.Bike);
 export const Package = c(L.Package);
 export const Mail = c(L.Mail);
+export const FileText = c(L.FileText);
 export const CreditCard = c(L.CreditCard);
 export const PlusCircle = c(L.PlusCircle);
 export const Contact = c(L.Contact);

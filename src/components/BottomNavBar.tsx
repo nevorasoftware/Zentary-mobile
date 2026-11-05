@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Home, CalendarDays, Building2, MessageSquare, Menu, IconComponent } from './icons';
 import { colors } from '../theme';
 
-export type TabType = 'Inicio' | 'Visitas' | 'Amenidades' | 'PQRS' | 'Paquetes' | 'Pagos' | 'Menú';
+export type TabType = 'Inicio' | 'Visitas' | 'Amenidades' | 'PQRS' | 'Paquetes' | 'Pagos' | 'Documentos' | 'Menú';
 
 interface BottomNavBarProps {
   currentTab: TabType;

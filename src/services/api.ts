@@ -478,6 +478,11 @@ class ApiService {
     });
   }
 
+  // Documentos del residencial
+  async getDocuments() {
+    return this.request<{ success: boolean; documents: { id: string; title: string; url: string }[] }>('/documents');
+  }
+
   // Amenities API
   async getResidentAmenities() {
     return this.request<{ success: boolean; amenities: any[] }>('/amenities');
