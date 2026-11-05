@@ -80,7 +80,7 @@ export const setupNotificationListeners = (
   const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
     try {
       const data = response.notification.request.content.data;
-      if (data && data.type === 'PQRS' && data.pqrsId && onSelectPqrs) {
+      if (data && String(data.type).startsWith('PQRS') && data.pqrsId && onSelectPqrs) {
         onSelectPqrs(String(data.pqrsId));
       }
     } catch (e) {

@@ -14,6 +14,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Notifications from 'expo-notifications';
 import { colors } from '../theme';
 import { apiService, PqrsItem, PqrsDetailItem } from '../services/api';
 
@@ -82,6 +83,14 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
   useEffect(() => {
     fetchPqrsList(debouncedQuery);
+  }, [debouncedQuery]);
+
+  // Refresca la lista al llegar un push de PQRS con la app abierta
+  useEffect(() => {
+    const notificationListener = Notifications.addNotificationReceivedListener((n) => {
+      if (String(n.request.content.data?.type || '').startsWith('PQRS')) fetchPqrsList(debouncedQuery, true);
+    });
+    return () => notificationListener.remove();
   }, [debouncedQuery]);
 
   useEffect(() => {
@@ -286,7 +295,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
           /* PQRS Cards List */
           <View style={styles.pqrsListContainer}>
             {pqrsList.map((item) => {
-              const formattedDate = new Date(item.createdAt).toLocaleDateString([], {
+              const formattedDate = new Date(item.createdAt).toLocaleDateString('es-ES', {
                 day: '2-digit',
                 month: 'short',
                 year: 'numeric',
@@ -454,7 +463,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
                     selectedPqrs.messages.map((m) => {
                       const isStaff = m.isStaff;
                       const senderName = m.sender?.fullName || (isStaff ? 'Administración' : 'Tú');
-                      const timeStr = new Date(m.createdAt).toLocaleTimeString([], {
+                      const timeStr = new Date(m.createdAt).toLocaleTimeString('es-ES', {
                         hour: '2-digit',
                         minute: '2-digit',
                       });
