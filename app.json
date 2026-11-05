@@ -2,7 +2,7 @@
   "expo": {
     "name": "Zentary",
     "slug": "zentary-app",
-    "version": "2.55.0",
+    "version": "2.56.0",
     "scheme": [
       "zentary",
       "com.zentary.app"
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.zentary.app",
-      "versionCode": 16,
+      "versionCode": 17,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
