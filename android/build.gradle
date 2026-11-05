@@ -14,6 +14,10 @@ buildscript {
 
 allprojects {
   repositories {
+    def expoCameraMaven = new File(rootDir, "../node_modules/expo-camera/android/maven")
+    if (expoCameraMaven.exists()) {
+      maven { url expoCameraMaven.toURI() }
+    }
     google()
     mavenCentral()
     maven { url 'https://www.jitpack.io' }

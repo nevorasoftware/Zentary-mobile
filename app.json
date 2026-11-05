@@ -2,7 +2,7 @@
   "expo": {
     "name": "Zentary",
     "slug": "zentary-app",
-    "version": "2.53.0",
+    "version": "2.55.0",
     "scheme": [
       "zentary",
       "com.zentary.app"
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.zentary.app",
-      "versionCode": 14,
+      "versionCode": 16,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
@@ -53,6 +53,13 @@
         "expo-contacts",
         {
           "contactsPermission": "Zentary necesita acceder a tus contactos para que puedas elegir al visitante al registrar una visita."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Zentary necesita la cámara para escanear el código QR de los visitantes.",
+          "recordAudioAndroid": false
         }
       ]
     ],

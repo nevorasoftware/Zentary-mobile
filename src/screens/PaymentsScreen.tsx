@@ -12,8 +12,9 @@ import {
   Linking,
   AppState,
   RefreshControl,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView,
 } from 'react-native';
+import * as Notifications from 'expo-notifications';
 import { apiService } from '../services/api';
 import { formatDateUTC } from '../utils/dates';
 import { colors } from '../theme';
@@ -40,6 +41,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
   // Cobro enviado al banco cuyo resultado aún se está verificando
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const verifyingIdRef = useRef<string | null>(null);
+  const [rejectedId, setRejectedId] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<PaymentItem | null>(null);
   const [processing, setProcessing] = useState(false);
 
@@ -75,6 +77,11 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         if (verifyingIdRef.current && formatted.some((p: PaymentItem) => p.id === verifyingIdRef.current && p.status === 'PAID')) {
           verifyingIdRef.current = null;
           setVerifyingId(null);
+        } else if (verifyingIdRef.current && formatted.some((p: PaymentItem) => p.id === verifyingIdRef.current && !p.externalTransactionId)) {
+          // El backend libera la transacción cuando la pasarela rechaza el pago
+          setRejectedId(verifyingIdRef.current);
+          verifyingIdRef.current = null;
+          setVerifyingId(null);
         }
       }
     } catch (err) {
@@ -100,14 +107,21 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
       fetchPayments();
     });
 
+    // Refresca al llegar un push de pagos con la app abierta
+    const notificationListener = Notifications.addNotificationReceivedListener((n) => {
+      if (String(n.request.content.data?.type || '').startsWith('PAYMENT')) fetchPayments();
+    });
+
     return () => {
       subscription.remove();
       urlListener.remove();
+      notificationListener.remove();
     };
   }, []);
 
 
   const handlePayNow = (item: PaymentItem) => {
+    setRejectedId(null);
     setSelectedPayment(item);
     setCardNumber('');
     setCvv('');
@@ -262,7 +276,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 ]}
               >
                 <Text
-                  accessibilityLabel={item.status === 'PAID' ? 'Pagado' : item.id === verifyingId ? 'Verificando pago…' : item.status === 'OVERDUE' ? 'Vencido' : 'Pendiente'}
+                  accessibilityLabel={item.status === 'PAID' ? 'Pagado' : item.id === rejectedId ? 'Pago no aprobado' : item.id === verifyingId ? 'Verificando pago…' : item.status === 'OVERDUE' ? 'Vencido' : 'Pendiente'}
                   style={[
                     styles.statusText,
                     item.status === 'PAID' ? styles.statusPaidText : item.status === 'OVERDUE' ? styles.statusOverdueText : styles.statusPendingText,
@@ -270,6 +284,8 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                 >
                   {item.status === 'PAID'
                     ? '✓ Pagado'
+                    : item.id === rejectedId
+                    ? '❌ Pago no aprobado'
                     : item.id === verifyingId
                     ? '⏳ Verificando pago…'
                     : item.status === 'OVERDUE'
@@ -381,7 +397,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
                     placeholderTextColor="#94A3B8"
                     keyboardType="numeric"
                     secureTextEntry
-                    maxLength={4}
+                    maxLength={3}
                     value={cvv}
                     onChangeText={setCvv}
                   />

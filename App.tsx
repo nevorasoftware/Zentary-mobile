@@ -8,6 +8,7 @@ import PQRSScreen from './src/screens/PQRSScreen';
 import PaquetesScreen from './src/screens/PaquetesScreen';
 import PaymentsScreen from './src/screens/PaymentsScreen';
 import AmenidadesScreen from './src/screens/AmenidadesScreen';
+import GaritaScreen from './src/screens/GaritaScreen';
 import DeliveryScreen from './src/screens/DeliveryScreen';
 import AuthFlowScreen from './src/screens/AuthFlowScreen';
 import BottomNavBar, { TabType } from './src/components/BottomNavBar';
@@ -176,6 +177,8 @@ function AppContent() {
   }
 
   const renderCurrentScreen = () => {
+    if (currentUser.role === 'GUARD') return <GaritaScreen onOpenMenu={() => setIsProfileMenuOpen(true)} />;
+
     if (isDeliveryOpen) {
       return <DeliveryScreen onBack={() => setIsDeliveryOpen(false)} />;
     }
@@ -250,11 +253,13 @@ function AppContent() {
       <View style={styles.screenContainer}>{renderCurrentScreen()}</View>
 
       {/* Persistent Bottom Bar */}
-      <BottomNavBar
-        currentTab={isDeliveryOpen || currentTab === 'Pagos' || currentTab === 'Paquetes' ? 'Inicio' : currentTab}
-        onTabChange={handleTabChange}
-        onOpenMenu={() => setIsProfileMenuOpen(true)}
-      />
+      {currentUser.role !== 'GUARD' && (
+        <BottomNavBar
+          currentTab={isDeliveryOpen || currentTab === 'Pagos' || currentTab === 'Paquetes' ? 'Inicio' : currentTab}
+          onTabChange={handleTabChange}
+          onOpenMenu={() => setIsProfileMenuOpen(true)}
+        />
+      )}
 
       {/* Profile Menu Sheet */}
       <ProfileMenuModal

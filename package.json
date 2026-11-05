@@ -12,6 +12,7 @@
     "@react-native-community/datetimepicker": "8.4.4",
     "@react-native-community/netinfo": "11.4.1",
     "expo": "~54.0.38",
+    "expo-camera": "~17.0.10",
     "expo-constants": "~18.0.14",
     "expo-contacts": "~15.0.11",
     "expo-device": "~8.0.10",

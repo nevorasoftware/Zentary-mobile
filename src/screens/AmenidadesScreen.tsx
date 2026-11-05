@@ -12,7 +12,7 @@ import {
   Alert,
   Linking,
   RefreshControl,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -276,11 +276,12 @@ export const AmenidadesScreen: React.FC = () => {
   };
 
   // Consulta el estado real de la reserva propia: 'PAID' | 'FAILED' (cancelada, vencida, rechazada o pago fallido) | 'PENDING'
-  const getReservationPaymentOutcome = async (reservationId: string): Promise<'PAID' | 'FAILED' | 'PENDING'> => {
+  const getReservationPaymentOutcome = async (reservationId: string): Promise<'PAID' | 'FAILED' | 'REJECTED_PAYMENT' | 'PENDING'> => {
     try {
       const res = await apiService.getMyReservation(reservationId);
       const { reservationStatus, paymentStatus } = res.reservation || ({} as any);
       if (paymentStatus === 'PAID') return 'PAID';
+      if (paymentStatus === 'FAILED') return 'REJECTED_PAYMENT';
       if (
         ['CANCELLED', 'EXPIRED', 'REJECTED'].includes(reservationStatus) ||
         ['FAILED', 'CANCELLED'].includes(paymentStatus)
@@ -297,7 +298,7 @@ export const AmenidadesScreen: React.FC = () => {
   const handleClosePaymentModal = () => {
     Alert.alert(
       'Pago pendiente',
-      'Si cierras esta ventana, tu reserva quedará pendiente de pago y el espacio seguirá apartado hasta que se confirme o se cancele. ¿Deseas cerrarla?',
+      'Si cierras esta ventana, tu reserva quedará pendiente de pago y el espacio seguirá apartado 15 minutos, hasta que se confirme o se cancele. ¿Deseas cerrarla?',
       [
         { text: 'Seguir pagando', style: 'cancel' },
         { text: 'Cerrar', style: 'destructive', onPress: () => setIsPaymentModalOpen(false) },
@@ -331,7 +332,7 @@ export const AmenidadesScreen: React.FC = () => {
         numeroTarjeta: cardNumber.replace(/\s+/g, ''),
         cvv,
         mesVencimiento: parseInt(expiryMonth, 10),
-        anioVencimiento: parseInt(expiryYear, 10),
+        anioVencimiento: parseInt(expiryYear.length === 2 ? `20${expiryYear}` : expiryYear, 10),
         nombre: firstName,
         apellido: lastName,
       });
@@ -353,6 +354,10 @@ export const AmenidadesScreen: React.FC = () => {
               setResultTitle('¡Reserva Confirmada!');
               setResultIcon('🎉');
               setSuccessMessage(`¡Pago procesado con éxito! Tu reservación para "${selectedAmenity.name}" ha sido confirmada.`);
+            } else if (outcome === 'REJECTED_PAYMENT') {
+              setResultTitle('Pago no aprobado');
+              setResultIcon('❌');
+              setSuccessMessage('El pago no fue aprobado y tu reserva no está confirmada. Puedes intentarlo nuevamente.');
             } else if (outcome === 'FAILED') {
               // Solo estados terminales (reserva cancelada/vencida/rechazada o pago fallido)
               setResultTitle('Reserva no confirmada');
@@ -704,16 +709,16 @@ export const AmenidadesScreen: React.FC = () => {
                   />
                 </View>
                 <View style={{ flex: 1, marginHorizontal: 6 }}>
-                  <Text style={styles.subInputLabel}>Año (AAAA)</Text>
+                  <Text style={styles.subInputLabel}>Año (AA)</Text>
                   <TextInput
                     accessibilityLabel="Año de vencimiento"
                     style={styles.textInput}
                     value={expiryYear}
                     onChangeText={setExpiryYear}
-                    placeholder="2028"
+                    placeholder="28"
                     placeholderTextColor="#64748B"
                     keyboardType="numeric"
-                    maxLength={4}
+                    maxLength={2}
                   />
                 </View>
                 <View style={{ flex: 1, marginLeft: 6 }}>
@@ -727,7 +732,7 @@ export const AmenidadesScreen: React.FC = () => {
                     placeholderTextColor="#64748B"
                     keyboardType="numeric"
                     secureTextEntry
-                    maxLength={4}
+                    maxLength={3}
                   />
                 </View>
               </View>

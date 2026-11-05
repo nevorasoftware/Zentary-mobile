@@ -63,7 +63,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </View>
 
         <View style={styles.actionGrid}>
-          {/* Fast Pass Highlight */}
+          {/* Fast Pass Highlight (oculto temporalmente) */}
+          {false && (
           <TouchableOpacity
             accessibilityRole="button"
             style={[styles.actionCard, styles.fastPassCard]}
@@ -76,6 +77,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <Text style={[styles.actionTitle, { color: '#FFCF36' }]}>Fast Pass</Text>
             <Text style={styles.actionSubtitle}>Invitación rápida QR</Text>
           </TouchableOpacity>
+          )}
 
           {/* Visitas */}
           <TouchableOpacity accessibilityRole="button" style={styles.actionCard} onPress={onNavigateToVisitas} activeOpacity={0.85}>
