@@ -13,7 +13,6 @@ import {
   AppState,
   RefreshControl,
   KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { apiService } from '../services/api';
@@ -307,7 +306,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
 
       {/* Wompi 3DS Payment Dialog Modal */}
       <Modal visible={!!selectedPayment} transparent animationType="slide" onRequestClose={() => setSelectedPayment(null)}>
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
           <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
             <View style={styles.modalCard}>
               <Text style={styles.modalTitle}>Pago con tarjeta</Text>

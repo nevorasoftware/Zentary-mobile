@@ -2,7 +2,7 @@
 // Supports Native System Notifications (Android System Tray / Lock Screen / Status Bar)
 // matching PedidosYa, Gmail, CapCut notifications style.
 
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 import { localDateISO } from '../utils/dates';
 import { colors } from '../theme';

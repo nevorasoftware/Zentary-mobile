@@ -11,10 +11,9 @@ import {
   Alert,
   FlatList,
   KeyboardAvoidingView,
-  Platform,
   RefreshControl,
-  SafeAreaView,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../theme';
 import { apiService, PqrsItem, PqrsDetailItem } from '../services/api';
 
@@ -326,7 +325,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
 
       {/* Modal for Creating PQRS */}
       <Modal visible={showCreateModal} transparent animationType="slide" onRequestClose={() => setShowCreateModal(false)}>
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Crear Nueva PQRS</Text>
@@ -400,7 +399,7 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
         <SafeAreaViewStyleWrapper>
           <KeyboardAvoidingView
             style={{ flex: 1, backgroundColor: '#F8FAFC' }}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            behavior="padding"
           >
             {/* Modal Top Header */}
             <View style={styles.detailHeader}>
@@ -546,11 +545,14 @@ export const PQRSScreen: React.FC<PQRSScreenProps> = ({ initialPqrsId, onInitial
   );
 };
 
-const SafeAreaViewStyleWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-    {children}
-  </SafeAreaView>
-);
+const SafeAreaViewStyleWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }}>
+      {children}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

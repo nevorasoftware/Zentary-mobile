@@ -2,8 +2,11 @@
   "expo": {
     "name": "Zentary",
     "slug": "zentary-app",
-    "version": "2.55.0",
-    "scheme": "zentary",
+    "version": "2.56.0",
+    "scheme": [
+      "zentary",
+      "com.zentary.app"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -21,12 +24,13 @@
     },
     "android": {
       "package": "com.zentary.app",
-      "versionCode": 16,
+      "versionCode": 18,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.WRITE_CONTACTS"
+        "android.permission.WRITE_CONTACTS",
+        "android.permission.READ_CONTACTS"
       ],
       "allowBackup": false,
       "adaptiveIcon": {
@@ -58,6 +62,7 @@
           "recordAudioAndroid": false
         }
       ]
-    ]
+    ],
+    "newArchEnabled": false
   }
 }

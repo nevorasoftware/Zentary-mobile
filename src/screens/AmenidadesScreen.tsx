@@ -13,8 +13,8 @@ import {
   Linking,
   RefreshControl,
   KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // @ts-ignore
 import * as WebBrowser from 'expo-web-browser';
@@ -70,6 +70,8 @@ const toMins = (t: string) => {
 const normEndMins = (start: number, end: number) => (end <= start ? end + 1440 : end);
 
 export const AmenidadesScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
+  const sheetInset = { paddingBottom: 20 + insets.bottom };
   const [amenities, setAmenities] = useState<Amenity[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -531,8 +533,8 @@ export const AmenidadesScreen: React.FC = () => {
 
       {/* BOOKING MODAL */}
       <Modal visible={isBookingModalOpen} animationType="slide" transparent onRequestClose={() => setIsBookingModalOpen(false)}>
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <View style={styles.modalContent}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
+          <View style={[styles.modalContent, sheetInset]}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Reservar {selectedAmenity?.name}</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={() => setIsBookingModalOpen(false)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
@@ -653,8 +655,8 @@ export const AmenidadesScreen: React.FC = () => {
 
       {/* WOMPI CARD PAYMENT MODAL */}
       <Modal visible={isPaymentModalOpen} animationType="slide" transparent onRequestClose={handleClosePaymentModal}>
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <View style={styles.modalContent}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
+          <View style={[styles.modalContent, sheetInset]}>
             <View style={styles.modalHeader}>
               <Text accessibilityLabel="Pago con tarjeta" style={styles.modalTitle}>💳 Pago con tarjeta</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Cerrar" onPress={handleClosePaymentModal} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
@@ -756,7 +758,7 @@ export const AmenidadesScreen: React.FC = () => {
       {/* SUCCESS CONFIRMATION MODAL */}
       <Modal visible={isSuccessModalOpen} animationType="fade" transparent onRequestClose={() => setIsSuccessModalOpen(false)}>
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, styles.successModalContent]}>
+          <View style={[styles.modalContent, styles.successModalContent, sheetInset]}>
             <Text style={styles.successIcon}>{resultIcon}</Text>
             <Text style={styles.successTitle}>{resultTitle}</Text>
             <Text style={styles.successBody}>{successMessage}</Text>

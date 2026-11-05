@@ -8,8 +8,7 @@ import {
   Modal,
   ActivityIndicator,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
+  KeyboardAvoidingView,
   ScrollView,
   Image,
   BackHandler,
@@ -132,7 +131,7 @@ export const AuthFlowScreen: React.FC<AuthFlowScreenProps> = ({ onLoginSuccess }
   return (
     <KeyboardAvoidingView
       style={styles.authContainer}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior="padding"
     >
       {/* Top Header with Back Button */}
       <View style={styles.topBlueHeader}>

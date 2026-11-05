@@ -2,7 +2,7 @@
 // Manages persistent device identification and long-lived 15-day session storage across Web and Native platforms
 
 import { Platform } from 'react-native';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as SecureStore from 'expo-secure-store';
 import { apiService, isAuthRejection, UserProfile } from './api';
 

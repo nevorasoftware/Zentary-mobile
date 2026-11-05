@@ -11,7 +11,7 @@ import {
   Platform,
   RefreshControl,
 } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera/next';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { apiService } from '../services/api';
 
 interface GaritaScreenProps {
