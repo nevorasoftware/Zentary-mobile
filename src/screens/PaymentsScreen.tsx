@@ -193,6 +193,10 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         Alert.alert('Error de Pago', res.message || 'No se pudo iniciar el pago con tarjeta.');
       }
     } catch (error: any) {
+      if (error.code === 'PROFILE_INCOMPLETE') {
+        Alert.alert('Perfil incompleto', error.message);
+        return;
+      }
       Alert.alert('Error de Conexión', error.message || 'Fallo al comunicarse con el servidor de pagos.');
     } finally {
       setProcessing(false);

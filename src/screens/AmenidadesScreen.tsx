@@ -386,6 +386,10 @@ export const AmenidadesScreen: React.FC = () => {
       }
     } catch (err: any) {
       if (err.status === 409) setIsPaymentModalOpen(false);
+      if (err.code === 'PROFILE_INCOMPLETE') {
+        Alert.alert('Perfil incompleto', err.message);
+        return;
+      }
       Alert.alert('Error en el pago', err.message || 'Fallo en la comunicación con el procesador de pago.');
       fetchPendingReservations();
     } finally {
