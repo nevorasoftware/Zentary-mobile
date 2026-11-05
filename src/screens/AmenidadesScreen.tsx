@@ -269,6 +269,10 @@ export const AmenidadesScreen: React.FC = () => {
         Alert.alert('Reserva No Permitida', res.message || 'Error al procesar reserva.');
       }
     } catch (err: any) {
+      if (err.code === 'HOUSE_MOROSA') {
+        Alert.alert('Pagos vencidos', err.message);
+        return;
+      }
       Alert.alert('Error', err.message || 'Error de comunicación con el servidor.');
     } finally {
       setIsSubmitting(false);
