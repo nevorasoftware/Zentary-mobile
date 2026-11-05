@@ -324,9 +324,9 @@ export const AmenidadesScreen: React.FC = () => {
 
     try {
       setIsProcessingWompi(true);
-      const nameParts = (cardHolder || 'Residente Zentary').trim().split(' ');
-      const firstName = nameParts[0] || 'Residente';
-      const lastName = nameParts.slice(1).join(' ') || 'Zentary';
+      const nameParts = cardHolder.trim().split(' ');
+      const firstName = nameParts[0] || undefined;
+      const lastName = nameParts.slice(1).join(' ') || undefined;
 
       const res = await apiService.createReservationWompiPayment(pendingReservationId, {
         numeroTarjeta: cardNumber.replace(/\s+/g, ''),
@@ -387,7 +387,7 @@ export const AmenidadesScreen: React.FC = () => {
     } catch (err: any) {
       if (err.status === 409) setIsPaymentModalOpen(false);
       if (err.code === 'PROFILE_INCOMPLETE') {
-        Alert.alert('Perfil incompleto', err.message);
+        Alert.alert('Perfil incompleto', 'Pide a la administración que registre tu correo y teléfono para poder pagar.');
         return;
       }
       Alert.alert('Error en el pago', err.message || 'Fallo en la comunicación con el procesador de pago.');

@@ -547,8 +547,8 @@ class ApiService {
       cvv: string;
       mesVencimiento: number;
       anioVencimiento: number;
-      nombre: string;
-      apellido: string;
+      nombre?: string;
+      apellido?: string;
       email?: string;
       telefono?: string;
     }

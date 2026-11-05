@@ -156,8 +156,6 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
         apellido: cardHolderLastName.trim(),
         email: email.trim() || undefined,
         telefono: phone.trim() || undefined,
-        ciudad: 'San Salvador',
-        direccion: 'Residencial Zentary',
         idPais: 'SV',
         idRegion: 'SV-SS',
         codigoPostal: '01101',
@@ -194,7 +192,7 @@ export const PaymentsScreen: React.FC<PaymentsScreenProps> = ({ onBack }) => {
       }
     } catch (error: any) {
       if (error.code === 'PROFILE_INCOMPLETE') {
-        Alert.alert('Perfil incompleto', error.message);
+        Alert.alert('Perfil incompleto', 'Pide a la administración que registre tu correo y teléfono para poder pagar.');
         return;
       }
       Alert.alert('Error de Conexión', error.message || 'Fallo al comunicarse con el servidor de pagos.');
