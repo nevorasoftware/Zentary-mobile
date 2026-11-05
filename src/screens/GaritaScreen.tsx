@@ -89,7 +89,9 @@ export const GaritaScreen: React.FC<GaritaScreenProps> = ({ onOpenMenu }) => {
       if (res.success) {
         Alert.alert(
           '✅ INGRESO CONFIRMADO',
-          `El ingreso de ${res.visit.visitorName} ha sido procesado. Se han invalidado todos los tokens de acceso y notificado al residente.`
+          `El ingreso de ${res.visit.visitorName} ha sido procesado. Se han invalidado todos los tokens de acceso y notificado al residente.` +
+            (res.parking?.zoneName ? `
+Parqueo: ${res.parking.zoneName}` : '')
         );
         resetScan();
         fetchInside();
@@ -212,6 +214,12 @@ export const GaritaScreen: React.FC<GaritaScreenProps> = ({ onOpenMenu }) => {
                       {scanResult.visit.vehiclePlate})
                     </Text>
                   )}
+
+                  {scanResult.parking?.zoneName && (
+                    <Text style={styles.detailRow}>
+                      <Text style={{ fontWeight: 'bold' }}>Parqueo:</Text> {scanResult.parking.zoneName}
+                    </Text>
+                  )}
                 </View>
 
                 <TouchableOpacity
@@ -246,7 +254,7 @@ export const GaritaScreen: React.FC<GaritaScreenProps> = ({ onOpenMenu }) => {
                 {v.vehiclePlate ? ` · ${v.vehiclePlate}` : ''}
               </Text>
               <Text style={[styles.entryTimeText, v.isExceeded && { color: '#F87171' }]}>
-                Ingresó: {new Date(v.entryDate).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}
+                Ingresó: {new Date(v.entryDate).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                 {v.isExceeded ? ' · Tiempo excedido' : ''}
               </Text>
               <TouchableOpacity accessibilityRole="button" style={styles.exitBtn} onPress={() => handleExit(v)} disabled={exitingId === v.id}>

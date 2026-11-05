@@ -327,6 +327,7 @@ class ApiService {
       success: boolean;
       valid: boolean;
       message: string;
+      parking?: VisitItem['parking'];
       visit: {
         id: string;
         visitorName: string;
@@ -360,6 +361,7 @@ class ApiService {
         visitorName: string;
         entryTime: string;
       };
+      parking?: VisitItem['parking'];
     }>(`/visits/${visitId}/confirm-entry`, {
       method: 'POST',
       body: JSON.stringify({ gateName }),
