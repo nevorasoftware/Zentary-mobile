@@ -34,6 +34,7 @@ export const DocumentosScreen: React.FC = () => {
   }, []);
 
   const openDocument = async (url: string) => {
+    if (!/^https:\/\//i.test(url)) return;
     try {
       await WebBrowser.openBrowserAsync(url);
     } catch (e) {
