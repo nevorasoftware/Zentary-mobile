@@ -8,3 +8,8 @@ web-build/
 # Caché de Gradle del módulo nativo
 modules/*/android/.gradle/
 modules/*/android/build/
+
+# Salidas y caché de Gradle (autolinking.json guarda rutas locales y rompe el build en EAS)
+android/build/
+android/app/build/
+android/.gradle/
